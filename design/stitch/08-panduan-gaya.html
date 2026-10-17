@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="id"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_standard" name="shell-type"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "error-container": "#93000a", "tertiary": "#4edea3", "surface-container-low": "#191b25", "surface-tint": "#ffb690", "on-secondary": "#003640", "on-secondary-fixed-variant": "#004e5c", "surface": "#11131c", "tertiary-container": "#00b07a", "tertiary-fixed": "#6ffbbe", "surface-dim": "#11131c", "on-primary-fixed-variant": "#783200", "inverse-on-surface": "#2e303a", "outline": "#a78b7d", "secondary-fixed-dim": "#4cd7f6", "inverse-primary": "#9d4300", "primary-fixed": "#ffdbca", "background": "#11131c", "on-primary-fixed": "#341100", "on-primary": "#552100", "inverse-surface": "#e1e1ef", "tertiary-fixed-dim": "#4edea3", "surface-variant": "#32343f", "surface-container-high": "#272934", "surface-bright": "#373943", "error": "#ffb4ab", "primary-container": "#f97316", "on-tertiary-container": "#003b26", "on-background": "#e1e1ef", "secondary-fixed": "#acedff", "on-tertiary-fixed-variant": "#005236", "on-surface-variant": "#e0c0b1", "on-tertiary": "#003824", "on-secondary-fixed": "#001f26", "outline-variant": "#584237", "on-secondary-container": "#00424e", "on-tertiary-fixed": "#002113", "on-surface": "#e1e1ef", "surface-container": "#1d1f29", "on-error-container": "#ffdad6", "on-error": "#690005", "secondary": "#4cd7f6", "on-primary-container": "#582200", "primary": "#ffb690", "surface-container-highest": "#32343f", "surface-container-lowest": "#0c0e17", "primary-fixed-dim": "#ffb690", "secondary-container": "#03b5d3" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "space-xl": "2rem", "space-lg": "1.25rem", "margin": "1rem", "space-sm": "0.5rem", "gutter-desktop": "1rem", "margin-desktop": "1.5rem", "gutter": "0.75rem", "space-md": "0.75rem", "space-xs": "0.25rem" }, "fontFamily": { "body-sm": ["Inter"], "headline-sm": ["Inter"], "mono-lg": ["JetBrains Mono"], "body-lg": ["Inter"], "mono-md": ["JetBrains Mono"], "body-md": ["Inter"], "headline-lg": ["Inter"], "display-lg": ["Inter"], "headline-md": ["Inter"], "mono-sm": ["JetBrains Mono"], "display-lg-mobile": ["Inter"] }, "fontSize": { "body-sm": ["11px", { "lineHeight": "16px", "fontWeight": "400" }], "headline-sm": ["15px", { "lineHeight": "22px", "fontWeight": "600" }], "mono-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.02em", "fontWeight": "500" }], "body-lg": ["15px", { "lineHeight": "24px", "fontWeight": "400" }], "mono-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "500" }], "body-md": ["13px", { "lineHeight": "20px", "fontWeight": "400" }], "headline-lg": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.015em", "fontWeight": "600" }], "display-lg": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700" }], "headline-md": ["18px", { "lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "600" }], "mono-sm": ["10px", { "lineHeight": "14px", "letterSpacing": "0.05em", "fontWeight": "500" }], "display-lg-mobile": ["30px", { "lineHeight": "38px", "letterSpacing": "-0.01em", "fontWeight": "700" }] } } } };</script></head><body class="bg-background font-body-md text-on-surface antialiased selection:bg-primary-container selection:text-on-primary-container"><header class="fixed top-0 left-0 right-0 z-50 bg-surface-container-lowest/80 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.5)]"><div class="h-16 w-full px-margin-desktop flex items-center justify-between gap-space-md"><div class="flex items-center gap-space-lg flex-shrink-0"><div class="flex items-center gap-space-sm"><img alt="Studio Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC65-l304pyKbLzjJUZUOTd6bDlwKu4sHr9z5luZPJC0YSY-GL2HVxyx_ogtEdHq8-zR6GGk3iitLt5LhsriJdbWi5tYsZUBKtiEUmwxUoNfEWoQ53zuh70-0xTZa6oS0zSFi7rT1WOfkM14THrH14X48SboRXHKbCON0ggWFTyva8kfLdbwh5yzXyv6zAbIMyyJp00ueiY9u_UJxPxx4d_EB09Resp7IscNmVYbM87yJeIEE660Piy"/><div class="flex flex-col"><span class="font-headline-sm text-headline-sm text-on-surface tracking-tight leading-none">Aura Studio</span><span class="font-mono-sm text-mono-sm text-secondary uppercase tracking-widest">Vektor OS</span></div></div><nav class="hidden xl:flex items-center gap-space-xs" data-active-classes="bg-primary-container text-on-primary-container font-headline-sm"><a aria-current="page" class="px-space-md py-space-xs rounded transition-colors bg-primary-container text-on-primary-container font-headline-sm" data-path="panduan-gaya-&amp;-komponen" href="#">Panduan Gaya &amp; Komponen</a><a class="px-space-md py-space-xs rounded font-body-md text-body-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors" data-path="studio-editor" href="#">Studio Editor</a><a class="px-space-md py-space-xs rounded font-body-md text-body-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors" data-path="proyek-video" href="#">Proyek Video</a><a class="px-space-md py-space-xs rounded font-body-md text-body-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors" data-path="aset-media" href="#">Aset Media</a><a class="px-space-md py-space-xs rounded font-body-md text-body-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors" data-path="pengaturan" href="#">Pengaturan</a></nav></div><div class="flex items-center gap-space-md flex-shrink-0"><div class="hidden md:flex items-center gap-space-xs px-space-md py-space-xs rounded-full bg-surface-container-high text-tertiary font-mono-sm text-mono-sm"><span class="w-2 h-2 rounded-full bg-tertiary animate-pulse"></span><span>Server Render: Siap</span></div><button class="relative px-space-lg py-space-xs rounded-lg font-headline-sm text-headline-sm text-on-primary bg-gradient-to-r from-amber-500 via-primary-container to-rose-500 shadow-[0_4px_14px_rgba(249,115,22,0.35)] hover:shadow-[0_6px_20px_rgba(249,115,22,0.5)] transition-all flex items-center gap-space-xs"><span class="material-symbols-outlined text-[18px]">ios_share</span><span>Ekspor 4K</span></button><button aria-label="Notifikasi" class="w-9 h-9 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface flex items-center justify-center transition-colors"><span class="material-symbols-outlined text-[20px]">notifications</span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="w-full pt-16 bg-background min-h-screen"><div class="flex flex-col w-full">
+<div class="w-full px-margin-desktop py-space-xl flex flex-col gap-space-xl">
+<!-- 1. Header / Intro Banner -->
+<section class="relative overflow-hidden rounded-xl bg-surface-container-low p-space-xl shadow-xl">
+<div class="absolute -right-20 -top-24 w-96 h-96 rounded-full bg-primary-container/10 blur-3xl pointer-events-none"></div>
+<div class="absolute right-48 bottom-0 w-64 h-64 rounded-full bg-secondary/10 blur-2xl pointer-events-none"></div>
+<div class="relative z-10 flex flex-col md:flex-row md:items-end justify-between gap-space-lg">
+<div class="flex flex-col gap-space-xs max-w-3xl">
+<div class="flex flex-wrap items-center gap-space-xs">
+<span class="px-space-sm py-0.5 rounded-full bg-primary-container/20 text-primary font-mono-sm text-mono-sm tracking-wider uppercase">Versi 2.4-PRO</span>
+<span class="px-space-sm py-0.5 rounded-full bg-surface-container-high text-on-surface-variant font-mono-sm text-mono-sm">Tema Gelap Studio</span>
+<span class="px-space-sm py-0.5 rounded-full bg-surface-container-high text-secondary font-mono-sm text-mono-sm">Inter &amp; JetBrains Mono</span>
+</div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface tracking-tight mt-space-xs">
+            Panduan Gaya &amp; Komponen Antarmuka Studio
+          </h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant">
+            Sistem desain terpadu untuk platform penyuntingan video berkinerja tinggi generasi berikutnya. Presisi workstation tingkat tinggi dengan ambient luminance taktikal.
+          </p>
+</div>
+<div class="flex items-center gap-space-sm">
+<button class="px-space-md py-space-xs rounded-lg bg-surface-container-high hover:bg-surface-bright text-on-surface font-headline-sm text-headline-sm flex items-center gap-space-xs transition-colors shadow-sm">
+<span class="material-symbols-outlined text-[18px]">download</span>
+<span>Unduh Preset Token</span>
+</button>
+<button class="px-space-md py-space-xs rounded-lg bg-primary-container text-on-primary-container font-headline-sm text-headline-sm flex items-center gap-space-xs shadow-md hover:opacity-95 transition-all">
+<span class="material-symbols-outlined text-[18px]">palette</span>
+<span>Inspeksi Variabel</span>
+</button>
+</div>
+</div>
+</section>
+<!-- 2. Palet Warna (Color Palette Matrix) -->
+<section class="flex flex-col gap-space-md">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<span class="w-2.5 h-2.5 rounded-full bg-primary-container"></span>
+<h2 class="font-headline-md text-headline-md text-on-surface">01. Palet Warna (Color Palette Matrix)</h2>
+</div>
+<span class="font-mono-sm text-mono-sm text-on-surface-variant uppercase tracking-widest">Aura-Dark-V2</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-space-md">
+<!-- Swatch: Base Floor -->
+<div class="bg-surface-container rounded-xl p-space-md flex flex-col gap-space-sm shadow-md">
+<div class="h-28 rounded-lg bg-background flex flex-col justify-between p-space-sm relative overflow-hidden">
+<span class="font-mono-sm text-mono-sm text-on-surface-variant bg-surface-container-lowest/80 px-1.5 py-0.5 rounded self-start">BASE FLOOR</span>
+<div class="flex items-center justify-between text-on-surface">
+<span class="font-mono-md text-mono-md">#070912</span>
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant">layers</span>
+</div>
+</div>
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Latar Dasar Studio</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Ruang kanvas ultra-gelap menjaga fokus mata editor selama jam produksi panjang.</p>
+</div>
+</div>
+<!-- Swatch: Surface Panel -->
+<div class="bg-surface-container rounded-xl p-space-md flex flex-col gap-space-sm shadow-md">
+<div class="h-28 rounded-lg bg-surface-container-low flex flex-col justify-between p-space-sm shadow-inner">
+<span class="font-mono-sm text-mono-sm text-secondary bg-surface-container-lowest/80 px-1.5 py-0.5 rounded self-start">SURFACE DOCK</span>
+<div class="flex items-center justify-between text-on-surface">
+<span class="font-mono-md text-mono-md">#0D1020</span>
+<span class="material-symbols-outlined text-[16px] text-secondary">dock</span>
+</div>
+</div>
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Kartu &amp; Panel Kendali</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Kontainer workstation docked fleksibel dengan rim light translucent.</p>
+</div>
+</div>
+<!-- Swatch: Accent Gradient -->
+<div class="bg-surface-container rounded-xl p-space-md flex flex-col gap-space-sm shadow-md">
+<div class="h-28 rounded-lg bg-gradient-to-r from-amber-500 via-primary-container to-rose-500 flex flex-col justify-between p-space-sm shadow-[0_4px_16px_rgba(249,115,22,0.3)]">
+<span class="font-mono-sm text-mono-sm text-on-primary bg-on-primary-container/40 px-1.5 py-0.5 rounded self-start">KINETIC ACCENT</span>
+<div class="flex items-center justify-between text-on-primary font-mono-md text-mono-md">
+<span>#F59E0B → #F43F5E</span>
+<span class="material-symbols-outlined text-[16px]">bolt</span>
+</div>
+</div>
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Gradien Aksen Utama</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Pendaran energi hangat penanda aksi ekspor krusial, rendering, dan status aktif.</p>
+</div>
+</div>
+<!-- Swatch: Status Telemetry -->
+<div class="bg-surface-container rounded-xl p-space-md flex flex-col gap-space-sm shadow-md">
+<div class="h-28 rounded-lg bg-surface-container-high p-space-sm flex flex-col justify-between">
+<div class="flex items-center justify-between">
+<span class="font-mono-sm text-mono-sm text-tertiary bg-surface-container-lowest/80 px-1.5 py-0.5 rounded">STATUS SYSTEM</span>
+<span class="material-symbols-outlined text-[16px] text-tertiary">tune</span>
+</div>
+<div class="grid grid-cols-3 gap-1 text-center font-mono-sm text-mono-sm">
+<div class="bg-tertiary/20 text-tertiary py-1 rounded">#10B981</div>
+<div class="bg-secondary/20 text-secondary py-1 rounded">#06B6D4</div>
+<div class="bg-surface-variant text-on-surface-variant py-1 rounded">#71717A</div>
+</div>
+</div>
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Status &amp; Telemetri</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Hijau Zamrud (Aktif), Biru Sian (Timeline/Playhead), Abu Seng (Bypass).</p>
+</div>
+</div>
+</div>
+</section>
+<!-- 3. Skala Tipografi & Aspek Font -->
+<section class="flex flex-col gap-space-md">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<span class="w-2.5 h-2.5 rounded-full bg-secondary"></span>
+<h2 class="font-headline-md text-headline-md text-on-surface">02. Skala Tipografi (Typography Scale)</h2>
+</div>
+<span class="font-mono-sm text-mono-sm text-on-surface-variant uppercase tracking-widest">Dual Hierarchy</span>
+</div>
+<div class="bg-surface-container rounded-xl p-space-xl shadow-md flex flex-col gap-space-lg">
+<!-- Display Scale -->
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-space-sm py-space-sm">
+<div class="w-48 flex-shrink-0">
+<span class="font-mono-sm text-mono-sm text-primary uppercase">Display-LG / 40px</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Inter Bold • Leading 48px</p>
+</div>
+<div class="flex-grow">
+<span class="font-display-lg text-display-lg text-on-surface">Studio Pro 4K Engine</span>
+</div>
+<div class="font-mono-sm text-mono-sm text-on-surface-variant">letterSpacing: -0.02em</div>
+</div>
+<!-- Headline LG (H1) -->
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-space-sm py-space-sm">
+<div class="w-48 flex-shrink-0">
+<span class="font-mono-sm text-mono-sm text-secondary uppercase">Headline-LG / 24px</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Inter SemiBold • Leading 32px</p>
+</div>
+<div class="flex-grow">
+<span class="font-headline-lg text-headline-lg text-on-surface">Panel Kontrol Proyek &amp; Konfigurasi Pipeline</span>
+</div>
+<div class="font-mono-sm text-mono-sm text-on-surface-variant">letterSpacing: -0.015em</div>
+</div>
+<!-- Headline MD (H2) -->
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-space-sm py-space-sm">
+<div class="w-48 flex-shrink-0">
+<span class="font-mono-sm text-mono-sm text-tertiary uppercase">Headline-MD / 18px</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Inter Medium • Leading 26px</p>
+</div>
+<div class="flex-grow">
+<span class="font-headline-md text-headline-md text-on-surface">Garis Waktu Multi-Track &amp; Penataan Keyframe Presisi</span>
+</div>
+<div class="font-mono-sm text-mono-sm text-on-surface-variant">letterSpacing: -0.01em</div>
+</div>
+<!-- Body Standard -->
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-space-sm py-space-sm">
+<div class="w-48 flex-shrink-0">
+<span class="font-mono-sm text-mono-sm text-on-surface-variant uppercase">Body-LG &amp; Body-MD</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Inter Regular • 15px / 13px</p>
+</div>
+<div class="flex-grow max-w-2xl">
+<p class="font-body-lg text-body-lg text-on-surface">
+              Penyuntingan video non-linear dengan akselerasi GPU real-time dan rendering berbasis awan. Pemrosesan warna 32-bit float dengan pemetaan gamut Rec.2020 tanpa latensi.
+            </p>
+</div>
+<div class="font-mono-sm text-mono-sm text-on-surface-variant">Zinc-300 Readable</div>
+</div>
+<!-- JetBrains Mono Technical -->
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-space-sm py-space-sm">
+<div class="w-48 flex-shrink-0">
+<span class="font-mono-sm text-mono-sm text-primary uppercase">Mono-LG &amp; Mono-MD</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant">JetBrains Mono • Timecode</p>
+</div>
+<div class="flex-grow flex items-center gap-space-md">
+<div class="bg-surface-container-lowest px-space-md py-space-xs rounded-lg font-mono-lg text-mono-lg text-secondary">
+              00:14:32:18
+            </div>
+<div class="bg-surface-container-lowest px-space-md py-space-xs rounded-lg font-mono-md text-mono-md text-primary">
+              4K 60FPS ProRes 422HQ • 10-BIT BT.709
+            </div>
+</div>
+<div class="font-mono-sm text-mono-sm text-tertiary">Audio Sync 48kHz</div>
+</div>
+</div>
+</section>
+<!-- 4. Komponen Tombol & Interaksi -->
+<section class="flex flex-col gap-space-md">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<span class="w-2.5 h-2.5 rounded-full bg-primary"></span>
+<h2 class="font-headline-md text-headline-md text-on-surface">03. Komponen Tombol (Buttons Collection)</h2>
+</div>
+<span class="font-mono-sm text-mono-sm text-on-surface-variant uppercase tracking-widest">Interactive States</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-space-md">
+<!-- Tombol Utama (Primary) -->
+<div class="bg-surface-container rounded-xl p-space-md flex flex-col justify-between gap-space-md shadow-md">
+<div class="flex flex-col gap-space-xs">
+<span class="font-mono-sm text-mono-sm text-primary uppercase">Aksi Utama Studio</span>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Primary Luminescent</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Gradien hangat untuk eksekusi final dengan glowing shadow.</p>
+</div>
+<div class="flex flex-col gap-space-xs">
+<button class="w-full py-space-sm px-space-md rounded-xl font-headline-sm text-headline-sm text-on-primary bg-gradient-to-r from-amber-500 via-primary-container to-rose-500 shadow-[0_4px_14px_rgba(249,115,22,0.35)] hover:shadow-[0_6px_20px_rgba(249,115,22,0.5)] transition-all flex items-center justify-center gap-space-xs">
+<span class="material-symbols-outlined text-[18px]">movie</span>
+<span>Render Proyek</span>
+</button>
+<button class="w-full py-space-sm px-space-md rounded-xl font-headline-sm text-headline-sm text-on-primary bg-gradient-to-r from-amber-500 via-primary-container to-rose-500 shadow-[0_4px_14px_rgba(249,115,22,0.35)] opacity-90 hover:opacity-100 transition-all flex items-center justify-center gap-space-xs">
+<span class="material-symbols-outlined text-[18px]">publish</span>
+<span>Mulai Ekspor 4K</span>
+</button>
+</div>
+</div>
+<!-- Tombol Sekunder (Secondary Panel Action) -->
+<div class="bg-surface-container rounded-xl p-space-md flex flex-col justify-between gap-space-md shadow-md">
+<div class="flex flex-col gap-space-xs">
+<span class="font-mono-sm text-mono-sm text-secondary uppercase">Aksi Sekunder Panel</span>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Secondary Docked</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Kontainer gelap dengan respon hover pencahayaan mikro.</p>
+</div>
+<div class="flex flex-col gap-space-xs">
+<button class="w-full py-space-sm px-space-md rounded-xl font-headline-sm text-headline-sm text-on-surface bg-surface-container-high hover:bg-surface-bright transition-colors flex items-center justify-center gap-space-xs shadow-sm">
+<span class="material-symbols-outlined text-[18px] text-secondary">add_circle</span>
+<span>Impor Media</span>
+</button>
+<button class="w-full py-space-sm px-space-md rounded-xl font-headline-sm text-headline-sm text-on-surface bg-surface-container-high hover:bg-surface-bright transition-colors flex items-center justify-center gap-space-xs shadow-sm">
+<span class="material-symbols-outlined text-[18px] text-tertiary">slow_motion_video</span>
+<span>Pratinjau Garis Waktu</span>
+</button>
+</div>
+</div>
+<!-- Tombol Ghost & Subtle -->
+<div class="bg-surface-container rounded-xl p-space-md flex flex-col justify-between gap-space-md shadow-md">
+<div class="flex flex-col gap-space-xs">
+<span class="font-mono-sm text-mono-sm text-on-surface-variant uppercase">Aksi Terselubung</span>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Ghost &amp; Reset</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Meminimalisir distraksi untuk pembatalan dan reset parameter.</p>
+</div>
+<div class="flex flex-col gap-space-xs">
+<button class="w-full py-space-sm px-space-md rounded-xl font-headline-sm text-headline-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors flex items-center justify-center gap-space-xs">
+<span class="material-symbols-outlined text-[18px]">close</span>
+<span>Batal Pilihan</span>
+</button>
+<button class="w-full py-space-sm px-space-md rounded-xl font-headline-sm text-headline-sm text-error hover:bg-error-container/20 transition-colors flex items-center justify-center gap-space-xs">
+<span class="material-symbols-outlined text-[18px]">restart_alt</span>
+<span>Reset Pengaturan</span>
+</button>
+</div>
+</div>
+<!-- Tombol Ikonik Workstation -->
+<div class="bg-surface-container rounded-xl p-space-md flex flex-col justify-between gap-space-md shadow-md">
+<div class="flex flex-col gap-space-xs">
+<span class="font-mono-sm text-mono-sm text-tertiary uppercase">Bilah Peralatan Mikro</span>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Toolbar Ikon 32px</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Ikon pemotong, keyframe, dan kontrol playback video.</p>
+</div>
+<div class="flex items-center justify-center gap-space-xs bg-surface-container-low p-space-xs rounded-xl">
+<button class="w-10 h-10 rounded-lg bg-surface-container-high hover:bg-surface-bright text-on-surface flex items-center justify-center transition-colors" title="Play/Pause (Spasi)">
+<span class="material-symbols-outlined text-[20px]">play_arrow</span>
+</button>
+<button class="w-10 h-10 rounded-lg bg-secondary/15 text-secondary flex items-center justify-center transition-colors" title="Tambah Keyframe">
+<span class="material-symbols-outlined text-[20px]">motion_photos_on</span>
+</button>
+<button class="w-10 h-10 rounded-lg bg-surface-container-high hover:bg-surface-bright text-on-surface flex items-center justify-center transition-colors" title="Pisahkan Klip (Split)">
+<span class="material-symbols-outlined text-[20px]">call_split</span>
+</button>
+<button class="w-10 h-10 rounded-lg bg-surface-container-high hover:bg-surface-bright text-on-surface flex items-center justify-center transition-colors" title="Alat Pemotong (Cut)">
+<span class="material-symbols-outlined text-[20px]">content_cut</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- 5. Kolom Input & Formulir Studio -->
+<section class="flex flex-col gap-space-md">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<span class="w-2.5 h-2.5 rounded-full bg-tertiary"></span>
+<h2 class="font-headline-md text-headline-md text-on-surface">04. Kolom Input &amp; Formulir Presisi</h2>
+</div>
+<span class="font-mono-sm text-mono-sm text-on-surface-variant uppercase tracking-widest">Input Ergonomics</span>
+</div>
+<div class="bg-surface-container rounded-xl p-space-xl shadow-md grid grid-cols-1 md:grid-cols-3 gap-space-lg">
+<!-- Input Teks Aktif -->
+<div class="flex flex-col gap-space-xs">
+<label class="font-headline-sm text-headline-sm text-on-surface flex items-center justify-between">
+<span>Nama Komposisi</span>
+<span class="font-mono-sm text-mono-sm text-secondary">STRING.UTF8</span>
+</label>
+<div class="relative">
+<input class="w-full bg-surface-container-low rounded-lg px-space-md py-space-sm font-body-md text-body-md text-on-surface focus:outline-none focus:ring-2 focus:ring-primary-container shadow-inner" placeholder="Misal: Teaser_Cinematic_Final_v3" type="text" value="Teaser_Cinematic_Final_v3"/>
+<span class="material-symbols-outlined absolute right-space-md top-2.5 text-[18px] text-tertiary">check_circle</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Penamaan file standar untuk direktori ekspor otomatis.</span>
+</div>
+<!-- Input Angka / Timecode Scrubber -->
+<div class="flex flex-col gap-space-xs">
+<label class="font-headline-sm text-headline-sm text-on-surface flex items-center justify-between">
+<span>Posisi Playhead (Timecode)</span>
+<span class="font-mono-sm text-mono-sm text-primary">SMPTE TC</span>
+</label>
+<div class="flex items-center gap-space-xs">
+<div class="flex-grow bg-surface-container-low rounded-lg px-space-md py-space-sm flex items-center justify-between shadow-inner">
+<span class="font-mono-lg text-mono-lg text-secondary tracking-wider font-semibold">01:23:45:00</span>
+<span class="material-symbols-outlined text-[18px] text-on-surface-variant">timer</span>
+</div>
+<div class="bg-surface-container-high px-space-md py-space-sm rounded-lg font-mono-sm text-mono-sm text-on-surface flex items-center gap-1">
+<span>60 FPS</span>
+<span class="material-symbols-outlined text-[14px]">expand_more</span>
+</div>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Format Jam : Menit : Detik : Bingkai (Drop-frame disinkronkan).</span>
+</div>
+<!-- Dropdown Format Ekspor -->
+<div class="flex flex-col gap-space-xs">
+<label class="font-headline-sm text-headline-sm text-on-surface flex items-center justify-between">
+<span>Format Ekspor Master</span>
+<span class="font-mono-sm text-mono-sm text-tertiary">CODEC</span>
+</label>
+<div class="relative">
+<select class="w-full bg-surface-container-low rounded-lg px-space-md py-space-sm font-headline-sm text-headline-sm text-on-surface appearance-none focus:outline-none focus:ring-2 focus:ring-primary-container shadow-inner">
+<option selected="">H.265 / HEVC 10-bit HDR (Rec.2100 PQ)</option>
+<option>Apple ProRes 4444 XQ (Alpha Channel)</option>
+<option>Avid DNxHR HQX 12-bit</option>
+<option>AV1 Main Profile (Performa Kompresi Tinggi)</option>
+</select>
+<span class="material-symbols-outlined absolute right-space-md top-2.5 text-[20px] text-on-surface-variant pointer-events-none">unfold_more</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Warna dinamis HDR10 dengan metadata statis MaxCLL/MaxFALL.</span>
+</div>
+</div>
+</section>
+<!-- 6. Kartu Komponen Panel (Studio Feature Cards) & Preview Simulasi -->
+<section class="flex flex-col gap-space-md">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<span class="w-2.5 h-2.5 rounded-full bg-secondary"></span>
+<h2 class="font-headline-md text-headline-md text-on-surface">05. Kartu Komponen Panel Kerja (Studio Docked Component)</h2>
+</div>
+<span class="font-mono-sm text-mono-sm text-on-surface-variant uppercase tracking-widest">Glassmorphism Workstation</span>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-space-lg">
+<!-- Main Video Card Simulation -->
+<div class="lg:col-span-2 bg-surface-container-low backdrop-blur-xl rounded-xl p-space-lg shadow-xl flex flex-col gap-space-md">
+<!-- Card Header -->
+<div class="flex items-center justify-between pb-space-xs">
+<div class="flex items-center gap-space-sm">
+<div class="w-7 h-7 rounded bg-primary-container/20 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[18px]">auto_awesome</span>
+</div>
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Pratinjau Pemrosesan AI Neural Engine</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Resolusi Supersampling Aktif • Segmentasi Latar Otomatis</p>
+</div>
+</div>
+<div class="flex items-center gap-space-xs">
+<span class="px-space-sm py-0.5 rounded-full bg-tertiary/15 text-tertiary font-mono-sm text-mono-sm flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary animate-ping"></span>
+<span>NEURAL ACCEL 98 FPS</span>
+</span>
+<button class="w-7 h-7 rounded bg-surface-container-high hover:bg-surface-bright text-on-surface-variant hover:text-on-surface flex items-center justify-center transition-colors">
+<span class="material-symbols-outlined text-[16px]">fullscreen</span>
+</button>
+</div>
+</div>
+<!-- Video Viewport Mock -->
+<div class="relative w-full aspect-video rounded-lg overflow-hidden bg-surface-container-lowest flex items-center justify-center group shadow-inner">
+<img class="w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-700" data-alt="Cinematic production still of futuristic Tokyo street at night, neon reflections on wet asphalt, volumetric cyan and amber atmospheric mist, high visual fidelity, film grain, anamorphic lens flare" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBB5nw3Oja35hdxleZJh_43X_8JCL6T28VrEoFGu3f-zQpswcIlDxo57x7xCTIXzVkNET7HUnfpL0n-ObjocmLwljDP9b4cCVYwQRrsY_aY6iz4g6DJu_3FRq399G3UOWBkKluebAeq-KFOg4QrHVRRDCuAI227oG2BV4S3yuO3Kv93hrmNBWfSbdphnoP9E_9mz5MO7H5q7HZ4FYAPIGiS1hZK95sFFRiW2DqawrMnZakWeK6ICyoD"/>
+<!-- Viewport HUD Elements -->
+<div class="absolute top-space-md left-space-md flex flex-col gap-1">
+<span class="px-2 py-0.5 rounded bg-surface-container-lowest/80 backdrop-blur-md font-mono-sm text-mono-sm text-on-surface font-semibold">REC • 3840x2160 UHD</span>
+<span class="px-2 py-0.5 rounded bg-surface-container-lowest/80 backdrop-blur-md font-mono-sm text-mono-sm text-secondary">PRORES 422 HQ</span>
+</div>
+<div class="absolute top-space-md right-space-md flex items-center gap-1 bg-surface-container-lowest/80 backdrop-blur-md px-2 py-1 rounded">
+<span class="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span>
+<span class="font-mono-sm text-mono-sm text-on-surface uppercase">Live Grading</span>
+</div>
+<!-- Central Play Indicator Overlay -->
+<button class="absolute w-14 h-14 rounded-full bg-surface-container-lowest/70 backdrop-blur-md flex items-center justify-center text-on-surface shadow-2xl hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-[32px] ml-0.5">play_arrow</span>
+</button>
+<!-- Bottom Audio Visualizer Bar -->
+<div class="absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-surface-container-lowest/90 to-transparent flex items-end px-space-md pb-2 gap-1">
+<div class="w-1 bg-secondary h-3 rounded-full"></div>
+<div class="w-1 bg-secondary h-5 rounded-full"></div>
+<div class="w-1 bg-secondary h-4 rounded-full"></div>
+<div class="w-1 bg-tertiary h-6 rounded-full"></div>
+<div class="w-1 bg-tertiary h-7 rounded-full"></div>
+<div class="w-1 bg-primary-container h-8 rounded-full"></div>
+<div class="w-1 bg-tertiary h-5 rounded-full"></div>
+<div class="w-1 bg-tertiary h-4 rounded-full"></div>
+<div class="w-1 bg-secondary h-3 rounded-full"></div>
+<div class="w-1 bg-secondary h-2 rounded-full"></div>
+<div class="w-1 bg-secondary h-4 rounded-full"></div>
+<div class="w-1 bg-tertiary h-6 rounded-full"></div>
+<div class="w-1 bg-secondary h-3 rounded-full"></div>
+<div class="w-1 bg-secondary h-2 rounded-full"></div>
+<div class="flex-grow flex justify-end">
+<span class="font-mono-sm text-mono-sm text-on-surface bg-surface-container-lowest/80 px-2 py-0.5 rounded">LR: -6.2 dB RMS</span>
+</div>
+</div>
+</div>
+<!-- Timeline Scrubber Preview -->
+<div class="flex flex-col gap-space-xs">
+<div class="flex items-center justify-between font-mono-sm text-mono-sm text-on-surface-variant">
+<span>00:03:12:04</span>
+<div class="flex items-center gap-space-sm text-secondary">
+<span>IN: 00:00:00:00</span>
+<span>OUT: 00:05:30:00</span>
+</div>
+<span>00:05:30:00</span>
+</div>
+<div class="relative w-full h-3 bg-surface-container-high rounded-full overflow-hidden cursor-pointer">
+<div class="absolute top-0 bottom-0 left-0 w-[58%] bg-gradient-to-r from-amber-500 via-primary-container to-rose-500"></div>
+<div class="absolute top-0 bottom-0 left-[58%] w-1 bg-secondary shadow-[0_0_8px_#06b6d4]"></div>
+</div>
+<div class="flex items-center justify-between pt-space-xs">
+<div class="flex items-center gap-space-xs">
+<button class="px-space-sm py-1 rounded bg-surface-container-high hover:bg-surface-bright text-on-surface font-body-sm text-body-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">tune</span>
+<span>Parameter AI</span>
+</button>
+<button class="px-space-sm py-1 rounded bg-surface-container-high hover:bg-surface-bright text-on-surface font-body-sm text-body-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">masks</span>
+<span>Mask Latar</span>
+</button>
+</div>
+<div class="flex items-center gap-space-xs">
+<span class="font-mono-sm text-mono-sm text-tertiary">CACHE READY (NVMe)</span>
+<button class="px-space-md py-1 rounded-lg bg-primary-container text-on-primary-container font-headline-sm text-headline-sm flex items-center gap-1 shadow-sm">
+<span class="material-symbols-outlined text-[16px]">sync</span>
+<span>Terapkan Efek</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Side Panel: Inspector Preview Card -->
+<div class="bg-surface-container-low backdrop-blur-xl rounded-xl p-space-lg shadow-xl flex flex-col justify-between gap-space-md">
+<div class="flex flex-col gap-space-md">
+<div class="flex items-center justify-between pb-space-xs">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[20px] text-primary">display_settings</span>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Inspektur Transformasi</h3>
+</div>
+<span class="font-mono-sm text-mono-sm text-on-surface-variant">TRACK 01</span>
+</div>
+<!-- Parameters Sliders / Scrubbers -->
+<div class="flex flex-col gap-space-sm">
+<!-- Parameter: Skala -->
+<div class="bg-surface-container p-space-sm rounded-lg flex flex-col gap-1">
+<div class="flex items-center justify-between">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Skala Keseluruhan</span>
+<span class="font-mono-md text-mono-md text-on-surface font-semibold">124.5 %</span>
+</div>
+<div class="w-full bg-surface-container-lowest h-1.5 rounded-full overflow-hidden">
+<div class="bg-primary-container h-full w-[62%] rounded-full"></div>
+</div>
+</div>
+<!-- Parameter: Rotasi -->
+<div class="bg-surface-container p-space-sm rounded-lg flex flex-col gap-1">
+<div class="flex items-center justify-between">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Rotasi Sumbu Z</span>
+<span class="font-mono-md text-mono-md text-on-surface font-semibold">-4.20°</span>
+</div>
+<div class="w-full bg-surface-container-lowest h-1.5 rounded-full overflow-hidden">
+<div class="bg-secondary h-full w-[45%] rounded-full"></div>
+</div>
+</div>
+<!-- Parameter: Opacity & Blend -->
+<div class="bg-surface-container p-space-sm rounded-lg flex flex-col gap-1">
+<div class="flex items-center justify-between">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Opasitas Klip</span>
+<span class="font-mono-md text-mono-md text-on-surface font-semibold">100 %</span>
+</div>
+<div class="w-full bg-surface-container-lowest h-1.5 rounded-full overflow-hidden">
+<div class="bg-tertiary h-full w-full rounded-full"></div>
+</div>
+</div>
+<!-- Parameter: Motion Blur Switch -->
+<div class="bg-surface-container p-space-sm rounded-lg flex items-center justify-between">
+<div class="flex flex-col">
+<span class="font-body-md text-body-md text-on-surface font-medium">Motion Blur Dinamis</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Sudut Rana 180.0°</span>
+</div>
+<div class="w-11 h-6 bg-gradient-to-r from-amber-500 to-rose-500 rounded-full p-0.5 flex items-center justify-end shadow-inner cursor-pointer">
+<div class="w-5 h-5 bg-white rounded-full shadow-md"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Quick Action Footer for Inspector -->
+<div class="bg-surface-container p-space-sm rounded-lg flex items-center justify-between">
+<div class="flex items-center gap-1 font-mono-sm text-mono-sm text-tertiary">
+<span class="w-2 h-2 rounded-full bg-tertiary"></span>
+<span>KEYFRAME DIKUNCI</span>
+</div>
+<button class="px-space-md py-1 rounded bg-surface-container-high hover:bg-surface-bright text-on-surface font-body-sm text-body-sm transition-colors">
+              Buka Kurva Bezier
+            </button>
+</div>
+</div>
+</div>
+</section>
+<!-- 7. Lencana & Status Indikator (Badges & Indicators) -->
+<section class="flex flex-col gap-space-md mb-space-xl">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<span class="w-2.5 h-2.5 rounded-full bg-primary-container"></span>
+<h2 class="font-headline-md text-headline-md text-on-surface">06. Lencana &amp; Status Telemetri (Badges &amp; Status)</h2>
+</div>
+<span class="font-mono-sm text-mono-sm text-on-surface-variant uppercase tracking-widest">Metadata Tags</span>
+</div>
+<div class="bg-surface-container rounded-xl p-space-xl shadow-md flex flex-wrap items-center gap-space-md">
+<!-- Badge PRO AKTIF -->
+<div class="px-space-md py-1.5 rounded-full bg-tertiary/10 text-tertiary font-mono-md text-mono-md font-semibold flex items-center gap-2 shadow-[0_0_12px_rgba(16,185,129,0.2)]">
+<span class="w-2 h-2 rounded-full bg-tertiary animate-pulse"></span>
+<span>PRO AKTIF</span>
+</div>
+<!-- Badge GRATIS / FREE -->
+<div class="px-space-md py-1.5 rounded-full bg-surface-container-high text-on-surface-variant font-mono-md text-mono-md font-medium">
+<span>TIER GRATIS</span>
+</div>
+<!-- Badge RENDERING -->
+<div class="px-space-md py-1.5 rounded-full bg-primary-container/20 text-primary font-mono-md text-mono-md font-semibold flex items-center gap-2 shadow-[0_0_12px_rgba(249,115,22,0.2)]">
+<span class="material-symbols-outlined text-[16px] animate-spin">autorenew</span>
+<span>RENDERING 84%</span>
+</div>
+<!-- Badge HDR 10-BIT -->
+<div class="px-space-md py-1.5 rounded-full bg-secondary/15 text-secondary font-mono-md text-mono-md font-medium flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px]">hdr_on</span>
+<span>HDR 10-BIT</span>
+</div>
+<!-- Badge 4K UHD -->
+<div class="px-space-md py-1.5 rounded-full bg-surface-variant text-on-surface font-mono-md text-mono-md font-semibold">
+<span>4K UHD 3840x2160</span>
+</div>
+<!-- Badge GPU ACCELERATED -->
+<div class="px-space-md py-1.5 rounded-full bg-gradient-to-r from-amber-500/15 to-rose-500/15 text-primary font-mono-md text-mono-md flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px]">memory</span>
+<span>METAL / CUDA VENDOR ACTIVE</span>
+</div>
+</div>
+</section>
+</div>
+</div></main><footer class="w-full bg-surface-container-lowest py-space-xl shadow-[0_-1px_8px_rgba(0,0,0,0.5)]"><div class="w-full px-margin-desktop flex flex-col md:flex-row items-center justify-between gap-space-md text-on-surface-variant font-body-sm text-body-sm"><div>© 2025 Aura Studio • Mesin Komposisi Video Vektor Berkecepatan Tinggi.</div><div class="flex items-center gap-space-lg"><span class="font-mono-sm text-mono-sm text-outline">STATUS: ULTRA-LATENCY ONLINE</span><span class="font-mono-sm text-mono-sm text-tertiary">GPU ACCEL: AKTIF</span></div></div></footer></body></html>

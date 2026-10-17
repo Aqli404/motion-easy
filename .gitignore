@@ -1,0 +1,5 @@
+# Motion Easy — file yang TIDAK boleh ikut repositori
+node_modules/
+dist/
+.rahasia/
+**/lisensi-master-private.json

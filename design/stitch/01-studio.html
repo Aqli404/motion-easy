@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="id"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "on-tertiary": "#003824", "inverse-on-surface": "#2e303a", "secondary-container": "#03b5d3", "on-error": "#690005", "on-secondary": "#003640", "inverse-primary": "#9d4300", "surface-tint": "#ffb690", "on-error-container": "#ffdad6", "tertiary-fixed-dim": "#4edea3", "error": "#ffb4ab", "on-primary-fixed-variant": "#783200", "on-background": "#e1e1ef", "on-primary": "#552100", "error-container": "#93000a", "surface-container-low": "#191b25", "surface": "#11131c", "tertiary": "#4edea3", "on-surface-variant": "#e0c0b1", "secondary": "#4cd7f6", "primary-fixed": "#ffdbca", "on-primary-fixed": "#341100", "on-tertiary-fixed-variant": "#005236", "outline-variant": "#584237", "on-surface": "#e1e1ef", "inverse-surface": "#e1e1ef", "outline": "#a78b7d", "on-tertiary-fixed": "#002113", "primary": "#ffb690", "tertiary-fixed": "#6ffbbe", "surface-container": "#1d1f29", "on-secondary-fixed-variant": "#004e5c", "on-tertiary-container": "#003b26", "on-secondary-container": "#00424e", "on-secondary-fixed": "#001f26", "surface-dim": "#11131c", "secondary-fixed-dim": "#4cd7f6", "secondary-fixed": "#acedff", "surface-container-highest": "#32343f", "surface-container-high": "#272934", "surface-container-lowest": "#0c0e17", "primary-fixed-dim": "#ffb690", "background": "#11131c", "surface-variant": "#32343f", "surface-bright": "#373943", "tertiary-container": "#00b07a", "primary-container": "#f97316", "on-primary-container": "#582200" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "space-md": "0.75rem", "margin-desktop": "1.5rem", "gutter": "0.75rem", "space-xs": "0.25rem", "space-sm": "0.5rem", "space-xl": "2rem", "gutter-desktop": "1rem", "space-lg": "1.25rem", "margin": "1rem" }, "fontFamily": { "body-sm": ["Inter"], "mono-sm": ["JetBrains Mono"], "body-lg": ["Inter"], "headline-sm": ["Inter"], "mono-md": ["JetBrains Mono"], "display-lg-mobile": ["Inter"], "headline-md": ["Inter"], "display-lg": ["Inter"], "mono-lg": ["JetBrains Mono"], "headline-lg": ["Inter"], "body-md": ["Inter"] }, "fontSize": { "body-sm": ["11px", { "lineHeight": "16px", "fontWeight": "400" }], "mono-sm": ["10px", { "lineHeight": "14px", "letterSpacing": "0.05em", "fontWeight": "500" }], "body-lg": ["15px", { "lineHeight": "24px", "fontWeight": "400" }], "headline-sm": ["15px", { "lineHeight": "22px", "fontWeight": "600" }], "mono-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "500" }], "display-lg-mobile": ["30px", { "lineHeight": "38px", "letterSpacing": "-0.01em", "fontWeight": "700" }], "headline-md": ["18px", { "lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "600" }], "display-lg": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700" }], "mono-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.02em", "fontWeight": "500" }], "headline-lg": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.015em", "fontWeight": "600" }], "body-md": ["13px", { "lineHeight": "20px", "fontWeight": "400" }] } } } };</script></head><body class="bg-background font-body-md text-on-surface antialiased"><header class="fixed top-0 left-0 right-0 z-50 bg-surface-container-lowest/90 backdrop-blur-xl shadow-[0_1px_12px_rgba(0,0,0,0.5)]"><div class="h-14 w-full px-margin-desktop flex items-center justify-between gap-space-md"><div class="flex items-center gap-space-lg"><div class="flex items-center gap-space-xs"><span class="material-symbols-outlined text-primary-container text-[22px]">video_settings</span><span class="font-headline-md text-headline-md tracking-wider font-bold text-on-surface uppercase">Motion<span class="text-primary-container drop-shadow-[0_0_8px_rgba(249,115,22,0.6)]">Forge</span></span></div><div class="flex items-center gap-space-xs"><div class="flex items-center gap-space-xs px-space-sm py-0.5 rounded-full bg-surface-container-high"><span class="w-1.5 h-1.5 rounded-full bg-tertiary animate-pulse"></span><span class="font-mono-sm text-mono-sm text-tertiary uppercase tracking-wider">Turbo Engine</span></div><div class="px-space-sm py-0.5 rounded bg-surface-container font-mono-sm text-mono-sm text-secondary">30 FPS</div><div class="px-space-sm py-0.5 rounded bg-surface-container font-mono-sm text-mono-sm text-secondary">1080p</div><div class="px-space-sm py-0.5 rounded bg-surface-container-high font-mono-sm text-mono-sm text-on-surface-variant font-semibold uppercase">Gratis</div></div></div><nav class="hidden xl:flex items-center gap-space-xs" data-active-classes="bg-surface-container text-on-surface font-semibold rounded"><a aria-current="page" class="px-space-md py-1 transition-colors bg-surface-container text-on-surface font-semibold rounded" data-path="studio-editor" href="#">Editor</a><a class="px-space-md py-1 font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface transition-colors" data-path="media-library" href="#">Media & Aset</a><a class="px-space-md py-1 font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface transition-colors" data-path="audio-mixer" href="#">Audio Mixer</a><a class="px-space-md py-1 font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface transition-colors" data-path="color-grading" href="#">Gradasi Warna</a><a class="px-space-md py-1 font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface transition-colors" data-path="render-queue" href="#">Antrean Render</a></nav><div class="flex items-center gap-space-md"><button class="flex items-center gap-space-xs px-space-md py-1.5 rounded bg-gradient-to-r from-primary-container to-surface-tint text-on-primary-container font-headline-sm text-headline-sm font-semibold shadow-[0_2px_10px_rgba(249,115,22,0.35)] hover:brightness-110 hover:text-on-primary-container transition-all" type="button"><span class="material-symbols-outlined text-[16px]">verified</span><span>Aktivasi Lisensi</span></button><div class="flex items-center gap-space-xs"><button class="p-1.5 rounded text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" type="button"><span class="material-symbols-outlined text-[20px]">tune</span></button><button class="p-1.5 rounded text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" type="button"><span class="material-symbols-outlined text-[20px]">notifications</span></button></div><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><aside class="fixed left-0 top-14 bottom-10 w-16 bg-surface-container-lowest z-40 flex flex-col items-center py-space-md shadow-[1px_0_12px_rgba(0,0,0,0.4)]"><nav class="flex flex-col items-center gap-space-sm w-full px-space-xs" data-active-classes="bg-surface-container-high text-primary-container rounded-lg"><a aria-current="page" class="p-2.5 transition-colors bg-surface-container-high text-primary-container rounded-lg" data-path="studio-editor" href="#" title="Ruang Editor"><span class="material-symbols-outlined text-[20px]">dashboard</span></a><a class="p-2.5 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="media-library" href="#" title="Pustaka File"><span class="material-symbols-outlined text-[20px]">video_library</span></a><a class="p-2.5 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="audio-mixer" href="#" title="Mixer Suara"><span class="material-symbols-outlined text-[20px]">equalizer</span></a><a class="p-2.5 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="color-grading" href="#" title="Grading Warna"><span class="material-symbols-outlined text-[20px]">palette</span></a><a class="p-2.5 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="render-queue" href="#" title="Antrean Render"><span class="material-symbols-outlined text-[20px]">slow_motion_video</span></a><a class="p-2.5 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors mt-auto" data-path="project-settings" href="#" title="Pengaturan Proyek"><span class="material-symbols-outlined text-[20px]">settings</span></a></nav></aside><div class="pl-16"><main class="relative pt-14 pb-10 min-h-screen bg-background"><div class="flex flex-col w-full h-[calc(100vh-6rem)] overflow-hidden bg-[#070912] text-on-surface select-none">
+<!-- Sub-Header / Workspace Quick Bar -->
+<div class="h-10 px-margin-desktop bg-[#0d1020]/90 backdrop-blur-md flex items-center justify-between shadow-[0_1px_10px_rgba(0,0,0,0.5)] z-20">
+<div class="flex items-center gap-space-md">
+<div class="flex items-center gap-space-xs font-mono-sm text-mono-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-primary-container text-[16px]">folder_open</span>
+<span class="text-on-surface font-semibold">Proyek_Kinetic_01.mfp</span>
+<span class="px-1.5 py-0.5 rounded bg-surface-container font-mono-sm text-mono-sm text-secondary">Draft Auto-Saved</span>
+</div>
+<div class="w-px h-4 bg-surface-container-highest"></div>
+<div class="flex items-center gap-space-xs font-mono-sm text-mono-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-[15px] text-tertiary">memory</span>
+<span>Vulkan 1.3 Active</span>
+</div>
+</div>
+<div class="flex items-center gap-space-sm">
+<div class="flex items-center bg-surface-container-lowest rounded p-0.5 shadow-inner">
+<button class="px-space-sm py-0.5 rounded bg-surface-container-high text-on-surface font-mono-sm text-mono-sm font-semibold flex items-center gap-1 shadow-sm" type="button">
+<span class="material-symbols-outlined text-[14px] text-primary-container">layers</span>
+<span>Komposisi</span>
+</button>
+<button class="px-space-sm py-0.5 rounded text-on-surface-variant hover:text-on-surface font-mono-sm text-mono-sm flex items-center gap-1 transition-colors" type="button">
+<span class="material-symbols-outlined text-[14px]">auto_graph</span>
+<span>Grafik Kurva</span>
+</button>
+<button class="px-space-sm py-0.5 rounded text-on-surface-variant hover:text-on-surface font-mono-sm text-mono-sm flex items-center gap-1 transition-colors" type="button">
+<span class="material-symbols-outlined text-[14px]">terminal</span>
+<span>Node Flow</span>
+</button>
+</div>
+<div class="w-px h-4 bg-surface-container-highest"></div>
+<div class="flex items-center gap-1">
+<button class="p-1 rounded text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface" title="Undo (Ctrl+Z)" type="button">
+<span class="material-symbols-outlined text-[18px]">undo</span>
+</button>
+<button class="p-1 rounded text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface" title="Redo (Ctrl+Y)" type="button">
+<span class="material-symbols-outlined text-[18px]">redo</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Main 3-Column Studio Workstation -->
+<div class="flex-1 grid grid-cols-12 gap-space-sm p-space-sm overflow-hidden min-h-0 bg-[#070912]">
+<!-- ==================== LEFT COLUMN: BRIEF & PROMPT ==================== -->
+<section class="col-span-12 lg:col-span-3 flex flex-col h-full bg-[#0d1020]/95 backdrop-blur-xl rounded-xl shadow-[0_8px_24px_rgba(0,0,0,0.6)] overflow-hidden">
+<!-- Panel Header -->
+<div class="h-10 px-space-md bg-surface-container-lowest/80 flex items-center justify-between shadow-sm">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-primary-container text-[18px]">prompt_suggestion</span>
+<span class="font-headline-sm text-headline-sm text-on-surface tracking-tight font-semibold">Brief & Prompt AI</span>
+</div>
+<button class="p-1 rounded text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors" title="Konfigurasi Preset Prompt" type="button">
+<span class="material-symbols-outlined text-[18px]">tune</span>
+</button>
+</div>
+<!-- Scrollable Form Container -->
+<div class="flex-1 overflow-y-auto px-space-md py-space-sm space-y-space-md custom-scrollbar">
+<!-- Parameter Kategori & Gaya -->
+<div class="grid grid-cols-2 gap-space-sm">
+<div class="flex flex-col gap-1">
+<label class="font-mono-sm text-mono-sm text-on-surface-variant uppercase tracking-wider">Kategori</label>
+<div class="relative">
+<select class="w-full bg-[#070912] font-body-sm text-body-sm text-on-surface rounded px-space-sm py-1.5 appearance-none focus:outline-none focus:ring-1 focus:ring-primary-container cursor-pointer shadow-inner pr-6">
+<option selected="">Motion 3D</option>
+<option>Kinetic Type</option>
+<option>Logo Reveal</option>
+<option>Social Reel</option>
+</select>
+<span class="material-symbols-outlined absolute right-1.5 top-2 text-[14px] text-on-surface-variant pointer-events-none">expand_more</span>
+</div>
+</div>
+<div class="flex flex-col gap-1">
+<label class="font-mono-sm text-mono-sm text-on-surface-variant uppercase tracking-wider">Gaya Visual</label>
+<div class="relative">
+<select class="w-full bg-[#070912] font-body-sm text-body-sm text-on-surface rounded px-space-sm py-1.5 appearance-none focus:outline-none focus:ring-1 focus:ring-primary-container cursor-pointer shadow-inner pr-6">
+<option selected="">Hologram HUD</option>
+<option>Cyberpunk Neon</option>
+<option>Clean Minimal</option>
+<option>Retro Synth</option>
+</select>
+<span class="material-symbols-outlined absolute right-1.5 top-2 text-[14px] text-on-surface-variant pointer-events-none">expand_more</span>
+</div>
+</div>
+</div>
+<!-- Rasio & Durasi -->
+<div class="grid grid-cols-2 gap-space-sm">
+<div class="flex flex-col gap-1">
+<label class="font-mono-sm text-mono-sm text-on-surface-variant uppercase tracking-wider">Rasio Aspek</label>
+<div class="relative">
+<select class="w-full bg-[#070912] font-body-sm text-body-sm text-on-surface rounded px-space-sm py-1.5 appearance-none focus:outline-none focus:ring-1 focus:ring-primary-container cursor-pointer shadow-inner pr-6">
+<option selected="">16:9 Landscape</option>
+<option>9:16 Vertikal</option>
+<option>1:1 Persegi</option>
+<option>21:9 Ultrawide</option>
+</select>
+<span class="material-symbols-outlined absolute right-1.5 top-2 text-[14px] text-on-surface-variant pointer-events-none">expand_more</span>
+</div>
+</div>
+<div class="flex flex-col gap-1">
+<div class="flex justify-between items-center">
+<label class="font-mono-sm text-mono-sm text-on-surface-variant uppercase tracking-wider">Durasi</label>
+<span class="font-mono-sm text-mono-sm text-primary-container font-semibold" id="duration-val">10s</span>
+</div>
+<div class="h-8 flex items-center">
+<input class="w-full accent-primary-container bg-surface-container-high rounded h-1 cursor-pointer" id="duration-slider" max="30" min="1" oninput="document.getElementById('duration-val').innerText = this.value + 's'" type="range" value="10"/>
+</div>
+</div>
+</div>
+<!-- Palet Warna & Tema -->
+<div class="grid grid-cols-2 gap-space-sm">
+<div class="flex flex-col gap-1">
+<label class="font-mono-sm text-mono-sm text-on-surface-variant uppercase tracking-wider">Palet Aksen</label>
+<div class="relative">
+<select class="w-full bg-[#070912] font-body-sm text-body-sm text-on-surface rounded px-space-sm py-1.5 appearance-none focus:outline-none focus:ring-1 focus:ring-primary-container cursor-pointer shadow-inner pr-6">
+<option selected="">Amber Sunset</option>
+<option>Cyan Violet</option>
+<option>Monochrome</option>
+<option>Emerald Flow</option>
+</select>
+<span class="material-symbols-outlined absolute right-1.5 top-2 text-[14px] text-on-surface-variant pointer-events-none">expand_more</span>
+</div>
+</div>
+<div class="flex flex-col gap-1">
+<label class="font-mono-sm text-mono-sm text-on-surface-variant uppercase tracking-wider">Tema</label>
+<div class="relative">
+<select class="w-full bg-[#070912] font-body-sm text-body-sm text-on-surface rounded px-space-sm py-1.5 appearance-none focus:outline-none focus:ring-1 focus:ring-primary-container cursor-pointer shadow-inner pr-6">
+<option selected="">Futuristik & AI</option>
+<option>Fintech Modern</option>
+<option>Enterprise</option>
+<option>Gaming E-Sport</option>
+</select>
+<span class="material-symbols-outlined absolute right-1.5 top-2 text-[14px] text-on-surface-variant pointer-events-none">expand_more</span>
+</div>
+</div>
+</div>
+<!-- Interactive Color Tags -->
+<div class="p-space-sm rounded bg-surface-container-lowest/60 flex items-center justify-between">
+<span class="font-mono-sm text-mono-sm text-on-surface-variant">Hex Sample:</span>
+<div class="flex items-center gap-1.5">
+<div class="w-3.5 h-3.5 rounded-full bg-gradient-to-tr from-amber-500 to-orange-500 shadow-[0_0_6px_rgba(249,115,22,0.8)]"></div>
+<div class="w-3.5 h-3.5 rounded-full bg-cyan-400 shadow-[0_0_6px_rgba(6,182,212,0.6)]"></div>
+<div class="w-3.5 h-3.5 rounded-full bg-rose-500 shadow-[0_0_6px_rgba(244,63,94,0.6)]"></div>
+<div class="w-3.5 h-3.5 rounded-full bg-emerald-400"></div>
+</div>
+</div>
+<!-- Prompt Preview Box -->
+<div class="flex flex-col gap-1.5 pt-1">
+<div class="flex items-center justify-between">
+<span class="font-mono-sm text-mono-sm text-on-surface font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px] text-secondary">psychology</span>
+              Pratinjau Prompt Generator
+            </span>
+<span class="font-mono-sm text-mono-sm text-tertiary">382 Karakter</span>
+</div>
+<div class="relative group rounded-lg bg-[#070912] p-space-sm shadow-inner">
+<p class="font-mono-sm text-mono-sm text-on-surface-variant leading-relaxed">
+<span class="text-secondary font-semibold">/generate:</span> 3D kinetic typographic reveal, judul "<span class="text-primary font-semibold">MOTIONFORGE</span>" melayang di tengah medan partikel quantum. Latar grid HUD isometrik bercahaya oranye amber <span class="text-tertiary">#f97316</span> ke rose <span class="text-primary-fixed">#f43f5e</span>, lensa anamorphic bokeh, chromatic aberration halus di tepi frame, tempo 30fps sinematik tanpa henti.
+            </p>
+<div class="mt-2 pt-2 flex flex-wrap gap-1 border-t border-surface-container-highest/50">
+<span class="px-1.5 py-0.5 rounded bg-surface-container-high font-mono-sm text-mono-sm text-secondary">#octane-render</span>
+<span class="px-1.5 py-0.5 rounded bg-surface-container-high font-mono-sm text-mono-sm text-tertiary">#3d-kinetic</span>
+<span class="px-1.5 py-0.5 rounded bg-surface-container-high font-mono-sm text-mono-sm text-on-surface-variant">#hud-vfx</span>
+</div>
+</div>
+</div>
+<!-- Action Button: Copy Prompt -->
+<button class="w-full py-2 px-space-md rounded bg-gradient-to-r from-amber-500 via-primary-container to-rose-500 hover:brightness-110 text-white font-headline-sm text-headline-sm font-semibold flex items-center justify-center gap-space-xs shadow-[0_4px_16px_rgba(249,115,22,0.35)] transition-all active:scale-[0.99]" id="copy-btn" type="button">
+<span class="material-symbols-outlined text-[18px]">content_copy</span>
+<span id="copy-text">Salin Prompt AI</span>
+</button>
+</div>
+<!-- Quick Preset Footer -->
+<div class="px-space-md py-space-xs bg-surface-container-lowest/80 flex items-center justify-between font-mono-sm text-mono-sm text-on-surface-variant">
+<span>Kerapatan Prompt: Maksimal</span>
+<span class="text-tertiary">Ready Engine</span>
+</div>
+</section>
+<!-- ==================== CENTER COLUMN: PREVIEW VIEWPORT ==================== -->
+<section class="col-span-12 lg:col-span-6 flex flex-col h-full bg-[#0d1020]/95 backdrop-blur-xl rounded-xl shadow-[0_8px_24px_rgba(0,0,0,0.6)] overflow-hidden">
+<!-- Viewport Header -->
+<div class="h-10 px-space-md bg-surface-container-lowest/80 flex items-center justify-between shadow-sm">
+<div class="flex items-center gap-space-sm">
+<span class="font-headline-sm text-headline-sm text-on-surface font-semibold">Pratinjau Komposisi</span>
+<div class="flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-950/60 shadow-inner">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary animate-ping"></span>
+<span class="font-mono-sm text-mono-sm text-tertiary uppercase font-semibold">GPU LIVE BUFFER</span>
+</div>
+</div>
+<div class="flex items-center gap-space-xs">
+<!-- Aspect ratio / Guide toggles -->
+<button class="p-1 rounded text-secondary hover:bg-surface-container font-mono-sm text-mono-sm flex items-center gap-1" title="Matriks Safe Margin" type="button">
+<span class="material-symbols-outlined text-[16px]">grid_4x4</span>
+</button>
+<button class="p-1 rounded text-on-surface-variant hover:text-on-surface hover:bg-surface-container font-mono-sm text-mono-sm" title="Pusat Titik Crosshair" type="button">
+<span class="material-symbols-outlined text-[16px]">filter_center_focus</span>
+</button>
+<div class="w-px h-3.5 bg-surface-container-highest mx-0.5"></div>
+<span class="font-mono-sm text-mono-sm text-secondary bg-surface-container px-2 py-0.5 rounded">Fit 78%</span>
+</div>
+</div>
+<!-- Viewport Display Canvas Area -->
+<div class="flex-1 relative flex items-center justify-center p-space-md bg-[#05070d] overflow-hidden group">
+<!-- Technical HUD Overlays: Safe Area Guides -->
+<div class="absolute inset-8 pointer-events-none rounded opacity-30 shadow-[inset_0_0_0_1px_rgba(78,222,163,0.3)]"></div>
+<div class="absolute inset-12 pointer-events-none rounded opacity-20 shadow-[inset_0_0_0_1px_rgba(76,215,246,0.2)]"></div>
+<!-- 16:9 Video Canvas Frame -->
+<div class="relative w-full aspect-video max-h-full rounded-lg overflow-hidden bg-[#0a0d18] shadow-[0_0_40px_rgba(0,0,0,0.9)] flex items-center justify-center">
+<!-- Animated Background Motion Graphics Simulation -->
+<div class="absolute inset-0 opacity-85">
+<svg class="w-full h-full" fill="none" viewbox="0 0 960 540" xmlns="http://www.w3.org/2000/svg">
+<!-- Background Ambient Glow -->
+<radialgradient cx="50%" cy="50%" id="studio-glow" r="55%">
+<stop offset="0%" stop-color="#f97316" stop-opacity="0.3"></stop>
+<stop offset="45%" stop-color="#f43f5e" stop-opacity="0.12"></stop>
+<stop offset="100%" stop-color="#070912" stop-opacity="0"></stop>
+</radialgradient>
+<rect fill="url(#studio-glow)" height="540" width="960"></rect>
+<!-- Cyber Perspective Grid Floor -->
+<g opacity="0.25" stroke="#4cd7f6" stroke-width="0.75">
+<line x1="0" x2="960" y1="420" y2="420"></line>
+<line x1="0" x2="960" y1="460" y2="460"></line>
+<line x1="0" x2="960" y1="500" y2="500"></line>
+<line x1="480" x2="100" y1="360" y2="540"></line>
+<line x1="480" x2="280" y1="360" y2="540"></line>
+<line x1="480" x2="480" y1="360" y2="540"></line>
+<line x1="480" x2="680" y1="360" y2="540"></line>
+<line x1="480" x2="860" y1="360" y2="540"></line>
+</g>
+<!-- Central Rotating Geometric HUD -->
+<circle cx="480" cy="270" opacity="0.45" r="160" stroke="#f97316" stroke-dasharray="8 6" stroke-width="1.5"></circle>
+<circle cx="480" cy="270" opacity="0.6" r="130" stroke="#4edea3" stroke-dasharray="14 10" stroke-width="1"></circle>
+<circle cx="480" cy="270" opacity="0.75" r="90" stroke="#4cd7f6" stroke-dasharray="40 120" stroke-width="2"></circle>
+<!-- Futuristic Kinetic Text Symbol -->
+<g transform="translate(480, 260)">
+<!-- Energy Particle Sparks -->
+<circle cx="-120" cy="-40" fill="#ffb690" opacity="0.8" r="2.5"></circle>
+<circle cx="140" cy="30" fill="#4edea3" opacity="0.9" r="2"></circle>
+<circle cx="-80" cy="80" fill="#4cd7f6" opacity="0.7" r="3"></circle>
+<circle cx="90" cy="-70" fill="#f43f5e" opacity="0.8" r="2"></circle>
+<line opacity="0.4" stroke="#f97316" stroke-width="0.5" x1="-120" x2="0" y1="-40" y2="0"></line>
+<line opacity="0.4" stroke="#4cd7f6" stroke-width="0.5" x1="140" x2="0" y1="30" y2="0"></line>
+<!-- Dynamic Title Overlay -->
+<text fill="#ffffff" filter="drop-shadow(0 0 16px rgba(249,115,22,0.8))" font-family="'Inter', sans-serif" font-size="34" font-weight="900" letter-spacing="6" text-anchor="middle" x="0" y="8">MOTIONFORGE</text>
+<text fill="#4cd7f6" font-family="'JetBrains Mono', monospace" font-size="10" letter-spacing="4" opacity="0.9" text-anchor="middle" x="0" y="32">// KINETIC SHADER ENGINE v2.4 //</text>
+</g>
+<!-- Viewport Framing Markers -->
+<path d="M 40 40 L 60 40 M 40 40 L 40 60" opacity="0.6" stroke="#ffffff" stroke-width="1.5"></path>
+<path d="M 920 40 L 900 40 M 920 40 L 920 60" opacity="0.6" stroke="#ffffff" stroke-width="1.5"></path>
+<path d="M 40 500 L 60 500 M 40 500 L 40 480" opacity="0.6" stroke="#ffffff" stroke-width="1.5"></path>
+<path d="M 920 500 L 900 500 M 920 500 L 920 480" opacity="0.6" stroke="#ffffff" stroke-width="1.5"></path>
+<!-- Crosshairs in Center -->
+<line opacity="0.5" stroke="#4edea3" stroke-width="1" x1="470" x2="490" y1="270" y2="270"></line>
+<line opacity="0.5" stroke="#4edea3" stroke-width="1" x1="480" x2="480" y1="260" y2="280"></line>
+</svg>
+</div>
+<!-- Top-Left HUD Telemetry Overlay -->
+<div class="absolute top-3 left-3 flex flex-col gap-0.5 font-mono-sm text-mono-sm pointer-events-none">
+<span class="text-white font-bold tracking-wider drop-shadow-[0_1px_4px_rgba(0,0,0,0.8)]">TC: 00:00:02.14 / 00:00:10.00</span>
+<div class="flex items-center gap-1.5 text-on-surface-variant drop-shadow">
+<span class="text-tertiary">30.0 FPS</span>
+<span>•</span>
+<span class="text-secondary">ProRes 422 HQ</span>
+</div>
+</div>
+<!-- Top-Right HUD Safe Title & Memory Usage -->
+<div class="absolute top-3 right-3 flex items-center gap-2 font-mono-sm text-mono-sm pointer-events-none">
+<span class="px-1.5 py-0.5 rounded bg-black/60 backdrop-blur-sm text-primary font-semibold">1080p CANVAS</span>
+</div>
+<!-- Central Hover Play Button Overlay -->
+<div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-black/30 backdrop-blur-[2px] cursor-pointer" onclick="togglePlayState()">
+<div class="w-14 h-14 rounded-full bg-gradient-to-tr from-amber-500 via-primary-container to-rose-500 text-white flex items-center justify-center shadow-[0_0_24px_rgba(249,115,22,0.8)] transform group-hover:scale-105 transition-transform" id="canvas-play-badge">
+<span class="material-symbols-outlined text-[32px] ml-1">play_arrow</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Playback & Scrubber Controls Toolbar -->
+<div class="p-space-md bg-surface-container-lowest/90 space-y-space-sm shadow-md">
+<!-- Progress Scrubber Bar -->
+<div class="relative w-full h-6 flex flex-col justify-center cursor-pointer group" id="scrubber-bar">
+<!-- Time Ticks Marks -->
+<div class="absolute inset-x-0 -top-1 flex justify-between px-1 pointer-events-none opacity-40">
+<span class="w-px h-1.5 bg-white"></span>
+<span class="w-px h-1 bg-white"></span>
+<span class="w-px h-1 bg-white"></span>
+<span class="w-px h-1 bg-white"></span>
+<span class="w-px h-1.5 bg-white"></span>
+<span class="w-px h-1 bg-white"></span>
+<span class="w-px h-1 bg-white"></span>
+<span class="w-px h-1 bg-white"></span>
+<span class="w-px h-1.5 bg-white"></span>
+</div>
+<!-- Track -->
+<div class="relative w-full h-1.5 rounded-full bg-surface-container-high overflow-visible">
+<!-- In/Out Range Highlight -->
+<div class="absolute left-[10%] right-[20%] top-0 bottom-0 bg-primary-container/20 rounded-full"></div>
+<!-- Progress Fill -->
+<div class="absolute left-0 top-0 bottom-0 w-[21.4%] bg-gradient-to-r from-secondary to-primary-container rounded-full shadow-[0_0_8px_rgba(249,115,22,0.6)]"></div>
+<!-- Playhead Draggable Handle -->
+<div class="absolute left-[21.4%] top-1/2 -translate-y-1/2 -translate-x-1/2 w-3.5 h-3.5 rounded-full bg-white shadow-[0_0_12px_rgba(6,182,212,0.9)] flex items-center justify-center cursor-grab active:cursor-grabbing">
+<div class="w-1.5 h-1.5 rounded-full bg-primary-container"></div>
+</div>
+</div>
+</div>
+<!-- Controls Row -->
+<div class="flex items-center justify-between">
+<!-- Left: Frame Nav & Play Button -->
+<div class="flex items-center gap-space-xs">
+<button class="p-1.5 rounded hover:bg-surface-container text-on-surface-variant hover:text-on-surface transition-colors" title="Awal Frame (Home)" type="button">
+<span class="material-symbols-outlined text-[18px]">first_page</span>
+</button>
+<button class="p-1.5 rounded hover:bg-surface-container text-on-surface-variant hover:text-on-surface transition-colors" title="Mundur 1 Frame (Left Arrow)" type="button">
+<span class="material-symbols-outlined text-[18px]">fast_rewind</span>
+</button>
+<!-- Main Play/Pause Button -->
+<button class="w-8 h-8 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center hover:brightness-110 shadow-[0_0_12px_rgba(249,115,22,0.4)] transition-all" id="main-play-btn" onclick="togglePlayState()" type="button">
+<span class="material-symbols-outlined text-[20px] ml-0.5" id="main-play-icon">play_arrow</span>
+</button>
+<button class="p-1.5 rounded hover:bg-surface-container text-on-surface-variant hover:text-on-surface transition-colors" title="Maju 1 Frame (Right Arrow)" type="button">
+<span class="material-symbols-outlined text-[18px]">fast_forward</span>
+</button>
+<button class="p-1.5 rounded hover:bg-surface-container text-on-surface-variant hover:text-on-surface transition-colors" title="Putar Ulang / Loop" type="button">
+<span class="material-symbols-outlined text-[18px]">replay</span>
+</button>
+<!-- Time Display -->
+<div class="ml-2 px-2 py-1 rounded bg-[#070912] font-mono-sm text-mono-sm text-white shadow-inner">
+<span class="text-tertiary font-semibold">02.14s</span>
+<span class="text-on-surface-variant"> / 10.00s</span>
+</div>
+</div>
+<!-- Right: Resolution & Zoom Segmented Switch -->
+<div class="flex items-center gap-space-sm">
+<div class="flex items-center bg-[#070912] p-0.5 rounded shadow-inner">
+<button class="px-2 py-0.5 rounded font-mono-sm text-mono-sm text-on-surface-variant hover:text-on-surface" type="button">720p</button>
+<button class="px-2 py-0.5 rounded bg-surface-container-highest text-secondary font-mono-sm text-mono-sm font-semibold shadow-sm" type="button">1080p</button>
+<button class="px-2 py-0.5 rounded font-mono-sm text-mono-sm text-on-surface-variant hover:text-on-surface" type="button">2K</button>
+<button class="px-2 py-0.5 rounded font-mono-sm text-mono-sm text-on-surface-variant hover:text-on-surface" type="button">4K</button>
+</div>
+<button class="p-1.5 rounded hover:bg-surface-container text-on-surface-variant hover:text-on-surface" title="Layar Penuh (F11)" type="button">
+<span class="material-symbols-outlined text-[18px]">fullscreen</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- ==================== RIGHT COLUMN: CODE EDITOR ==================== -->
+<section class="col-span-12 lg:col-span-3 flex flex-col h-full bg-[#0d1020]/95 backdrop-blur-xl rounded-xl shadow-[0_8px_24px_rgba(0,0,0,0.6)] overflow-hidden">
+<!-- Editor Header -->
+<div class="h-10 px-space-md bg-surface-container-lowest/80 flex items-center justify-between shadow-sm">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-secondary text-[18px]">code</span>
+<span class="font-headline-sm text-headline-sm text-on-surface font-semibold">Editor Kode</span>
+<span class="px-1.5 py-0.2 rounded bg-surface-container font-mono-sm text-mono-sm text-on-surface-variant">motion.glsl</span>
+</div>
+<div class="flex items-center gap-1">
+<button class="p-1 rounded text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors" title="Format / Rapikan Kode" type="button">
+<span class="material-symbols-outlined text-[16px]">format_align_left</span>
+</button>
+<button class="p-1 rounded text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors" title="Salin Kode Skrip" type="button">
+<span class="material-symbols-outlined text-[16px]">content_copy</span>
+</button>
+</div>
+</div>
+<!-- Quick Action Toolbar -->
+<div class="px-space-md py-1.5 bg-surface-container-lowest/60 flex items-center gap-space-xs shadow-inner overflow-x-auto">
+<button class="px-2 py-0.5 rounded bg-surface-container-high hover:bg-surface-container font-mono-sm text-mono-sm text-on-surface flex items-center gap-1 transition-colors whitespace-nowrap" type="button">
+<span class="material-symbols-outlined text-[12px] text-primary-container">content_paste</span>
+<span>Tempel Clipboard</span>
+</button>
+<button class="px-2 py-0.5 rounded bg-surface-container hover:bg-surface-container-high font-mono-sm text-mono-sm text-on-surface-variant hover:text-on-surface flex items-center gap-1 transition-colors whitespace-nowrap" type="button">
+<span class="material-symbols-outlined text-[12px] text-tertiary">library_books</span>
+<span>Preset Template</span>
+</button>
+</div>
+<!-- Code Editor Body with Line Numbers -->
+<div class="flex-1 flex overflow-hidden bg-[#070912] font-mono-sm text-mono-sm">
+<!-- Line Numbers Gutter -->
+<div class="w-10 py-space-sm bg-[#090c17] text-on-surface-variant/40 flex flex-col items-end pr-2 select-none font-mono-sm text-mono-sm leading-5">
+<span>1</span>
+<span>2</span>
+<span>3</span>
+<span>4</span>
+<span>5</span>
+<span>6</span>
+<span>7</span>
+<span>8</span>
+<span>9</span>
+<span>10</span>
+<span>11</span>
+<span>12</span>
+<span>13</span>
+<span>14</span>
+<span>15</span>
+<span>16</span>
+<span>17</span>
+<span>18</span>
+<span>19</span>
+<span>20</span>
+<span>21</span>
+<span>22</span>
+<span>23</span>
+<span>24</span>
+</div>
+<!-- Code Content Area -->
+<div class="flex-1 py-space-sm px-2 overflow-auto custom-scrollbar leading-5 text-on-surface">
+<div class="text-on-surface-variant/60 italic">// MotionForge Engine v2.4 Spec</div>
+<div><span class="text-rose-400 font-semibold">uniform</span> <span class="text-cyan-400">float</span> <span class="text-white">u_time;</span></div>
+<div><span class="text-rose-400 font-semibold">uniform</span> <span class="text-cyan-400">vec2</span> <span class="text-white">u_resolution;</span></div>
+<div class="text-on-surface-variant/60 italic">// Palet Amber & Particle Curves</div>
+<div><span class="text-rose-400 font-semibold">const</span> <span class="text-cyan-400">vec3</span> <span class="text-amber-400">C_AMBER</span> = <span class="text-cyan-300">vec3</span>(<span class="text-amber-300">0.97</span>, <span class="text-amber-300">0.45</span>, <span class="text-amber-300">0.08</span>);</div>
+<div><span class="text-rose-400 font-semibold">const</span> <span class="text-cyan-400">vec3</span> <span class="text-rose-400">C_ROSE</span>  = <span class="text-cyan-300">vec3</span>(<span class="text-amber-300">0.95</span>, <span class="text-amber-300">0.24</span>, <span class="text-amber-300">0.36</span>);</div>
+<br/>
+<div><span class="text-cyan-400">float</span> <span class="text-emerald-400 font-semibold">cubicEase</span>(<span class="text-cyan-400">float</span> t) {</div>
+<div class="pl-3"><span class="text-rose-400">return</span> t < <span class="text-amber-300">0.5</span> ? <span class="text-amber-300">4.0</span> * t * t * t : <span class="text-amber-300">1.0</span> - <span class="text-amber-300">pow</span>(<span class="text-amber-300">-2.0</span> * t + <span class="text-amber-300">2.0</span>, <span class="text-amber-300">3.0</span>) / <span class="text-amber-300">2.0</span>;</div>
+<div>}</div>
+<br/>
+<div><span class="text-cyan-400">void</span> <span class="text-emerald-400 font-semibold">mainImage</span>(<span class="text-cyan-400">out vec4</span> fragColor) {</div>
+<div class="pl-3"><span class="text-cyan-400">vec2</span> uv = (gl_FragCoord.xy - <span class="text-amber-300">0.5</span> * u_resolution) / u_resolution.y;</div>
+<div class="pl-3"><span class="text-cyan-400">float</span> glow = <span class="text-amber-300">0.02</span> / <span class="text-amber-300">length</span>(uv - <span class="text-cyan-300">vec2</span>(<span class="text-amber-300">0.0</span>));</div>
+<div class="pl-3"><span class="text-cyan-400">vec3</span> color = <span class="text-amber-300">mix</span>(C_AMBER, C_ROSE, <span class="text-amber-300">sin</span>(u_time * <span class="text-amber-300">2.0</span>));</div>
+<div class="pl-3"><span class="text-on-surface-variant/60">// Keyframe kinetic reveal</span></div>
+<div class="pl-3">color += glow * <span class="text-amber-300">vec3</span>(<span class="text-amber-300">1.2</span>, <span class="text-amber-300">0.8</span>, <span class="text-amber-300">0.4</span>);</div>
+<div class="pl-3">fragColor = <span class="text-cyan-300">vec4</span>(color, <span class="text-amber-300">1.0</span>);</div>
+<div>}</div>
+<br/>
+<div class="flex items-center gap-1">
+<span class="text-primary-container font-semibold">// Status:</span>
+<span class="text-tertiary">Terhubung ke WebGL Canvas</span>
+<span class="inline-block w-1.5 h-3 bg-secondary animate-pulse"></span>
+</div>
+</div>
+</div>
+<!-- Editor Status Bar Footer -->
+<div class="px-space-md py-space-xs bg-surface-container-lowest/90 flex items-center justify-between font-mono-sm text-mono-sm text-on-surface-variant border-t border-surface-container-highest/30">
+<span>Baris 24, Kolom 12</span>
+<span class="text-tertiary flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
+          Sintaks Valid
+        </span>
+</div>
+</section>
+</div>
+<!-- ==================== DOCKED BOTTOM BAR: TELEMETRY & ACTIONS ==================== -->
+<div class="h-11 px-margin-desktop bg-[#0a0d18] flex items-center justify-between gap-space-md z-30 shadow-[0_-2px_12px_rgba(0,0,0,0.6)]">
+<!-- Left: Activity Stream Ticker -->
+<div class="flex items-center gap-space-sm min-w-0 flex-1 overflow-hidden">
+<div class="flex items-center gap-1.5 px-2 py-0.5 rounded bg-surface-container text-tertiary font-mono-sm text-mono-sm font-semibold whitespace-nowrap">
+<span class="material-symbols-outlined text-[14px]">terminal</span>
+<span>Log Studio</span>
+</div>
+<div class="truncate font-mono-sm text-mono-sm text-on-surface-variant">
+<span class="text-on-surface-variant/50">[14:28:01]</span> Inisialisasi engine turbo selesai • 
+        <span class="text-on-surface-variant/50">[14:28:05]</span> Buffer frame 30 FPS siap • 
+        <span class="text-tertiary">Status shader GLSL dikompilasi (0 eror)</span>
+</div>
+</div>
+<!-- Center: Telemetry Badges -->
+<div class="hidden xl:flex items-center gap-space-md font-mono-sm text-mono-sm shrink-0">
+<div class="flex items-center gap-1 px-2 py-0.5 rounded bg-surface-container-lowest text-on-surface-variant">
+<span class="material-symbols-outlined text-[14px] text-secondary">speed</span>
+<span>Latensi: <strong class="text-white font-medium">12ms</strong></span>
+</div>
+<div class="flex items-center gap-1 px-2 py-0.5 rounded bg-surface-container-lowest text-on-surface-variant">
+<span class="material-symbols-outlined text-[14px] text-primary-container">memory</span>
+<span>VRAM: <strong class="text-white font-medium">2.4 / 8.0 GB</strong></span>
+</div>
+<div class="flex items-center gap-1 px-2 py-0.5 rounded bg-surface-container-lowest text-on-surface-variant">
+<span class="material-symbols-outlined text-[14px] text-tertiary">bolt</span>
+<span>Tenaga: <strong class="text-tertiary font-medium">Turbo 100%</strong></span>
+</div>
+</div>
+<!-- Right: Big Prominent Export Action Button -->
+<div class="flex items-center gap-space-sm shrink-0">
+<button class="px-space-md py-1.5 rounded bg-surface-container-high hover:bg-surface-container text-on-surface font-headline-sm text-headline-sm transition-colors flex items-center gap-1.5" type="button">
+<span class="material-symbols-outlined text-[16px]">save</span>
+<span>Simpan Draft</span>
+</button>
+<button class="px-space-lg py-1.5 rounded bg-gradient-to-r from-amber-500 via-primary-container to-rose-500 text-white font-headline-sm text-headline-sm font-bold flex items-center gap-space-xs shadow-[0_2px_16px_rgba(249,115,22,0.45)] hover:shadow-[0_4px_22px_rgba(249,115,22,0.65)] hover:scale-[1.02] active:scale-[0.99] transition-all" id="export-btn" type="button">
+<span class="material-symbols-outlined text-[18px]">movie_creation</span>
+<span>Ekspor Video</span>
+</button>
+</div>
+</div>
+</div>
+<script>
+  // Simple interactive states for Studio Editor micro-interactions
+  let isPlaying = false;
+  function togglePlayState() {
+    isPlaying = !isPlaying;
+    const playIcon = document.getElementById('main-play-icon');
+    const badgeIcon = document.querySelector('#canvas-play-badge .material-symbols-outlined');
+    
+    if (isPlaying) {
+      playIcon.innerText = 'pause';
+      badgeIcon.innerText = 'pause';
+    } else {
+      playIcon.innerText = 'play_arrow';
+      badgeIcon.innerText = 'play_arrow';
+    }
+  }
+
+  // Copy Prompt Feedback Button
+  const copyBtn = document.getElementById('copy-btn');
+  const copyText = document.getElementById('copy-text');
+  if (copyBtn) {
+    copyBtn.addEventListener('click', () => {
+      copyText.innerText = 'Prompt Tersalin!';
+      copyBtn.classList.add('brightness-125');
+      setTimeout(() => {
+        copyText.innerText = 'Salin Prompt AI';
+        copyBtn.classList.remove('brightness-125');
+      }, 2000);
+    });
+  }
+
+  // Scrubber Click Drag Micro-Interaction
+  const scrubber = document.getElementById('scrubber-bar');
+  if (scrubber) {
+    scrubber.addEventListener('click', (e) => {
+      const rect = scrubber.getBoundingClientRect();
+      const pos = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+      const handle = scrubber.querySelector('.rounded-full.bg-white');
+      const progress = scrubber.querySelector('.bg-gradient-to-r');
+      if (handle && progress) {
+        handle.style.left = (pos * 100) + '%';
+        progress.style.width = (pos * 100) + '%';
+      }
+    });
+  }
+</script></main></div><footer class="fixed bottom-0 left-0 right-0 h-10 z-40 bg-surface-container-lowest/95 backdrop-blur-md shadow-[0_-1px_10px_rgba(0,0,0,0.5)] flex items-center justify-between px-margin-desktop"><div class="flex items-center gap-space-lg"><div class="flex items-center gap-space-xs"><span class="w-2 h-2 rounded-full bg-tertiary"></span><span class="font-mono-sm text-mono-sm text-on-surface-variant uppercase">Status: Siap</span></div><span class="font-mono-sm text-mono-sm text-on-surface-variant">Sesi Aktif: Proyek_Final_Cut_01.mfp</span><span class="font-mono-sm text-mono-sm text-tertiary">GPU: 42% | VRAM: 3.2 / 8.0 GB</span></div><div class="flex items-center gap-space-md"><div class="flex items-center gap-space-xs font-mono-sm text-mono-sm text-on-surface-variant"><span class="material-symbols-outlined text-[14px]">storage</span><span>Cache: 4.2 GB</span></div><button class="flex items-center gap-space-xs px-space-md py-1 rounded bg-surface-container-high font-mono-sm text-mono-sm text-on-surface hover:bg-surface-container hover:text-on-surface transition-colors" type="button"><span class="material-symbols-outlined text-[14px]">receipt_long</span><span>Log Aktivitas</span></button><button class="flex items-center gap-space-xs px-space-md py-1 rounded bg-primary-container font-mono-sm text-mono-sm text-on-primary-container font-semibold hover:brightness-110 hover:text-on-primary-container transition-all" type="button"><span class="material-symbols-outlined text-[14px]">file_upload</span><span>Ekspor Cepat</span></button></div></footer></body></html>

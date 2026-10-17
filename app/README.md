@@ -1,0 +1,52 @@
+# Motion Easy — AI Motion Graphics Video Studio
+
+Aplikasi client-side 100%: brief → prompt AI → kode animasi → preview realtime → export MP4.
+Biaya AI/server = **Rp 0** (BYO-AI, render di browser user).
+
+## Struktur
+
+```
+motionforge\
+├── app\            ← proyek ini (React + Vite + Tailwind v4)
+└── design\stitch\  ← referensi desain (9 layar Stitch, jangan diubah)
+```
+
+## Menjalankan lokal
+
+```bash
+cd app
+npm install     # sekali saja
+npm run dev     # buka http://localhost:5173
+npm run build   # hasil produksi ke folder dist\
+npm run preview # cek hasil build di http://localhost:4173
+```
+
+Keahlian browser: **Chrome / Edge desktop** untuk export MP4 (WebCodecs).
+
+## Deploy ke Cloudflare Pages (gratis)
+
+1. Push folder ini ke repositori GitHub.
+2. Buka [Cloudflare Dashboard](https://dash.cloudflare.com) → **Workers & Pages** → **Create** → **Pages** → **Connect to Git**.
+3. Pilih repositori, lalu isi:
+   - Framework preset: `Vite` (atau *None*)
+   - Build command: `npm run build`
+   - Build output directory: `dist`
+   - Root directory: `app` (kode berada di subfolder)
+4. **Deploy** → dapat URL gratis `https://<nama>.pages.dev`.
+5. Setiap `git push` → auto deploy.
+
+> File `app\public\_redirects` sudah tersedia (SPA redirect), routing browser tidak akan 404.
+
+## Peta fase
+
+| Fase | Isi | Status |
+|---|---|---|
+| 0 | Fondasi + deploy | ✅ |
+| 1 | Skema MotionDefinition | ✅ |
+| 2 | Studio: render canvas + player | ⏳ |
+| 3 | Alur AI (BYO-AI): prompt/paste/validator/self-heal | ✅ |
+| 4 | Export MP4 (WebCodecs) | ✅ |
+| 5 | Lisensi & pembayaran (Rp 0/15rb/55rb) | ✅ (link pembayaran perlu diisi admin) |
+| 6 | Proyek saya, asset manager, template | ⏳ |
+
+Harga mengacu: kompetitor 10rb/25rb/65rb → Motion Easy **0/15rb/55rb**.

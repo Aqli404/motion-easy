@@ -1,0 +1,231 @@
+import { useEffect, useRef, useState } from "react";
+import {
+  Play,
+  Pause,
+  RotateCcw,
+  Layers,
+  Download,
+  Crown,
+  Activity,
+  Cpu,
+} from "lucide-react";
+import Modal from "../components/Modal";
+import AiPanel from "../components/AiPanel";
+import ExportModal from "../components/ExportModal";
+import { SAMPLES, SAMPLE_KEYS } from "../engine/samples";
+import { renderFrame, activeLayerCount } from "../engine/renderer";
+import { usePlayer } from "../engine/player";
+import type { MotionDefinition } from "../engine/schema";
+
+function fmt(t: number): string {
+  const m = Math.floor(t / 60);
+  const s = t - m * 60;
+  return `${String(m).padStart(2, "0")}:${s.toFixed(1).padStart(4, "0")}`;
+}
+
+export default function Studio() {
+  const [defId, setDefId] = useState(SAMPLE_KEYS[0]);
+  const [custom, setCustom] = useState<MotionDefinition | null>(null);
+  const adalahKustom = custom !== null;
+  const def: MotionDefinition =
+    custom ?? SAMPLES[defId]?.def ?? SAMPLES[SAMPLE_KEYS[0]].def;
+  const duration = def.canvas.durationSec;
+
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const ctxRef = useRef<CanvasRenderingContext2D | null>(null);
+  const sliderRef = useRef<HTMLInputElement | null>(null);
+  const labelRef = useRef<HTMLSpanElement | null>(null);
+  const countRef = useRef<HTMLSpanElement | null>(null);
+
+  // draw terkini: diperbarui tiap render, dipakai player via ref
+  const drawRef = useRef<(t: number) => void>(() => {});
+  drawRef.current = (t: number) => {
+    const ctx = ctxRef.current;
+    if (!ctx) return;
+    renderFrame(ctx, def, t);
+    if (labelRef.current) labelRef.current.textContent = fmt(t);
+    if (sliderRef.current) sliderRef.current.value = String(t);
+    if (countRef.current)
+      countRef.current.textContent = `${activeLayerCount(def, t)}/${def.layers.length}`;
+  };
+
+  const player = usePlayer((t) => drawRef.current(t), duration);
+
+  // setup canvas + reset saat definisi berganti
+  useEffect(() => {
+    const c = canvasRef.current;
+    if (!c) return;
+    c.width = def.canvas.w;
+    c.height = def.canvas.h;
+    ctxRef.current = c.getContext("2d");
+    if (ctxRef.current) {
+      renderFrame(ctxRef.current, def, 0);
+    }
+    if (sliderRef.current) {
+      sliderRef.current.max = String(duration);
+      sliderRef.current.value = "0";
+    }
+    if (labelRef.current) labelRef.current.textContent = fmt(0);
+    if (countRef.current)
+      countRef.current.textContent = `0/${def.layers.length}`;
+  }, [def, duration]);
+
+  const [exportOpen, setExportOpen] = useState(false);
+  const [premiumOpen, setPremiumOpen] = useState(false);
+
+  return (
+    <div className="flex h-full flex-col gap-3 p-4">
+      {/* Baris atas: pilih sample + sumber + aksi */}
+      <div className="flex flex-wrap items-center gap-2">
+        <span className="font-mono text-[10px] uppercase tracking-widest text-muted">
+          Sample
+        </span>
+        {SAMPLE_KEYS.map((k) => (
+          <button
+            key={k}
+            onClick={() => setDefId(k)}
+            className={`rounded-lg border px-3 py-1.5 text-xs transition-colors ${
+              !adalahKustom && defId === k
+                ? "border-accent bg-panel-high font-semibold text-primary"
+                : "border-edge bg-panel-low text-ink-dim hover:bg-panel"
+            }`}
+          >
+            {SAMPLES[k].label}
+          </button>
+        ))}
+        {adalahKustom && (
+          <span className="flex items-center gap-1.5 rounded-lg border border-secondary/50 bg-secondary/10 px-2.5 py-1.5 text-xs text-secondary">
+            <Cpu className="h-3.5 w-3.5" /> Custom AI: {def.name}
+          </span>
+        )}
+        <div className="ml-auto flex items-center gap-2">
+          <span className="hidden font-mono text-[10px] text-muted sm:block">
+            {def.canvas.w}×{def.canvas.h} · {def.canvas.fps} fps ·{" "}
+            {def.canvas.durationSec.toFixed(1)}s · {def.layers.length} layer
+          </span>
+          <button
+            onClick={() => setExportOpen(true)}
+            title="Ekspor Video (Fase 4)"
+            className="rounded-md border border-edge bg-panel p-2 text-ink-dim hover:text-ink"
+          >
+            <Download className="h-4 w-4" />
+          </button>
+          <button
+            onClick={() => setPremiumOpen(true)}
+            title="Upgrade 4K (Fase 5)"
+            className="rounded-md border border-edge bg-panel p-2 text-primary hover:text-accent"
+          >
+            <Crown className="h-4 w-4" />
+          </button>
+        </div>
+      </div>
+
+      <div className="flex min-h-0 flex-1 gap-3">
+        {/* Kiri: layer list */}
+        <aside className="hidden w-56 shrink-0 flex-col rounded-xl border border-edge bg-panel-low p-3 lg:flex">
+          <h2 className="flex items-center gap-2 px-1 font-mono text-[10px] uppercase tracking-widest text-muted">
+            <Layers className="h-3.5 w-3.5" /> Layer
+          </h2>
+          <div className="mt-1 flex items-center gap-1.5 px-1 font-mono text-[10px] text-tertiary">
+            <Activity className="h-3 w-3" />
+            aktif: <span ref={countRef}>0/0</span>
+          </div>
+          <ul className="mt-2 flex-1 space-y-1 overflow-y-auto pr-1 text-xs">
+            {def.layers.map((l) => (
+              <li
+                key={l.id}
+                className="flex items-center justify-between rounded-lg bg-panel px-2.5 py-2"
+              >
+                <span className="truncate text-ink-dim" title={l.id}>
+                  {l.name ?? l.id}
+                </span>
+                <span className="shrink-0 font-mono text-[9px] uppercase text-edge">
+                  {l.kind === "text" ? (l.text?.font ?? "sans") : l.kind}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </aside>
+
+        {/* Tengah: viewport + player */}
+        <section className="flex min-w-0 flex-1 flex-col rounded-xl border border-edge bg-well">
+          <div className="flex items-center justify-between border-b border-edge px-4 py-2.5">
+            <span className="text-xs font-semibold">{def.name}</span>
+            <span className="font-mono text-[10px] text-muted">
+              {def.canvas.w}×{def.canvas.h}
+            </span>
+          </div>
+
+          <div className="grid min-h-0 flex-1 place-items-center p-4">
+            <canvas
+              ref={canvasRef}
+              className="h-auto max-h-full w-auto max-w-full rounded-lg shadow-2xl"
+            />
+          </div>
+
+          <div className="flex items-center gap-3 border-t border-edge px-4 py-3">
+            <button
+              onClick={player.toggle}
+              className="rounded-md bg-gradient-to-r from-amber-400 via-orange-500 to-rose-500 p-2 text-deep shadow"
+              title={player.playing ? "Pause" : "Play"}
+            >
+              {player.playing ? (
+                <Pause className="h-4 w-4" />
+              ) : (
+                <Play className="h-4 w-4" />
+              )}
+            </button>
+            <button
+              onClick={player.reset}
+              className="rounded-md bg-panel p-2 text-ink-dim hover:text-ink"
+              title="Reset ke 0"
+            >
+              <RotateCcw className="h-4 w-4" />
+            </button>
+            <span ref={labelRef} className="font-mono text-xs text-ink-dim">
+              00:00.0
+            </span>
+            <span className="font-mono text-[10px] text-muted">/ {fmt(duration)}</span>
+            <input
+              ref={sliderRef}
+              type="range"
+              min={0}
+              max={duration}
+              step={0.01}
+              onChange={(e) => player.seek(Number(e.target.value))}
+              className="flex-1 accent-accent"
+            />
+            <span className="hidden font-mono text-[10px] text-muted sm:block">
+              preview loop
+            </span>
+          </div>
+        </section>
+
+        {/* Kanan: Alur AI */}
+        <aside className="hidden w-72 shrink-0 rounded-xl border border-edge bg-panel-low xl:flex">
+          <div className="flex h-full w-full">
+            <AiPanel def={def} adalahKustom={adalahKustom} onApplyDef={setCustom} />
+          </div>
+        </aside>
+      </div>
+
+      {/* Modal Ekspor (Fase 4 — functional) */}
+      <ExportModal def={def} open={exportOpen} onClose={() => setExportOpen(false)} />
+
+      {/* Modal Premium */}
+      <Modal
+        open={premiumOpen}
+        title="Limit 4K — Premium"
+        onClose={() => setPremiumOpen(false)}
+      >
+        <p className="text-xs">
+          4K setelah paket <strong className="text-primary">Premium</strong>{" "}
+          aktif. Lihat menu <em>Harga &amp; Paket</em>.
+        </p>
+        <p className="rounded-lg bg-panel-low px-3 py-2 font-mono text-[10px] text-muted">
+          gating: Fase 5 · lisensi di perangkat
+        </p>
+      </Modal>
+    </div>
+  );
+}

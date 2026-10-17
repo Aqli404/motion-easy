@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="id"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_standard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{colors:{"on-primary-fixed":"#341100","primary":"#ffb690","surface-variant":"#32343f","on-primary-fixed-variant":"#783200","surface-container-high":"#272934","inverse-primary":"#9d4300","surface-container-highest":"#32343f","inverse-surface":"#e1e1ef","secondary":"#4cd7f6","tertiary-fixed":"#6ffbbe","surface-bright":"#373943","inverse-on-surface":"#2e303a","on-tertiary-container":"#003b26","tertiary-fixed-dim":"#4edea3","primary-fixed-dim":"#ffb690","surface":"#11131c","on-surface-variant":"#e0c0b1","primary-fixed":"#ffdbca","on-primary":"#552100","outline-variant":"#584237","surface-tint":"#ffb690","on-secondary-fixed":"#001f26","primary-container":"#f97316","on-secondary-fixed-variant":"#004e5c","on-tertiary":"#003824","on-secondary-container":"#00424e","outline":"#a78b7d","surface-container-lowest":"#0c0e17","error-container":"#93000a","surface-container-low":"#191b25","on-error":"#690005","on-secondary":"#003640","surface-container":"#1d1f29","on-primary-container":"#582200","on-tertiary-fixed":"#002113","on-background":"#e1e1ef","secondary-fixed-dim":"#4cd7f6","secondary-container":"#03b5d3","surface-dim":"#11131c","tertiary":"#4edea3","tertiary-container":"#00b07a","on-error-container":"#ffdad6","on-tertiary-fixed-variant":"#005236","error":"#ffb4ab","background":"#11131c","secondary-fixed":"#acedff","on-surface":"#e1e1ef"},borderRadius:{"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"},spacing:{"space-md":"0.75rem","space-sm":"0.5rem","margin":"1rem","space-lg":"1.25rem","gutter":"0.75rem","space-xs":"0.25rem","gutter-desktop":"1rem","space-xl":"2rem","margin-desktop":"1.5rem"},fontFamily:{"mono-lg":["JetBrains Mono"],"display-lg":["Inter"],"body-md":["Inter"],"mono-md":["JetBrains Mono"],"mono-sm":["JetBrains Mono"],"headline-lg":["Inter"],"body-lg":["Inter"],"headline-md":["Inter"],"headline-sm":["Inter"],"display-lg-mobile":["Inter"],"body-sm":["Inter"]},fontSize:{"mono-lg":["14px",{"lineHeight":"20px","letterSpacing":"0.02em","fontWeight":"500"}],"display-lg":["40px",{"lineHeight":"48px","letterSpacing":"-0.02em","fontWeight":"700"}],"body-md":["13px",{"lineHeight":"20px","fontWeight":"400"}],"mono-md":["12px",{"lineHeight":"16px","letterSpacing":"0.04em","fontWeight":"500"}],"mono-sm":["10px",{"lineHeight":"14px","letterSpacing":"0.05em","fontWeight":"500"}],"headline-lg":["24px",{"lineHeight":"32px","letterSpacing":"-0.015em","fontWeight":"600"}],"body-lg":["15px",{"lineHeight":"24px","fontWeight":"400"}],"headline-md":["18px",{"lineHeight":"26px","letterSpacing":"-0.01em","fontWeight":"600"}],"headline-sm":["15px",{"lineHeight":"22px","fontWeight":"600"}],"display-lg-mobile":["30px",{"lineHeight":"38px","letterSpacing":"-0.01em","fontWeight":"700"}],"body-sm":["11px",{"lineHeight":"16px","fontWeight":"400"}]}}}}</script></head><body class="bg-surface text-on-surface font-body-md text-body-md antialiased selection:bg-primary-container selection:text-on-primary-container min-h-screen"><header class="fixed top-0 w-full z-50 bg-surface/85 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.4)]"><div class="h-16 max-w-7xl mx-auto px-margin md:px-margin-desktop flex items-center justify-between"><div class="flex items-center gap-space-lg"><a class="flex items-center gap-space-xs group" data-path="beranda" href="#"><div class="w-7 h-7 rounded-lg bg-surface-container-high flex items-center justify-center shadow-[0_0_15px_rgba(249,115,22,0.3)]"><span class="material-symbols-outlined text-primary text-[18px]">motion_photos_on</span></div><span class="font-headline-md text-headline-md tracking-tight font-bold text-on-surface">MOTION<span class="text-primary-container">FORGE</span></span></a><div class="hidden lg:flex items-center gap-space-xs px-space-sm py-space-xs bg-surface-container-lowest rounded-full"><span class="w-1.5 h-1.5 rounded-full bg-tertiary animate-pulse"></span><span class="font-mono-sm text-mono-sm text-tertiary uppercase">Engine v2.4 Online</span></div></div><nav class="hidden md:flex items-center gap-space-xl" data-active-classes="text-primary font-headline-sm"><a class="font-body-md text-body-md text-on-surface-variant hover:text-on-surface transition-colors" data-path="cara-pakai" href="#">Cara Pakai</a><a class="font-body-md text-body-md text-on-surface-variant hover:text-on-surface transition-colors" data-path="harga" href="#">Harga</a><a class="font-body-md text-body-md text-on-surface-variant hover:text-on-surface transition-colors" data-path="chat-cs" href="#">Chat CS</a></nav><div class="flex items-center gap-space-md"><div class="hidden sm:flex items-center gap-space-xs px-space-sm py-space-xs bg-surface-container-lowest rounded-lg"><span class="material-symbols-outlined text-secondary text-[16px]">speed</span><span class="font-mono-sm text-mono-sm text-secondary">60 FPS CUDA</span></div><a class="inline-flex items-center justify-center px-space-lg py-space-sm rounded-lg bg-gradient-to-r from-amber-500 via-primary-container to-rose-500 font-headline-sm text-headline-sm text-on-surface shadow-[0_4px_14px_rgba(249,115,22,0.35)] hover:shadow-[0_6px_20px_rgba(249,115,22,0.5)] transition-all hover:scale-[1.01]" data-path="daftar" href="#">Mulai Gratis</a><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="w-full pt-16 bg-surface min-h-[calc(100vh-16rem)]"><div class="flex flex-col w-full">
+<!-- Top Ambient Glow Field -->
+<div class="relative w-full overflow-hidden">
+<div class="absolute -top-32 left-1/2 -translate-x-1/2 w-[720px] h-[360px] bg-gradient-to-b from-primary-container/20 via-primary/5 to-transparent blur-[120px] pointer-events-none rounded-full"></div>
+<div class="absolute top-48 right-12 w-64 h-64 bg-secondary/10 blur-[90px] pointer-events-none rounded-full"></div>
+<div class="absolute top-96 left-8 w-72 h-72 bg-tertiary/10 blur-[100px] pointer-events-none rounded-full"></div>
+<div class="max-w-7xl mx-auto px-margin md:px-margin-desktop py-space-xl relative z-10">
+<!-- SECTION 1: HEADER & BILLING TOGGLE -->
+<div class="flex flex-col items-center text-center max-w-3xl mx-auto space-y-space-md">
+<!-- Telemetry Pill Badge -->
+<div class="inline-flex items-center gap-space-xs px-space-md py-space-xs rounded-full bg-surface-container-high shadow-inner">
+<span class="w-2 h-2 rounded-full bg-primary-container animate-pulse"></span>
+<span class="font-mono-sm text-mono-sm text-primary uppercase tracking-wider">AKSES LISENSI MOTION GRAPHICS AI V2.4</span>
+</div>
+<!-- Big Display Header -->
+<h1 class="font-display-lg text-display-lg font-bold tracking-tight text-on-surface">
+          Pilih <span class="bg-gradient-to-r from-amber-400 via-primary-container to-rose-500 bg-clip-text text-transparent">Paket Kamu</span>
+</h1>
+<!-- Subtitle -->
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl leading-relaxed">
+          Dapatkan akses penuh ke mesin render neural 4K 60FPS, tanpa watermark, dan antrean prioritas cloud GPU. Upgrade atau batalkan kapan saja.
+        </p>
+<!-- Billing Model Switcher -->
+<div class="pt-space-sm flex items-center gap-space-xs p-1 rounded-xl bg-surface-container-lowest shadow-xl">
+<button class="px-space-lg py-space-xs rounded-lg font-headline-sm text-headline-sm text-on-surface bg-surface-container-high shadow-md transition-all" id="toggle-monthly">
+            Langganan Bulanan
+          </button>
+<button class="flex items-center gap-space-xs px-space-lg py-space-xs rounded-lg font-headline-sm text-headline-sm text-on-surface-variant hover:text-on-surface transition-all" id="toggle-lifetime">
+<span>Sekali Bayar (Lifetime)</span>
+<span class="px-space-xs py-0.5 rounded-full bg-tertiary-container text-on-tertiary-container font-mono-sm text-mono-sm">HEMAT 85%</span>
+</button>
+</div>
+</div>
+<!-- SECTION 2: 3 CARDS SIDE-BY-SIDE GRID -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-gutter-desktop mt-space-xl items-stretch">
+<!-- KARTU 1: GRATIS -->
+<div class="flex flex-col justify-between p-space-xl rounded-xl bg-surface-container-low shadow-xl transition-all duration-300 hover:bg-surface-container hover:shadow-2xl hover:-translate-y-1 relative">
+<div class="space-y-space-lg">
+<div class="space-y-space-xs">
+<span class="font-mono-sm text-mono-sm text-on-surface-variant uppercase tracking-widest">Uji Coba &amp; Eksplorasi</span>
+<h3 class="font-headline-lg text-headline-lg font-bold text-on-surface">Gratis</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Cocok untuk mencoba kemampuan engine sintesis dan eksplorasi awal.</p>
+</div>
+<!-- Price Block -->
+<div class="flex items-baseline gap-space-xs py-space-sm">
+<span class="font-display-lg text-display-lg font-bold text-on-surface">Rp 0</span>
+<span class="font-mono-md text-mono-md text-on-surface-variant">/ selamanya</span>
+</div>
+<!-- CTA Button -->
+<button class="w-full py-space-md rounded-lg font-headline-sm text-headline-sm bg-surface-container-high hover:bg-surface-container-highest text-on-surface transition-colors shadow-sm text-center" onclick="selectTier('gratis', 0, 'Paket Gratis')">
+              Pilih Paket
+            </button>
+<div class="w-full h-px bg-surface-container-highest"></div>
+<!-- Feature List -->
+<div class="space-y-space-md">
+<span class="font-mono-sm text-mono-sm uppercase text-on-surface-variant tracking-wider">Spesifikasi Lisensi:</span>
+<ul class="space-y-space-sm font-body-md text-body-md text-on-surface">
+<li class="flex items-start gap-space-xs">
+<span class="material-symbols-outlined text-secondary text-[18px] shrink-0 mt-0.5">check_circle</span>
+<span>5 video motion per bulan</span>
+</li>
+<li class="flex items-start gap-space-xs">
+<span class="material-symbols-outlined text-secondary text-[18px] shrink-0 mt-0.5">check_circle</span>
+<span>Resolusi render standar 720p HD (30 FPS)</span>
+</li>
+<li class="flex items-start gap-space-xs text-on-surface-variant">
+<span class="material-symbols-outlined text-outline text-[18px] shrink-0 mt-0.5">info</span>
+<span>Disertai watermark MotionForge</span>
+</li>
+<li class="flex items-start gap-space-xs">
+<span class="material-symbols-outlined text-secondary text-[18px] shrink-0 mt-0.5">check_circle</span>
+<span>Preset dasar &amp; aset komunitas umum</span>
+</li>
+<li class="flex items-start gap-space-xs text-on-surface-variant">
+<span class="material-symbols-outlined text-outline text-[18px] shrink-0 mt-0.5">hourglass_empty</span>
+<span>Antrean render GPU tier reguler</span>
+</li>
+</ul>
+</div>
+</div>
+<div class="pt-space-lg">
+<span class="font-mono-sm text-mono-sm text-on-surface-variant flex items-center gap-space-xs">
+<span class="w-1.5 h-1.5 rounded-full bg-outline"></span>
+              Tanpa kartu kredit dibutuhkan
+            </span>
+</div>
+</div>
+<!-- KARTU 2: PREMIUM (FEATURED / HIGHLIGHTED) -->
+<div class="flex flex-col justify-between p-space-xl rounded-xl bg-gradient-to-b from-surface-container via-surface-container-high to-surface-container-low shadow-[0_12px_40px_rgba(249,115,22,0.25)] relative transition-all duration-300 hover:scale-[1.02] -mt-2 lg:-mt-4">
+<!-- Ambient card top glow -->
+<div class="absolute -top-px left-0 right-0 h-1 bg-gradient-to-r from-amber-500 via-primary-container to-rose-500 rounded-t-xl"></div>
+<div class="space-y-space-lg">
+<!-- Badge Header -->
+<div class="flex items-center justify-between">
+<span class="font-mono-sm text-mono-sm text-primary uppercase tracking-widest">Kreator Konten &amp; Desainer</span>
+<div class="inline-flex items-center gap-space-xs px-space-sm py-0.5 rounded-full bg-primary-container text-on-primary-container font-mono-sm text-mono-sm shadow-[0_0_12px_rgba(249,115,22,0.6)]">
+<span class="material-symbols-outlined text-[13px]">local_fire_department</span>
+<span>PALING POPULER</span>
+</div>
+</div>
+<div class="space-y-space-xs">
+<h3 class="font-headline-lg text-headline-lg font-bold text-on-surface flex items-center gap-space-xs">
+<span>Premium Studio</span>
+<span class="material-symbols-outlined text-primary text-[20px]">verified</span>
+</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Dirancang untuk editor mandiri, agensi media sosial, dan desainer kinetik aktif.</p>
+</div>
+<!-- Price Block -->
+<div class="py-space-sm space-y-1">
+<div class="flex items-center gap-space-xs">
+<span class="line-through font-mono-md text-mono-md text-on-surface-variant">Rp 49.000</span>
+<span class="px-space-xs py-0.5 rounded bg-error-container text-on-error-container font-mono-sm text-mono-sm">DISKON 80%</span>
+</div>
+<div class="flex items-baseline gap-space-xs">
+<span class="font-display-lg text-display-lg font-bold text-primary">Rp 10.000</span>
+<span class="font-mono-md text-mono-md text-on-surface-variant">/ bulan</span>
+</div>
+</div>
+<!-- Primary Gradient Glowing CTA Button -->
+<button class="w-full py-space-md rounded-lg font-headline-sm text-headline-sm text-on-surface bg-gradient-to-r from-amber-500 via-primary-container to-rose-500 shadow-[0_4px_18px_rgba(249,115,22,0.4)] hover:shadow-[0_6px_24px_rgba(249,115,22,0.6)] transition-all hover:scale-[1.01] active:scale-[0.99] text-center flex items-center justify-center gap-space-xs" onclick="selectTier('premium', 10000, 'Paket Premium')">
+<span>Pilih Paket Sekarang</span>
+<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+<div class="w-full h-px bg-surface-container-highest"></div>
+<!-- Feature List -->
+<div class="space-y-space-md">
+<span class="font-mono-sm text-mono-sm uppercase text-primary tracking-wider flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[14px]">bolt</span>
+                Semua Keuntungan Pro:
+              </span>
+<ul class="space-y-space-sm font-body-md text-body-md text-on-surface">
+<li class="flex items-start gap-space-xs">
+<span class="material-symbols-outlined text-primary text-[18px] shrink-0 mt-0.5">check_circle</span>
+<span class="font-medium">Video tanpa batas (Unlimited generation)</span>
+</li>
+<li class="flex items-start gap-space-xs">
+<span class="material-symbols-outlined text-primary text-[18px] shrink-0 mt-0.5">check_circle</span>
+<span class="font-medium text-primary">Resolusi hingga 4K UHD 60FPS</span>
+</li>
+<li class="flex items-start gap-space-xs">
+<span class="material-symbols-outlined text-primary text-[18px] shrink-0 mt-0.5">check_circle</span>
+<span class="font-medium">100% Bebas Watermark</span>
+</li>
+<li class="flex items-start gap-space-xs">
+<span class="material-symbols-outlined text-primary text-[18px] shrink-0 mt-0.5">check_circle</span>
+<span>Prioritas GPU Cloud NVENC (Render 10x lebih cepat)</span>
+</li>
+<li class="flex items-start gap-space-xs">
+<span class="material-symbols-outlined text-primary text-[18px] shrink-0 mt-0.5">check_circle</span>
+<span>200+ Template Kinetik &amp; Audio SFX Eksklusif</span>
+</li>
+<li class="flex items-start gap-space-xs">
+<span class="material-symbols-outlined text-primary text-[18px] shrink-0 mt-0.5">check_circle</span>
+<span>Ekspor ProRes 4444 + Alpha Channel Transparan</span>
+</li>
+<li class="flex items-start gap-space-xs">
+<span class="material-symbols-outlined text-tertiary text-[18px] shrink-0 mt-0.5">support_agent</span>
+<span class="text-tertiary">Dukungan CS Prioritas WhatsApp</span>
+</li>
+</ul>
+</div>
+</div>
+<div class="pt-space-lg">
+<span class="font-mono-sm text-mono-sm text-primary flex items-center gap-space-xs">
+<span class="w-1.5 h-1.5 rounded-full bg-primary animate-ping"></span>
+              Akses render langsung terbuka dalam 2 menit
+            </span>
+</div>
+</div>
+<!-- KARTU 3: LIFETIME (BEST VALUE) -->
+<div class="flex flex-col justify-between p-space-xl rounded-xl bg-surface-container-low shadow-xl transition-all duration-300 hover:bg-surface-container hover:shadow-2xl hover:-translate-y-1 relative">
+<div class="space-y-space-lg">
+<!-- Badge Header -->
+<div class="flex items-center justify-between">
+<span class="font-mono-sm text-mono-sm text-tertiary uppercase tracking-widest">Akses Studio VIP</span>
+<div class="inline-flex items-center gap-space-xs px-space-sm py-0.5 rounded-full bg-tertiary-container text-on-tertiary-container font-mono-sm text-mono-sm shadow-[0_0_12px_rgba(78,222,163,0.3)]">
+<span class="material-symbols-outlined text-[13px]">diamond</span>
+<span>PALING HEMAT</span>
+</div>
+</div>
+<div class="space-y-space-xs">
+<h3 class="font-headline-lg text-headline-lg font-bold text-on-surface">Lifetime VIP</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Satu kali investasi lisensi permanen tanpa beban biaya bulanan berulang.</p>
+</div>
+<!-- Price Block -->
+<div class="py-space-sm space-y-1">
+<div class="flex items-center gap-space-xs">
+<span class="line-through font-mono-md text-mono-md text-on-surface-variant">Rp 299.000</span>
+<span class="px-space-xs py-0.5 rounded bg-tertiary/20 text-tertiary font-mono-sm text-mono-sm">ONE-TIME VIP</span>
+</div>
+<div class="flex items-baseline gap-space-xs">
+<span class="font-display-lg text-display-lg font-bold text-tertiary">Rp 45.000</span>
+<span class="font-mono-md text-mono-md text-on-surface-variant">/ sekali bayar</span>
+</div>
+</div>
+<!-- CTA Button -->
+<button class="w-full py-space-md rounded-lg font-headline-sm text-headline-sm text-on-surface bg-surface-container-high hover:bg-surface-container-highest transition-all shadow-[0_0_15px_rgba(78,222,163,0.2)] text-center flex items-center justify-center gap-space-xs" onclick="selectTier('lifetime', 45000, 'Paket Lifetime VIP')">
+<span class="text-tertiary">Ambil Hak Akses Lifetime</span>
+</button>
+<div class="w-full h-px bg-surface-container-highest"></div>
+<!-- Feature List -->
+<div class="space-y-space-md">
+<span class="font-mono-sm text-mono-sm uppercase text-tertiary tracking-wider flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[14px]">workspace_premium</span>
+                Semua Fitur Premium Selamanya:
+              </span>
+<ul class="space-y-space-sm font-body-md text-body-md text-on-surface">
+<li class="flex items-start gap-space-xs">
+<span class="material-symbols-outlined text-tertiary text-[18px] shrink-0 mt-0.5">all_inclusive</span>
+<span class="font-medium">Semua fitur lisensi Premium selamanya</span>
+</li>
+<li class="flex items-start gap-space-xs">
+<span class="material-symbols-outlined text-tertiary text-[18px] shrink-0 mt-0.5">update</span>
+<span>Bebas biaya pembaruan versi (Update V3.0+ Gratis)</span>
+</li>
+<li class="flex items-start gap-space-xs">
+<span class="material-symbols-outlined text-tertiary text-[18px] shrink-0 mt-0.5">verified_user</span>
+<span class="font-medium">Lisensi Komersial Penuh Tanpa Batas Royalti</span>
+</li>
+<li class="flex items-start gap-space-xs">
+<span class="material-symbols-outlined text-tertiary text-[18px] shrink-0 mt-0.5">api</span>
+<span>Akses MotionForge API &amp; WebGL Shader Engine</span>
+</li>
+<li class="flex items-start gap-space-xs">
+<span class="material-symbols-outlined text-tertiary text-[18px] shrink-0 mt-0.5">rocket_launch</span>
+<span class="text-tertiary">Zero Latency Queue (Jalur Super Prioritas)</span>
+</li>
+<li class="flex items-start gap-space-xs">
+<span class="material-symbols-outlined text-tertiary text-[18px] shrink-0 mt-0.5">chat</span>
+<span>Konsultasi 1-on-1 via WhatsApp VIP 24/7</span>
+</li>
+</ul>
+</div>
+</div>
+<div class="pt-space-lg">
+<span class="font-mono-sm text-mono-sm text-tertiary flex items-center gap-space-xs">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
+              Sertifikat lisensi komersial instan via email
+            </span>
+</div>
+</div>
+</div>
+<!-- SECTION 3: CHECKOUT & PAYMENT INTEGRATION -->
+<div class="mt-space-xl p-space-xl rounded-xl bg-surface-container-low shadow-2xl space-y-space-xl relative overflow-hidden" id="checkout-section">
+<div class="absolute top-0 left-0 w-1.5 h-full bg-gradient-to-b from-primary-container via-amber-400 to-tertiary"></div>
+<!-- Section Header -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-space-md">
+<div class="space-y-space-xs">
+<div class="flex items-center gap-space-xs text-primary font-mono-sm text-mono-sm uppercase tracking-wider">
+<span class="material-symbols-outlined text-[16px]">lock</span>
+              Transaksi Terenkripsi SSL 256-Bit
+            </div>
+<h2 class="font-headline-lg text-headline-lg font-bold text-on-surface">Metode Pembayaran Cepat &amp; Aman</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Selesaikan pesanan lisensi kamu dalam hitungan detik melalui gateway pembayaran otomatis.</p>
+</div>
+<div class="flex items-center gap-space-xs bg-surface-container px-space-md py-space-xs rounded-lg self-start md:self-auto">
+<span class="w-2 h-2 rounded-full bg-tertiary animate-pulse"></span>
+<span class="font-mono-sm text-mono-sm text-on-surface">Server Gateway Aktif: 100% Uptime</span>
+</div>
+</div>
+<!-- 2 Column Payment Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-xl items-start">
+<!-- Column Left: Interactive Payment Method Selector (7 cols) -->
+<div class="lg:col-span-7 space-y-space-lg">
+<!-- Selector Tabs -->
+<div class="grid grid-cols-2 gap-space-sm p-1 rounded-xl bg-surface-container-lowest">
+<button class="flex items-center justify-center gap-space-xs py-space-md px-space-sm rounded-lg bg-surface-container font-headline-sm text-headline-sm text-on-surface shadow-sm transition-all" id="tab-qris" onclick="switchMethod('qris')">
+<span class="material-symbols-outlined text-secondary text-[20px]">qr_code_scanner</span>
+<span>QRIS Instant (Semua E-Wallet)</span>
+</button>
+<button class="flex items-center justify-center gap-space-xs py-space-md px-space-sm rounded-lg text-on-surface-variant hover:text-on-surface font-headline-sm text-headline-sm transition-all" id="tab-bank" onclick="switchMethod('bank')">
+<span class="material-symbols-outlined text-primary text-[20px]">account_balance</span>
+<span>Transfer Bank Otomatis</span>
+</button>
+</div>
+<!-- METHOD 1: QRIS Panel -->
+<div class="p-space-lg rounded-xl bg-surface-container shadow-md space-y-space-md" id="method-qris-content">
+<div class="flex flex-col sm:flex-row items-center gap-space-lg">
+<!-- QR Box Container -->
+<div class="w-44 h-44 bg-surface-container-lowest p-space-sm rounded-xl flex flex-col items-center justify-center shadow-inner relative group shrink-0">
+<!-- SVG Barcode/QR Mockup -->
+<svg class="w-36 h-36 text-on-surface" fill="currentColor" viewbox="0 0 100 100">
+<!-- Standard QR corner patterns -->
+<rect fill="currentColor" height="26" rx="4" width="26" x="5" y="5"></rect>
+<rect fill="#0c0e17" height="18" rx="2" width="18" x="9" y="9"></rect>
+<rect fill="#f97316" height="10" rx="1" width="10" x="13" y="13"></rect>
+<rect fill="currentColor" height="26" rx="4" width="26" x="69" y="5"></rect>
+<rect fill="#0c0e17" height="18" rx="2" width="18" x="73" y="9"></rect>
+<rect fill="#f97316" height="10" rx="1" width="10" x="77" y="13"></rect>
+<rect fill="currentColor" height="26" rx="4" width="26" x="5" y="69"></rect>
+<rect fill="#0c0e17" height="18" rx="2" width="18" x="9" y="73"></rect>
+<rect fill="#f97316" height="10" rx="1" width="10" x="13" y="77"></rect>
+<!-- Random Matrix Blocks -->
+<rect fill="currentColor" height="6" rx="1" width="6" x="36" y="8"></rect>
+<rect fill="currentColor" height="6" rx="1" width="14" x="46" y="8"></rect>
+<rect fill="#4cd7f6" height="8" rx="1" width="8" x="36" y="20"></rect>
+<rect fill="currentColor" height="6" rx="1" width="12" x="48" y="22"></rect>
+<rect fill="currentColor" height="6" rx="1" width="8" x="8" y="38"></rect>
+<rect fill="currentColor" height="12" rx="1" width="12" x="20" y="38"></rect>
+<rect fill="#f97316" height="10" rx="1" width="10" x="36" y="36"></rect>
+<rect fill="currentColor" height="8" rx="1" width="16" x="52" y="36"></rect>
+<rect fill="currentColor" height="6" rx="1" width="14" x="72" y="38"></rect>
+<rect fill="currentColor" height="6" rx="1" width="14" x="8" y="54"></rect>
+<rect fill="#4edea3" height="10" rx="1" width="8" x="26" y="54"></rect>
+<rect fill="currentColor" height="6" rx="1" width="12" x="38" y="52"></rect>
+<rect fill="currentColor" height="14" rx="1" width="8" x="54" y="48"></rect>
+<rect fill="currentColor" height="8" rx="1" width="20" x="66" y="50"></rect>
+<rect fill="currentColor" height="12" rx="1" width="8" x="36" y="68"></rect>
+<rect fill="currentColor" height="6" rx="1" width="14" x="48" y="68"></rect>
+<rect fill="#f97316" height="12" rx="1" width="12" x="66" y="68"></rect>
+<rect fill="currentColor" height="8" rx="1" width="8" x="82" y="66"></rect>
+<rect fill="currentColor" height="8" rx="1" width="20" x="36" y="84"></rect>
+<rect fill="currentColor" height="8" rx="1" width="10" x="60" y="84"></rect>
+<rect fill="currentColor" height="10" rx="1" width="16" x="74" y="82"></rect>
+</svg>
+<span class="font-mono-sm text-mono-sm text-on-surface-variant mt-1 tracking-wider uppercase">Scan via E-Wallet</span>
+</div>
+<div class="space-y-space-sm text-left">
+<div class="flex items-center gap-space-xs">
+<span class="px-space-xs py-0.5 rounded bg-secondary/10 text-secondary font-mono-sm text-mono-sm">Bebas Biaya Admin</span>
+<span class="px-space-xs py-0.5 rounded bg-tertiary/10 text-tertiary font-mono-sm text-mono-sm">Verifikasi 3 Detik</span>
+</div>
+<h4 class="font-headline-sm text-headline-sm font-semibold text-on-surface">Didukung oleh Standar QRIS Nasional</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Buka aplikasi mobile banking (BCA, Mandiri, BRI, CIMB) atau dompet digital (GoPay, OVO, Dana, ShopeePay) lalu arahkan kamera ke kode QR di samping.</p>
+<div class="flex flex-wrap items-center gap-space-xs pt-1">
+<span class="px-2 py-1 rounded bg-surface-container-high font-mono-sm text-mono-sm text-on-surface">GoPay</span>
+<span class="px-2 py-1 rounded bg-surface-container-high font-mono-sm text-mono-sm text-on-surface">OVO</span>
+<span class="px-2 py-1 rounded bg-surface-container-high font-mono-sm text-mono-sm text-on-surface">DANA</span>
+<span class="px-2 py-1 rounded bg-surface-container-high font-mono-sm text-mono-sm text-on-surface">ShopeePay</span>
+<span class="px-2 py-1 rounded bg-surface-container-high font-mono-sm text-mono-sm text-on-surface">BCA Mobile</span>
+</div>
+</div>
+</div>
+</div>
+<!-- METHOD 2: Bank Transfer Panel (Hidden by default) -->
+<div class="hidden p-space-lg rounded-xl bg-surface-container shadow-md space-y-space-md" id="method-bank-content">
+<div class="space-y-space-sm">
+<span class="font-mono-sm text-mono-sm text-secondary uppercase tracking-wider">Rekening Tujuan Resmi MotionForge:</span>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-space-sm">
+<!-- BCA -->
+<div class="p-space-md rounded-lg bg-surface-container-lowest flex items-center justify-between">
+<div>
+<span class="font-mono-sm text-mono-sm text-on-surface-variant">BANK BCA</span>
+<p class="font-mono-md text-mono-md font-bold text-on-surface">8831-2940-1049</p>
+<span class="font-body-sm text-body-sm text-on-surface-variant">a.n MotionForge Studio</span>
+</div>
+<button class="p-2 rounded bg-surface-container-high hover:bg-surface-container-highest text-secondary transition-colors" onclick="navigator.clipboard.writeText('883129401049'); alert('No. Rekening BCA disalin!');" title="Salin Nomor">
+<span class="material-symbols-outlined text-[18px]">content_copy</span>
+</button>
+</div>
+<!-- Mandiri -->
+<div class="p-space-md rounded-lg bg-surface-container-lowest flex items-center justify-between">
+<div>
+<span class="font-mono-sm text-mono-sm text-on-surface-variant">BANK MANDIRI</span>
+<p class="font-mono-md text-mono-md font-bold text-on-surface">1370-0294-8172</p>
+<span class="font-body-sm text-body-sm text-on-surface-variant">a.n MotionForge Studio</span>
+</div>
+<button class="p-2 rounded bg-surface-container-high hover:bg-surface-container-highest text-secondary transition-colors" onclick="navigator.clipboard.writeText('137002948172'); alert('No. Rekening Mandiri disalin!');" title="Salin Nomor">
+<span class="material-symbols-outlined text-[18px]">content_copy</span>
+</button>
+</div>
+</div>
+<div class="p-space-sm rounded-lg bg-surface-container-low text-on-surface-variant font-body-sm text-body-sm flex items-start gap-space-xs">
+<span class="material-symbols-outlined text-primary text-[16px] shrink-0 mt-0.5">info</span>
+<span>Harap transfer sesuai nominal total hingga 3 digit kode unik agar bot aktivasi mendeteksi mutasi otomatis tanpa delay.</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Column Right: Live Order Summary & WhatsApp CTA (5 cols) -->
+<div class="lg:col-span-5 p-space-lg rounded-xl bg-surface-container-lowest shadow-xl space-y-space-md">
+<div class="flex items-center justify-between pb-space-sm border-b border-surface-container-high">
+<span class="font-headline-sm text-headline-sm font-semibold text-on-surface">Ringkasan Pesanan</span>
+<span class="px-space-xs py-0.5 rounded bg-tertiary/10 text-tertiary font-mono-sm text-mono-sm">INV-2025-MF82</span>
+</div>
+<!-- Selected Tier Details -->
+<div class="space-y-space-xs">
+<div class="flex justify-between items-center font-body-md text-body-md">
+<span class="text-on-surface-variant">Paket Dipilih:</span>
+<span class="font-semibold text-primary" id="summary-tier-name">Paket Premium (Bulanan)</span>
+</div>
+<div class="flex justify-between items-center font-body-md text-body-md">
+<span class="text-on-surface-variant">Durasi Lisensi:</span>
+<span class="text-on-surface font-mono-sm text-mono-sm" id="summary-tier-duration">30 Hari Akses Penuh</span>
+</div>
+<div class="flex justify-between items-center font-body-md text-body-md">
+<span class="text-on-surface-variant">Biaya Layanan Cloud:</span>
+<span class="text-tertiary font-mono-sm text-mono-sm">Gratis (Rp 0)</span>
+</div>
+<div class="flex justify-between items-center font-body-md text-body-md">
+<span class="text-on-surface-variant">Kode Unik Verifikasi:</span>
+<span class="text-secondary font-mono-sm text-mono-sm" id="summary-unique-code">+247</span>
+</div>
+</div>
+<div class="w-full h-px bg-surface-container"></div>
+<!-- Total Price Row -->
+<div class="flex justify-between items-baseline pt-space-xs">
+<div>
+<span class="font-headline-sm text-headline-sm font-bold text-on-surface">Total Tagihan</span>
+<p class="font-mono-sm text-mono-sm text-on-surface-variant">Sudah termasuk PPN 11%</p>
+</div>
+<div class="text-right">
+<span class="font-display-lg text-display-lg font-bold text-primary" id="summary-total-price">Rp 10.247</span>
+</div>
+</div>
+<!-- WhatsApp Confirmation CTA Button -->
+<div class="pt-space-sm space-y-space-xs">
+<a class="w-full py-space-md rounded-lg font-headline-sm text-headline-sm text-on-surface bg-emerald-600 hover:bg-emerald-500 shadow-[0_4px_20px_rgba(34,197,94,0.35)] hover:shadow-[0_6px_28px_rgba(34,197,94,0.55)] transition-all hover:scale-[1.01] flex items-center justify-center gap-space-xs text-center" href="https://wa.me/6281234567890?text=Halo%20Admin%20MotionForge,%20saya%20sudah%20melakukan%20pembayaran%20untuk%20Paket%20Premium%20Rp%2010.247.%20Mohon%20aktivasi%20lisensi%20akun%20saya." id="btn-whatsapp-confirm" rel="noopener noreferrer" target="_blank">
+<span class="material-symbols-outlined text-[20px]">chat</span>
+<span>Konfirmasi via WhatsApp</span>
+</a>
+<p class="font-mono-sm text-mono-sm text-on-surface-variant text-center flex items-center justify-center gap-space-xs pt-1">
+<span class="material-symbols-outlined text-tertiary text-[14px]">bolt</span>
+<span>Aktif dalam 1–3 menit setelah bukti pembayaran dikirim</span>
+</p>
+</div>
+</div>
+</div>
+</div>
+<!-- SECTION 4: TRUST BADGES & FAQ -->
+<div class="mt-space-xl space-y-space-xl">
+<!-- Trust Badges 4 Column Row -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter-desktop">
+<div class="p-space-lg rounded-xl bg-surface-container-low shadow-md space-y-space-xs">
+<div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[24px]">flash_on</span>
+</div>
+<h4 class="font-headline-sm text-headline-sm font-semibold text-on-surface">Aktivasi Instan</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Akun dan lisensi aktif otomatis setelah verifikasi pembayaran masuk tanpa antrean manual.</p>
+</div>
+<div class="p-space-lg rounded-xl bg-surface-container-low shadow-md space-y-space-xs">
+<div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined text-[24px]">verified</span>
+</div>
+<h4 class="font-headline-sm text-headline-sm font-semibold text-on-surface">Garansi 7 Hari</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Garansi pengembalian dana 100% jika kamu mengalami kendala teknis render yang tidak terselesaikan.</p>
+</div>
+<div class="p-space-lg rounded-xl bg-surface-container-low shadow-md space-y-space-xs">
+<div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-[24px]">shield</span>
+</div>
+<h4 class="font-headline-sm text-headline-sm font-semibold text-on-surface">Keamanan Enkripsi</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Transaksi dilindungi enkripsi SSL 256-bit standar industri perbankan nasional.</p>
+</div>
+<div class="p-space-lg rounded-xl bg-surface-container-low shadow-md space-y-space-xs">
+<div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center text-primary-container">
+<span class="material-symbols-outlined text-[24px]">headset_mic</span>
+</div>
+<h4 class="font-headline-sm text-headline-sm font-semibold text-on-surface">Bantuan WhatsApp 24/7</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Tim teknis siap memandu setup prompt, optimasi resolusi, hingga integrasi workflow studio.</p>
+</div>
+</div>
+<!-- FAQ Accordion Container -->
+<div class="max-w-3xl mx-auto space-y-space-md pt-space-md">
+<div class="text-center space-y-space-xs mb-space-lg">
+<span class="font-mono-sm text-mono-sm text-primary uppercase tracking-widest">Pertanyaan Umum</span>
+<h3 class="font-headline-lg text-headline-lg font-bold text-on-surface">Kerap Ditanyakan Seputar Lisensi</h3>
+</div>
+<!-- FAQ Item 1 -->
+<div class="rounded-xl bg-surface-container-low overflow-hidden shadow-md">
+<button class="w-full p-space-md flex items-center justify-between text-left hover:bg-surface-container transition-colors" onclick="toggleFaq('faq-1')">
+<span class="font-headline-sm text-headline-sm font-semibold text-on-surface">Bagaimana format lisensi komersial MotionForge?</span>
+<span class="material-symbols-outlined text-on-surface-variant transition-transform" id="faq-1-icon">expand_more</span>
+</button>
+<div class="hidden px-space-md pb-space-md text-on-surface-variant font-body-md text-body-md leading-relaxed border-t border-surface-container" id="faq-1">
+              Semua video yang dihasilkan melalui paket Premium dan Lifetime dapat digunakan secara bebas untuk keperluan komersial (Iklan TikTok/Reels, video klien agency, YouTube monetization, TVC) tanpa pembagian royalti apapun.
+            </div>
+</div>
+<!-- FAQ Item 2 -->
+<div class="rounded-xl bg-surface-container-low overflow-hidden shadow-md">
+<button class="w-full p-space-md flex items-center justify-between text-left hover:bg-surface-container transition-colors" onclick="toggleFaq('faq-2')">
+<span class="font-headline-sm text-headline-sm font-semibold text-on-surface">Apakah saya bisa upgrade dari paket Gratis kapan saja?</span>
+<span class="material-symbols-outlined text-on-surface-variant transition-transform" id="faq-2-icon">expand_more</span>
+</button>
+<div class="hidden px-space-md pb-space-md text-on-surface-variant font-body-md text-body-md leading-relaxed border-t border-surface-container" id="faq-2">
+              Ya, upgrade dapat dilakukan kapan saja melalui tombol "Pilih Paket" di halaman ini. Akun Anda akan otomatis ditingkatkan menjadi tier Premium atau Lifetime tanpa menghapus proyek yang sudah Anda simpan di akun sebelumnya.
+            </div>
+</div>
+<!-- FAQ Item 3 -->
+<div class="rounded-xl bg-surface-container-low overflow-hidden shadow-md">
+<button class="w-full p-space-md flex items-center justify-between text-left hover:bg-surface-container transition-colors" onclick="toggleFaq('faq-3')">
+<span class="font-headline-sm text-headline-sm font-semibold text-on-surface">Format video apa saja yang didukung untuk ekspor?</span>
+<span class="material-symbols-outlined text-on-surface-variant transition-transform" id="faq-3-icon">expand_more</span>
+</button>
+<div class="hidden px-space-md pb-space-md text-on-surface-variant font-body-md text-body-md leading-relaxed border-t border-surface-container" id="faq-3">
+              Mesin MotionForge mendukung ekspor MP4 (H.264 &amp; H.265), WebM transparan, ProRes 422 HQ, dan ProRes 4444 dengan Alpha Channel transparan penuh yang siap langsung dimasukkan ke Adobe Premiere, After Effects, mau pun DaVinci Resolve.
+            </div>
+</div>
+<!-- FAQ Item 4 -->
+<div class="rounded-xl bg-surface-container-low overflow-hidden shadow-md">
+<button class="w-full p-space-md flex items-center justify-between text-left hover:bg-surface-container transition-colors" onclick="toggleFaq('faq-4')">
+<span class="font-headline-sm text-headline-sm font-semibold text-on-surface">Apakah ada kuota harian batas pembuatan video?</span>
+<span class="material-symbols-outlined text-on-surface-variant transition-transform" id="faq-4-icon">expand_more</span>
+</button>
+<div class="hidden px-space-md pb-space-md text-on-surface-variant font-body-md text-body-md leading-relaxed border-t border-surface-container" id="faq-4">
+              Pada paket Premium dan Lifetime, tidak ada pembatasan kuota video harian (Unlimited rendering). Prioritas antrean GPU cloud otomatis dialokasikan untuk pemegang lisensi berbayar agar hasil selesai dalam hitungan detik.
+            </div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Interactive Logic for Pricing Switcher, Payment Gateway Tab & WhatsApp URL Generation -->
+<script>
+    let currentTier = 'premium';
+    let currentPrice = 10000;
+    const uniqueCode = 247;
+
+    function selectTier(tier, price, label) {
+      currentTier = tier;
+      currentPrice = price;
+      
+      const summaryName = document.getElementById('summary-tier-name');
+      const summaryDuration = document.getElementById('summary-tier-duration');
+      const summaryTotal = document.getElementById('summary-total-price');
+      const btnWa = document.getElementById('btn-whatsapp-confirm');
+      
+      if (tier === 'gratis') {
+        summaryName.textContent = 'Paket Gratis (Uji Coba)';
+        summaryDuration.textContent = 'Akses Terbatas 720p';
+        summaryTotal.textContent = 'Rp 0';
+        btnWa.href = "https://wa.me/6281234567890?text=Halo%20Admin%20MotionForge,%20saya%20ingin%20mengaktifkan%20akun%20Gratis%20saya.";
+      } else if (tier === 'lifetime') {
+        summaryName.textContent = 'Paket Lifetime VIP (Sekali Bayar)';
+        summaryDuration.textContent = 'Akses Permanen Selamanya';
+        const total = price + uniqueCode;
+        summaryTotal.textContent = 'Rp ' + total.toLocaleString('id-ID');
+        btnWa.href = "https://wa.me/6281234567890?text=Halo%20Admin%20MotionForge,%20saya%20sudah%20melakukan%20pembayaran%20untuk%20Paket%20Lifetime%20VIP%20Rp%20" + total.toLocaleString('id-ID') + ".%20Mohon%20aktivasi%20lisensi%20permanen%20saya.";
+      } else {
+        summaryName.textContent = 'Paket Premium (Bulanan)';
+        summaryDuration.textContent = '30 Hari Akses Penuh';
+        const total = price + uniqueCode;
+        summaryTotal.textContent = 'Rp ' + total.toLocaleString('id-ID');
+        btnWa.href = "https://wa.me/6281234567890?text=Halo%20Admin%20MotionForge,%20saya%20sudah%20melakukan%20pembayaran%20untuk%20Paket%20Premium%20Rp%20" + total.toLocaleString('id-ID') + ".%20Mohon%20aktivasi%20lisensi%20akun%20saya.";
+      }
+
+      // Smooth scroll to checkout section
+      const checkoutEl = document.getElementById('checkout-section');
+      if (checkoutEl) {
+        checkoutEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+
+    function switchMethod(method) {
+      const qrisContent = document.getElementById('method-qris-content');
+      const bankContent = document.getElementById('method-bank-content');
+      const tabQris = document.getElementById('tab-qris');
+      const tabBank = document.getElementById('tab-bank');
+
+      if (method === 'qris') {
+        qrisContent.classList.remove('hidden');
+        bankContent.classList.add('hidden');
+        tabQris.classList.add('bg-surface-container', 'text-on-surface');
+        tabQris.classList.remove('text-on-surface-variant');
+        tabBank.classList.remove('bg-surface-container', 'text-on-surface');
+        tabBank.classList.add('text-on-surface-variant');
+      } else {
+        qrisContent.classList.add('hidden');
+        bankContent.classList.remove('hidden');
+        tabBank.classList.add('bg-surface-container', 'text-on-surface');
+        tabBank.classList.remove('text-on-surface-variant');
+        tabQris.classList.remove('bg-surface-container', 'text-on-surface');
+        tabQris.classList.add('text-on-surface-variant');
+      }
+    }
+
+    function toggleFaq(id) {
+      const target = document.getElementById(id);
+      const icon = document.getElementById(id + '-icon');
+      if (target.classList.contains('hidden')) {
+        target.classList.remove('hidden');
+        icon.classList.add('rotate-180');
+      } else {
+        target.classList.add('hidden');
+        icon.classList.remove('rotate-180');
+      }
+    }
+
+    // Top Billing Switcher micro-interaction
+    const toggleMonthly = document.getElementById('toggle-monthly');
+    const toggleLifetime = document.getElementById('toggle-lifetime');
+
+    if (toggleMonthly && toggleLifetime) {
+      toggleMonthly.addEventListener('click', () => {
+        toggleMonthly.classList.add('bg-surface-container-high', 'text-on-surface');
+        toggleMonthly.classList.remove('text-on-surface-variant');
+        toggleLifetime.classList.remove('bg-surface-container-high', 'text-on-surface');
+        toggleLifetime.classList.add('text-on-surface-variant');
+        selectTier('premium', 10000, 'Paket Premium');
+      });
+
+      toggleLifetime.addEventListener('click', () => {
+        toggleLifetime.classList.add('bg-surface-container-high', 'text-on-surface');
+        toggleLifetime.classList.remove('text-on-surface-variant');
+        toggleMonthly.classList.remove('bg-surface-container-high', 'text-on-surface');
+        toggleMonthly.classList.add('text-on-surface-variant');
+        selectTier('lifetime', 45000, 'Paket Lifetime VIP');
+      });
+    }
+  </script>
+</div></main><footer class="w-full bg-surface-container-lowest py-space-xl mt-space-xl shadow-[0_-1px_12px_rgba(0,0,0,0.5)]"><div class="max-w-7xl mx-auto px-margin md:px-margin-desktop"><div class="grid grid-cols-1 md:grid-cols-4 gap-space-xl pb-space-xl"><div class="space-y-space-md md:col-span-1"><div class="flex items-center gap-space-xs"><span class="font-headline-sm text-headline-sm font-bold text-on-surface">MOTION<span class="text-primary-container">FORGE</span></span></div><p class="font-body-sm text-body-sm text-on-surface-variant">Studio perakitan dan kreasi video cerdas berbasis cloud workstation dengan performa akselerasi neural real-time.</p><a class="inline-flex items-center gap-space-xs px-space-md py-space-sm rounded-lg bg-surface-container-high hover:bg-surface-container-highest text-tertiary transition-all shadow-[0_0_12px_rgba(78,222,163,0.15)]" data-path="chat-cs" href="#"><span class="material-symbols-outlined text-[18px]">chat</span><span class="font-headline-sm text-headline-sm">Hubungi WhatsApp CS</span></a></div><div><h4 class="font-headline-sm text-headline-sm text-on-surface mb-space-md uppercase tracking-wider">Navigasi</h4><ul class="space-y-space-sm"><li class="nav-item"><a class="font-body-md text-body-md text-on-surface-variant hover:text-on-surface transition-colors" data-path="beranda" href="#">Beranda</a></li><li class="nav-item"><a class="font-body-md text-body-md text-on-surface-variant hover:text-on-surface transition-colors" data-path="cara-pakai" href="#">Cara Pakai</a></li><li class="nav-item"><a class="font-body-md text-body-md text-on-surface-variant hover:text-on-surface transition-colors" data-path="harga" href="#">Harga Lisensi</a></li><li class="nav-item"><a class="font-body-md text-body-md text-on-surface-variant hover:text-on-surface transition-colors" data-path="dokumentasi" href="#">Dokumentasi API</a></li></ul></div><div><h4 class="font-headline-sm text-headline-sm text-on-surface mb-space-md uppercase tracking-wider">Koleksi Studio</h4><ul class="space-y-space-sm"><li><a class="font-body-md text-body-md text-on-surface-variant hover:text-on-surface transition-colors" data-path="template-video" href="#">Template Motion 4K</a></li><li><a class="font-body-md text-body-md text-on-surface-variant hover:text-on-surface transition-colors" data-path="efek-suara" href="#">Katalog SFX &amp; Musik</a></li><li><a class="font-body-md text-body-md text-on-surface-variant hover:text-on-surface transition-colors" data-path="preset-warna" href="#">LUT Presets Sinematik</a></li><li><a class="font-body-md text-body-md text-on-surface-variant hover:text-on-surface transition-colors" data-path="status-server" href="#">Status Server Render</a></li></ul></div><div><h4 class="font-headline-sm text-headline-sm text-on-surface mb-space-md uppercase tracking-wider">Telemetri Sistem</h4><div class="p-space-md rounded-xl bg-surface-container-low space-y-space-xs font-mono-sm text-mono-sm"><div class="flex justify-between items-center"><span class="text-on-surface-variant">Render Cluster:</span><span class="text-tertiary">Jakarta (JKT-01)</span></div><div class="flex justify-between items-center"><span class="text-on-surface-variant">Throughput GPU:</span><span class="text-secondary">99.8% Latensi Rendah</span></div><div class="flex justify-between items-center"><span class="text-on-surface-variant">Export Queue:</span><span class="text-primary">Siap Digunakan</span></div></div></div></div><div class="pt-space-lg flex flex-col md:flex-row items-center justify-between gap-space-md"><p class="font-mono-sm text-mono-sm text-on-surface-variant">© 2025 MotionForge Studio Inc. Hak cipta dilindungi undang-undang.</p><div class="flex items-center gap-space-lg font-mono-sm text-mono-sm text-on-surface-variant"><span class="flex items-center gap-space-xs"><span class="w-2 h-2 rounded-full bg-tertiary"></span>Operasional Normal</span><span>ProRes 4444 XQ Ready</span></div></div></div></footer></body></html>
