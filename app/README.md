@@ -23,19 +23,23 @@ npm run preview # cek hasil build di http://localhost:4173
 
 Keahlian browser: **Chrome / Edge desktop** untuk export MP4 (WebCodecs).
 
-## Deploy ke Cloudflare Pages (gratis)
+## Deploy ke Cloudflare Workers (gratis)
+
+Proyek ini ter-deploy via **Cloudflare Workers Builds** (bukan Pages) di repo `Aqli404/motion-easy`.
 
 1. Push folder ini ke repositori GitHub.
-2. Buka [Cloudflare Dashboard](https://dash.cloudflare.com) → **Workers & Pages** → **Create** → **Pages** → **Connect to Git**.
-3. Pilih repositori, lalu isi:
-   - Framework preset: `Vite` (atau *None*)
-   - Build command: `npm run build`
-   - Build output directory: `dist`
-   - Root directory: `app` (kode berada di subfolder)
-4. **Deploy** → dapat URL gratis `https://<nama>.pages.dev`.
-5. Setiap `git push` → auto deploy.
+2. Buka [Cloudflare Dashboard](https://dash.cloudflare.com) → **Workers & Pages** → **Create** → hubungkan repositori ini.
+3. Setelan build di dashboard:
+   - Build command: `cd app && npm ci && npm run build`
+   - Deploy command: `npx wrangler deploy`
+4. Kode di root repo yang menopang deploy:
+   - `wrangler.json` — aset `./app/dist`, `not_found_handling: "single-page-application"`
+   - `app/worker/index.js` — worker mini dengan binding `ASSETS`
+5. Setiap `git push` → build & deploy otomatis.
 
-> File `app\public\_redirects` sudah tersedia (SPA redirect), routing browser tidak akan 404.
+> Routing `/studio`, `/lisensi`, `/harga` tidak akan 404: SPA fallback ditangani `not_found_handling`
+> di `wrangler.json`. **JANGAN** menambahkan file `_redirects` (pola `/* /index.html 200`) — di Workers
+> itu memicu *infinite loop* saat deploy (error 100324).
 
 ## Peta fase
 
@@ -43,7 +47,7 @@ Keahlian browser: **Chrome / Edge desktop** untuk export MP4 (WebCodecs).
 |---|---|---|
 | 0 | Fondasi + deploy | ✅ |
 | 1 | Skema MotionDefinition | ✅ |
-| 2 | Studio: render canvas + player | ⏳ |
+| 2 | Studio: render canvas + player | ✅ |
 | 3 | Alur AI (BYO-AI): prompt/paste/validator/self-heal | ✅ |
 | 4 | Export MP4 (WebCodecs) | ✅ |
 | 5 | Lisensi & pembayaran (Rp 0/15rb/55rb) | ✅ (link pembayaran perlu diisi admin) |
