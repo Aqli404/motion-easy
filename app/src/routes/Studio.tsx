@@ -6,6 +6,7 @@ import {
   Layers,
   Download,
   Camera,
+  Package,
   Crown,
   Activity,
   Cpu,
@@ -13,6 +14,7 @@ import {
 import Modal from "../components/Modal";
 import AiPanel from "../components/AiPanel";
 import ExportModal from "../components/ExportModal";
+import BulkModal from "../components/BulkModal";
 import { SAMPLES, SAMPLE_KEYS } from "../engine/samples";
 import { renderFrame, activeLayerCount } from "../engine/renderer";
 import { usePlayer } from "../engine/player";
@@ -73,6 +75,7 @@ export default function Studio() {
 
   const [exportOpen, setExportOpen] = useState(false);
   const [premiumOpen, setPremiumOpen] = useState(false);
+  const [bulkOpen, setBulkOpen] = useState(false);
 
   // ===== Quick Wins =====
 
@@ -214,6 +217,13 @@ export default function Studio() {
             ))}
           </div>
           <button
+            onClick={() => setBulkOpen(true)}
+            title="Bulk ZIP — render banyak karya sekaligus jadi 1 file ZIP"
+            className="rounded-md border border-edge bg-panel p-2 text-ink-dim hover:text-secondary"
+          >
+            <Package className="h-4 w-4" />
+          </button>
+          <button
             onClick={ambilCover}
             title="Simpan Cover (PNG resolusi penuh, frame saat ini)"
             className="rounded-md border border-edge bg-panel p-2 text-ink-dim hover:text-secondary"
@@ -328,6 +338,9 @@ export default function Studio() {
 
       {/* Modal Ekspor */}
       <ExportModal def={def} open={exportOpen} onClose={() => setExportOpen(false)} />
+
+      {/* Modal Bulk ZIP */}
+      <BulkModal def={def} open={bulkOpen} onClose={() => setBulkOpen(false)} />
 
       {/* Modal Premium */}
       <Modal
