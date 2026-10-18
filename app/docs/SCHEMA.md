@@ -11,8 +11,8 @@
    - `geometry.x/y` = titik PUSAT objek; `0.5/0.5` = pusat kanvas.
    - `0` = sisi kiri/atas kanvas; `1` = sisi kanan/bawah.
 4. Waktu berupa **detik** (`0..canvas.durationSec`), BUKAN frame.
-5. Semua warna hex 6 digit (`#f97316`). Warna gradasi **tidak ada di v1** — buat 2 layer bertumpuk.
-6. Gerakan hanya preset resmi. **Tidak ada kode JS, tidak ada fitur eksperimen.**
+5. Semua warna hex 6 digit (`#f97316`). Gradasi di layer biasa **tidak ada di v1** — buat 2 layer bertumpuk (di kind `canvas` gradasi boleh, via `fx.gradient`).
+6. Gerakan hanya preset resmi. **Tidak ada kode JS di layer data, tidak ada fitur eksperimen** — SATU-satunya pengecualian: kind `canvas` (lian. §3a).
 7. Layer maksimal **60 per karya**. `durationSec` maksimal 30, minimal 1.
 8. Semua layer wajib punya `id` unik, `time` (from < to), dan `geometry`.
 9. Teks: huruf latin. Napakuti baris dengan `\n` kalau perlu.
@@ -48,7 +48,34 @@
 | `triangle` | — | segitiga ke atas; `w/h` |
 | `text` | `text` | teks; ukuran pakai `text.size` |
 | `line` | `line` | garis dari `(geometry.x,y)` ke `line.to`; gaya `style.strokeWidth` |
+| `canvas` | `kanvas` | **KANVAS BEBAS (v1.1)** — lian §3a |
 | `image` | `asset` | id aset gambar — **abaikan dulu hingga Fase 6** |
+
+### 3a. Kanvas Bebas (kind `canvas`) — efek organik
+
+```json
+{
+  "id": "fx-nebula",
+  "kind": "canvas",
+  "tag": "fx-kanvas",
+  "time": { "from": 0, "to": 8 },
+  "geometry": { "x": 0.5, "y": 0.5 },
+  "kanvas": { "source": "function draw(ctx, time, w, h, fx) { ... }" }
+}
+```
+
+Aturan kode di dalam `kanvas.source`:
+
+| Aturan | Isi |
+|---|---|
+| Tanda tangan | SATU fungsi `draw(ctx, time, w, h, fx)` — `ctx` Canvas 2D, koordinat **piksel penuh** `w × h` |
+| Determinis | Wajib! Dilarang `Math.random()`, `Date`, `fetch`, font, gambar, atau state antar frame — preview & export harus identik |
+| Helper `fx` | `fx.loop(time, period)` fase 0..1 berulang · `fx.pulse(time, period)` gelombang halus 0..1 · `fx.ease(x)` rentet · `fx.rand(i, seed)` pseudo-acak TETAP · `fx.glow(ctx, warna, blur)` + `fx.glowOff(ctx)` · `fx.gradient(...)` · `fx.radial(...)` |
+| Kinerja | maks ~2000 langkah gambar per frame; partikel/bintang cukup 40-120 |
+| Panjang | maks ~20.000 karakter per `source` |
+| Motion | `motion.loop` TIDAK memengaruhi kind canvas — buat gerak di dalam kode; `time.from/to` dan alpha (opacity/motion in-out) tetap berlaku |
+
+Validator memeriksa sintaks `source` dengan compile-check; kegagalan runtime sandboxed (ada layar peringatan, app tidak mati).
 
 ## 4. Gerakan (motion)
 
@@ -57,7 +84,7 @@ Setiap layer opsional punya `motion`:
 ```json
 {
   "in":   { "type": "pop",    "at": 0.2, "dur": 0.5, "easing": "easeOutBack" },
-  "out":  { "type": "划分为nom", "before": 0.5, "dur": 0.45, "easing": "easeIn" },
+  "out":  { "type": "nom", "before": 0.5, "dur": 0.45, "easing": "easeIn" },
   "loop": { "type": "float",  "dur": 1.2, "amount": 0.18, "phase": 0.3 }
 }
 ```
@@ -103,7 +130,7 @@ Setiap layer opsional punya `motion`:
 - Opacity di `style.opacity` (0..1, default 1). Untuk kedipan halus, gunakan `loop: pulse` dengan `amount < 0.1`.
 - `durationSec` mencakup seluruh durasi video, termasuk jeda `out`.
 
-## 6. Contoh lengkap (buka `src/engine/samples.ts` untuk 5 contoh Typed)
+## 6. Contoh lengkap (buka `src/engine/samples.ts` untuk 6 contoh Typed)
 
 ```json
 {

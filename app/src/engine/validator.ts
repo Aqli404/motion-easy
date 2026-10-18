@@ -6,6 +6,7 @@
 
 import type { MotionDefinition, LayerSpec } from "./schema";
 import { EASE_NAMES, LAYER_KINDS, IN_OUT_TYPES, LOOP_TYPES } from "./schema";
+import { compileKanvas } from "./kanvas";
 
 export interface Issue {
   path: string;
@@ -204,6 +205,28 @@ export function validateDefinition(json: unknown): ValidationResult {
       }
       if (kind === "image") {
         W(`${path}`, "kind image belum didukung (Fase 6) — akan digambar placeholder.");
+      }
+
+      // kanvas wajib utk kind canvas
+      if (kind === "canvas") {
+        const k = l.kanvas;
+        if (typeof k !== "object" || k === null || !isStr((k as Record<string, unknown>).source)) {
+          E(`${path}.kanvas`, 'kind "canvas" wajib punya objek "kanvas": { source: "function draw(ctx, time, w, h, fx) { ... }" }.');
+        } else {
+          const src = (k as Record<string, unknown>).source as string;
+          const compiled = compileKanvas(src);
+          if (compiled instanceof Error) {
+            E(`${path}.kanvas.source`, compiled.message);
+          } else {
+            W(`${path}.kanvas`, "kind \"canvas\" menjalankan kode apa adanya — pastikan deterministik (tanpa Math.random/Date/fetch) supaya preview & export identik.");
+          }
+          // peringatan bila layer canvas memakai motion.loop (tidak berpengaruh)
+          const mvC = l.motion as Record<string, unknown> | undefined;
+          const loopC = typeof mvC?.loop === "object" && mvC.loop !== null ? (mvC.loop as Record<string, unknown>) : null;
+          if (loopC) {
+            W(`${path}.motion.loop`, "motion.loop tidak memengaruhi kind \"canvas\" — gelombang/denyut dibuat di dalam kode draw() pakai fx.");
+          }
+        }
       }
 
       // motion

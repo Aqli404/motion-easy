@@ -33,6 +33,7 @@ export const KATEGORI = [
   "Infografik / Statistik",
   "Logo Sting",
   "Background Loop",
+  "Partikel & Efek Organik",
   "Bebas / Custom",
 ] as const;
 
@@ -56,6 +57,7 @@ const KATEGORI_HINT: Record<string, string> = {
   "Infografik / Statistik": "3-5 kartu/bar dengan angka; masuk berjenjang (stagger 0.2-0.3 dtk antar elemen pakai motion.in.at).",
   "Logo Sting": "logo dari bentuk sederhana (rect/ellipse/triangle), pop dengan easing easeOutBack, lalu fadeOut.",
   "Background Loop": "10-30 bentuk kecil float/pulse dengan phase acak 0..1; tanpa teks; siklus terasa mulus.",
+  "Partikel & Efek Organik": "utamakan 1 layer kind \"canvas\" (KANVAS BEBAS) — medan partikel/glow/gelombang via kode draw(), boleh + 1-2 layer teks di atasnya.",
   "Bebas / Custom": "ikuti deskripsi ide pengguna.",
 };
 
@@ -108,9 +110,9 @@ ATURAN WAJIB (validator menolak bila dilanggar):
 2. "version" wajib 1. JSON harus valid: JSON.parse sukses, tidak ada koma gantung, tidak ada komentar.
 3. Semua koordinat & ukuran = FRAKSI 0..1 relatif kanvas (0 = kiri/atas, 1 = kanan/bawah, 0.5/0.5 = pusat).
 4. Waktu = DETIK. time.from < time.to, dan semuanya di dalam 0..canvas.durationSec.
-5. Warna hex 6 digit (#rrggbb). GRADIEN tidak didukung — buat layer bertumpuk.
-6. layer kind: rect | ellipse | triangle | text | line. Layer "text" wajib punya "text", layer "line" wajib punya "line".
-7. geometry.x/y = titik PUSAT; geometry.w/h = ukuran bbox (fraksi). Untuk teks, w/h tidak perlu.
+5. Warna hex 6 digit (#rrggbb). GRADIEN pada layer biasa tidak didukung — buat layer bertumpuk.
+6. layer kind: rect | ellipse | triangle | text | line | canvas. Layer "text" wajib punya "text", layer "line" wajib punya "line", layer "canvas" wajib punya "kanvas".
+7. geometry.x/y = titik PUSAT; geometry.w/h = ukuran bbox (fraksi). Untuk teks dan canvas, w/h tidak perlu.
 8. motion.in type: none | fadeIn | slideUp | slideDown | slideLeft | slideRight | pop  (fadeIn, fokus untuk masuk)
 9. motion.out type: none | fadeOut | slideUp | slideDown | slideLeft | slideRight  (fadeOut, fokus untuk keluar)
 10. motion.loop: none | float | pulse | spin | sway + dur, amount (fraksi, umum 0.05-0.2), phase (0..1)
@@ -122,6 +124,22 @@ BENTUK TEKS (kind "text"):
 - text.size = fraksi tinggi kanvas (0.02-0.12 umum)
 - text.weight: 400|500|600|700|800|900 ; text.align: left|center|right ; text.font: sans|mono ; text.lineHeight: 1.0-2.0
 - warnanya via style.color
+
+KANVAS BEBAS (kind "canvas") — untuk efek organik: medan bintang, partikel, nebula, gelombang, glow, gradien dinamis:
+- Struktur wajib: { id, kind:"canvas", time:{from,to}, geometry:{x:0.5,y:0.5}, kanvas:{ source:"function draw(ctx, time, w, h, fx) { ... }" } }
+- source = string berisi SATU fungsi JS. ctx = Canvas 2D biasa dengan koordinat PIKSEL PENUH kanvas w x h.
+- Boleh pakai Math, sin/cos, dan helper fx HANYA ini:
+  fx.loop(time, period) -> fase berulang 0..1
+  fx.pulse(time, period) -> gelombang halus 0..1 (mulus untuk denyut/napas)
+  fx.ease(x) -> rentet 0..1
+  fx.rand(i, seed) -> angka "acak" tetap 0..1 (deterministik — WAJIB untuk partikel/bintang)
+  fx.glow(ctx, warna, blur) + fx.glowOff(ctx) -> efek pendar
+  fx.gradient(ctx, x0,y0,x1,y1, [warna1, warna2, ...]) -> gradien linear
+  fx.radial(ctx, x, y, radius, [warna1, warna2]) -> gradien radial berpusat
+- DETERMINISTIK WAJIB: DILARANG Math.random(), Date, fetch, font, gambar, atau state. Setiap frame murni fungsi dari (time, w, h) supaya preview dan export identik.
+- Hindari mengubah ctx.globalAlpha secara permanen; kalau mengubah, kembalikan ke nilai awal atau pakai save()/restore().
+- JANGAN pakai loop lebih dari ~2000 langkah per frame. Partikel/bintang cukup 40-120 titik.
+- Ketika KATEGORI menyebut efek partikel/neon/gelombang, gunakanlah kind "canvas" untuk latar + layer teks di atasnya bila perlu.
 `.trim();
 
 /** Prompt utama dari brief. */

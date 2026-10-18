@@ -7,7 +7,13 @@
  * - Waktu pakai DETIK -> AI tidak perlu tahu fps saat menulis gerakan.
  * - Gerakan pakai PRESET (in/out/loop) -> AI hampir tak mungkin salah;
  *   keyframe mentah belum ada di v1 (bisa ditambahkan di v2 tanpa merusak).
- * - Semua warna hex 6 digit. Tidak ada kode JS/eval. Murni data.
+ * - Semua warna hex 6 digit. Murni data.
+ *
+ * v1.1 — tambahan "kanvas bebas" (kind "canvas"): AI boleh mengirim SATU
+ * fungsi draw(ctx, time, w, h, fx) untuk efek organik (partikel, glow,
+ * gelombang). Kontrak & aturan determinisme di engine/kanvas.ts. Layer
+ * biasa (data) tetap jalan seperti semula; fitur ini pertambahan, bukan
+ * pengganti.
  */
 
 export const SCHEMA_VERSION = 1 as const;
@@ -28,7 +34,7 @@ export const EASE_NAMES = [
 ] as const;
 export type EaseName = (typeof EASE_NAMES)[number];
 
-export const LAYER_KINDS = ["rect", "ellipse", "triangle", "text", "line", "image"] as const;
+export const LAYER_KINDS = ["rect", "ellipse", "triangle", "text", "line", "image", "canvas"] as const;
 export type LayerKind = (typeof LAYER_KINDS)[number];
 
 export const IN_OUT_TYPES = [
@@ -100,6 +106,16 @@ export interface LineSpec {
   to: { x: Frac; y: Frac };
 }
 
+/**
+ * Spesifikasi "kanvas bebas" untuk kind === "canvas" (v1.1, tambahan atas v1).
+ * `source` = string berisi SATU function expression:
+ *   function draw(ctx, time, w, h, fx) { ... }
+ * Diimplementasikan di engine/kanvas.ts (compile + runtime + helper fx).
+ */
+export interface CanvasSpec {
+  source: string;
+}
+
 /** Satu layer (objek) di scene. Urutan array = urutan tumpukan (akhir = paling atas). */
 export interface LayerSpec {
   id: string; // unik 1 definition
@@ -112,6 +128,7 @@ export interface LayerSpec {
   style?: StyleSpec;
   text?: TextSpec; // wajib untuk kind "text"
   line?: LineSpec; // wajib untuk kind "line"
+  kanvas?: CanvasSpec; // wajib untuk kind "canvas"
   asset?: string; // id aset untuk kind "image" — diisi setelah asset manager (Fase 6)
   motion?: MotionSpec;
 }

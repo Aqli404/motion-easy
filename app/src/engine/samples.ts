@@ -1,7 +1,7 @@
 import type { MotionDefinition } from "./schema";
 
 /**
- * 5 contoh MotionDefinition yang jadi "uji nyata" skema Fase 1.
+ * 5) Kanvas bebas + 5 lainnya — "uji nyata" skema v1 (+ v1.1 kind canvas).
  * Semua tervalidasi oleh TypeScript (tipe MotionDefinition), jadi
  * kalau skema berubah, contoh-contoh ini ikut menyala sebagai pengingat.
  */
@@ -278,6 +278,104 @@ export const lowerThirdBrand: MotionDefinition = {
   ],
 };
 
+/**
+ * 6) Kanvas bebas (kind "canvas") — demo powerhouse efek organik:
+ * nebula radial, pita gelombang ber-glow, dan bintang berkelip.
+ * Semua deterministik (fx.*), jadi preview = hasil export.
+ */
+const NEBULA_KODE = `function draw(ctx, time, w, h, fx) {
+  var TWO = 6.28318;
+  // latar gelap ber-gradasi
+  ctx.fillStyle = fx.gradient(ctx, 0, 0, 0, h, ["#05070f", "#0b0f1e", "#141a2e"]);
+  ctx.fillRect(0, 0, w, h);
+
+  // tiga blob nebula lembut yang bernapas
+  var blobs = [
+    ["#4cd7f6", 0.28, 0.40, 0.42, 6.0],
+    ["#f97316", 0.74, 0.62, 0.36, 7.3],
+    ["#a78bfa", 0.52, 0.26, 0.30, 8.1]
+  ];
+  for (var i = 0; i < blobs.length; i++) {
+    var b = blobs[i];
+    var x = (b[1] + 0.05 * Math.sin(fx.loop(time, b[4]) * TWO)) * w;
+    var y = (b[2] + 0.04 * Math.sin(fx.loop(time, b[4] + 1.9) * TWO + 1.2)) * h;
+    var r = b[3] * (0.9 + 0.12 * fx.pulse(time, 7 - i)) * Math.max(w, h);
+    var g = fx.radial(ctx, x, y, r, [b[0] + "55", b[0] + "00"]);
+    ctx.fillStyle = g;
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, TWO);
+    ctx.fill();
+  }
+
+  // dua pita gelombang ber-glow
+  var pita = [["#4cd7f6", 0.62, 0], ["#f97316", 0.8, 2.1]];
+  for (var j = 0; j < pita.length; j++) {
+    var s = pita[j];
+    var fase = fx.pulse(time, 9) * TWO + s[2];
+    fx.glow(ctx, s[0], 30);
+    ctx.strokeStyle = s[0];
+    ctx.lineWidth = 5;
+    ctx.beginPath();
+    for (var px = 0; px <= w; px += 12) {
+      var py = (s[1] + 0.05 * Math.sin((px / w) * 5.2 + fase)) * h;
+      if (px === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+    }
+    ctx.stroke();
+    fx.glowOff(ctx);
+  }
+
+  // medan bintang berkelip (deterministik via fx.rand)
+  for (var k = 0; k < 80; k++) {
+    var sx = fx.rand(k, 11) * w;
+    var sy = fx.rand(k, 23) * h;
+    var tw = fx.pulse(time, 1.4 + fx.rand(k, 37) * 2.2);
+    var rad = 0.8 + fx.rand(k, 51) * 2.1;
+    ctx.globalAlpha = 0.2 + 0.75 * tw;
+    ctx.fillStyle = "#e8ecff";
+    ctx.beginPath();
+    ctx.arc(sx, sy, rad, 0, TWO);
+    ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+}`;
+
+export const nebulaKanvas: MotionDefinition = {
+  version: 1,
+  name: "Nebula Kanvas Bebas",
+  notes: 'Demo kind "canvas": nebula + glow wave + bintang — cukup SATU layer kode.',
+  canvas: { w: 1920, h: 1080, fps: 30, durationSec: 8, background: "#05070f" },
+  layers: [
+    {
+      id: "fx-nebula",
+      kind: "canvas",
+      tag: "fx-kanvas",
+      time: { from: 0, to: 8 },
+      geometry: { x: 0.5, y: 0.5 },
+      kanvas: { source: NEBULA_KODE },
+    },
+    {
+      id: "judul",
+      kind: "text",
+      tag: "title",
+      time: { from: 1, to: 7.6 },
+      geometry: { x: 0.5, y: 0.47 },
+      style: { color: "#ffffff" },
+      text: { content: "KANVAS BEBAS", size: 0.085, weight: 900, align: "center" },
+      motion: { in: { type: "pop", at: 0.2, dur: 0.7, easing: "easeOutBack" }, out: { type: "fadeOut", before: 0.4, dur: 0.4 } },
+    },
+    {
+      id: "sub",
+      kind: "text",
+      tag: "subtitle",
+      time: { from: 1.6, to: 7.6 },
+      geometry: { x: 0.5, y: 0.585 },
+      style: { color: "#8ad8f2" },
+      text: { content: "efek organik pakai satu kode — katakan saja pada AI", size: 0.028, weight: 600, align: "center", font: "mono" },
+      motion: { in: { type: "fadeIn", at: 0.2, dur: 0.6 }, out: { type: "fadeOut", before: 0.4, dur: 0.4 } },
+    },
+  ],
+};
+
 /** Etiket + daftar contoh untuk UI (Fase 2 memakai ini sebagai test fixture). */
 export const SAMPLES: Record<string, { label: string; caption: string; def: MotionDefinition }> = {
   "bola-memantul": {
@@ -304,6 +402,11 @@ export const SAMPLES: Record<string, { label: string; caption: string; def: Moti
     label: "Lower Third Brand",
     caption: "in slideLeft + out slideDown",
     def: lowerThirdBrand,
+  },
+  "nebula-kanvas": {
+    label: "Nebula Kanvas Bebas",
+    caption: "fx: glow, gelombang, bintang (kind canvas)",
+    def: nebulaKanvas,
   },
 };
 

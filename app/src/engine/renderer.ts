@@ -10,6 +10,7 @@
 
 import type { MotionDefinition, LayerSpec } from "./schema";
 import { getEase } from "./easing";
+import { compileKanvas, jalankanKanvas } from "./kanvas";
 
 const SLIDE = 0.18; // jarak slide masuk/keluar (fraksi kanvas)
 
@@ -251,6 +252,16 @@ function drawLayer(
   const g = l.geometry;
   ctx.save();
   ctx.globalAlpha = clamp(baseAlpha);
+
+  // --- kind "canvas": kode bebas, koordinat piksel kanvas DEFINISI.
+  // Digambar tanpa transform layer (geometry/motion), tapi tetap
+  // mengikuti time.from/to dan alpha (style.opacity + motion in/out).
+  if (l.kind === "canvas") {
+    const compiled = compileKanvas(l.kanvas?.source ?? "");
+    jalankanKanvas(compiled, ctx, t, W, H, l.id);
+    ctx.restore();
+    return;
+  }
 
   if (l.kind === "line") {
     if (!l.line) return void ctx.restore();

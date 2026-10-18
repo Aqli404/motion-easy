@@ -8,6 +8,7 @@ const aturan = [
   "Warna = hex 6 digit, tanpa gradasi",
   "Gerakan = preset in / out / loop",
   "Maks 60 layer · durasi 1–30 detik",
+  "Kind \"canvas\" = kanvas bebas: kode draw(ctx, time, w, h, fx) untuk efek organik (partikel, glow, gelombang) — deterministik via fx",
 ];
 
 export default function Skema() {
@@ -73,9 +74,8 @@ export default function Skema() {
         </div>
 
         <p className="mt-4 font-mono text-[10px] text-edge">
-          5 contoh di atas terjaga lewat tipe TypeScript — kalau skema
-          berubah, semuanya ikut menyala sebagai peringatan compile. Renderer
-          baru aktif di Fase 2.
+          6 contoh di atas terjaga lewat tipe TypeScript — kalau skema
+          berubah, semuanya ikut menyala sebagai peringatan compile.
         </p>
       </div>
     </div>
