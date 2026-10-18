@@ -16,7 +16,7 @@ import ExportModal from "../components/ExportModal";
 import { SAMPLES, SAMPLE_KEYS } from "../engine/samples";
 import { renderFrame, activeLayerCount } from "../engine/renderer";
 import { usePlayer } from "../engine/player";
-import type { MotionDefinition, MotionSpec, LayerSpec } from "../engine/schema";
+import type { MotionDefinition, MotionSpec } from "../engine/schema";
 
 function fmt(t: number): string {
   const m = Math.floor(t / 60);
@@ -83,23 +83,35 @@ export default function Studio() {
     c.height = def.canvas.h;
     const ctx = c.getContext("2d");
     if (!ctx) return;
-    // Kalau di frame saat ini tidak ada layer BERISI (di luar background
-    // fullscreen — mis. t=0 belum ada yang masuk), cari frame paling
-    // "ramai" dari beberapa kandidat supaya klik pertama tidak kosong.
-    const fullBg = (l: LayerSpec) =>
-      l.kind === "rect" && (l.geometry.w ?? 0) >= 0.95 && (l.geometry.h ?? 0) >= 0.95;
-    const hitungIsi = (t: number) =>
-      def.layers.filter((l) => t >= l.time.from && t <= l.time.to && !fullBg(l)).length;
+    // Kalau frame saat ini "blank" (kontras ~0, mis. t=0 belum ada yang
+    // masuk), scan kandidat frame dan pilih yang paling ramai — diukur
+    // LANGSUNG dari hasil render, bukan dari daftar layer.
+    const kontrasDi = (waktu: number) => {
+      const s = document.createElement("canvas");
+      s.width = 160;
+      s.height = Math.max(1, Math.round((160 * def.canvas.h) / def.canvas.w));
+      const sx = s.getContext("2d");
+      if (!sx) return -1;
+      renderFrame(sx, def, waktu);
+      const d = sx.getImageData(0, 0, s.width, s.height).data;
+      let mn = 999, mx = -1;
+      for (let i = 0; i < d.length; i += 4) {
+        if (d[i] > mx) mx = d[i];
+        if (d[i] < mn) mn = d[i];
+      }
+      return mx - mn;
+    };
     let t = player.getTime();
-    let isi = hitungIsi(t);
-    if (isi === 0) {
-      for (const f of [0.35, 0.5, 0.25, 0.7, 0.85]) {
-        const cand = def.canvas.durationSec * f;
-        const n = hitungIsi(cand);
-        if (n > isi) {
+    if (kontrasDi(t) < 24) {
+      const dur = def.canvas.durationSec;
+      const kandidat = [0.35, 0.5, 0.25, 0.7, 0.85];
+      let terbaikK = kontrasDi(t);
+      for (const f of kandidat) {
+        const cand = dur * f;
+        const k = kontrasDi(cand);
+        if (k > terbaikK) {
+          terbaikK = k;
           t = cand;
-          isi = n;
-          break;
         }
       }
     }
