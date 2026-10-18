@@ -8,6 +8,8 @@ import {
   Trash2,
   Hammer,
   ExternalLink,
+  ClipboardCheck,
+  ArrowUpRight,
 } from "lucide-react";
 import {
   KATEGORI,
@@ -48,6 +50,7 @@ export default function AiPanel({ def, adalahKustom, onApplyDef }: Props) {
   const [percobaan, setPercobaan] = useState(0);
   const [lastJson, setLastJson] = useState<string>("");
   const [log, setLog] = useState<LogEntry[]>([]);
+  const [handoff, setHandoff] = useState<"Gemini" | "ChatGPT" | "Claude" | null>(null);
   const pasteRef = useRef<HTMLTextAreaElement | null>(null);
 
   const prompt = useMemo(() => buildPrompt(brief), [brief]);
@@ -68,6 +71,7 @@ export default function AiPanel({ def, adalahKustom, onApplyDef }: Props) {
 
   const bukaAi = async (nama: "Gemini" | "ChatGPT" | "Claude", url: string) => {
     const ok = await copyText(prompt);
+    setHandoff(nama);
     window.open(url, "_blank", "noopener,noreferrer");
     tulisLog(
       ok
@@ -75,6 +79,44 @@ export default function AiPanel({ def, adalahKustom, onApplyDef }: Props) {
         : `${nama} dibuka — salin prompt manual jika clipboard tidak tersedia`,
       ok ? "info" : "err",
     );
+  };
+
+  const tempelDariClipboard = async () => {
+    try {
+      const isi = await navigator.clipboard.readText();
+      if (!isi.trim()) {
+        tulisLog("clipboard kosong — salin JSON dari AI terlebih dahulu", "err");
+        return;
+      }
+      setPaste(isi);
+      setHandoff(null);
+      tulisLog("JSON ditempel dari clipboard — validasi dimulai", "info");
+      const extracted = extractJson(isi);
+      setLastJson(isi.trim());
+      if (extracted.error) {
+        setIssues([{ path: "input", message: extracted.error, level: "error" }]);
+        setValidBenerm({ ok: false });
+        setPercobaan((p) => Math.min(3, p + 1));
+        tulisLog(extracted.error, "err");
+        return;
+      }
+      const hasil = validateDefinition(extracted.json);
+      const errs = hasil.errors.filter((i) => i.level === "error");
+      setIssues([...hasil.errors]);
+      if (hasil.def && errs.length === 0) {
+        setValidBenerm({ ok: true });
+        setPercobaan(0);
+        onApplyDef(hasil.def);
+        tulisLog(`animasi diterapkan: "${hasil.def.name}" — ${hasil.def.layers.length} layer, ${hasil.def.canvas.durationSec} dtk. Tekan ▶`, "ok");
+      } else {
+        setValidBenerm({ ok: false });
+        onApplyDef(null);
+        setPercobaan((p) => Math.min(3, p + 1));
+        tulisLog(`ditolak validator — ${errs.length} kesalahan. Pakai prompt perbaikan.`, "err");
+      }
+    } catch {
+      tulisLog("clipboard tidak bisa dibaca — tempel JSON manual ke kotak di bawah", "err");
+    }
   };
 
   const salinPerapi = async () => {
@@ -264,6 +306,22 @@ export default function AiPanel({ def, adalahKustom, onApplyDef }: Props) {
             Tombol AI menyalin prompt otomatis lalu membuka layanan pilihanmu di tab baru.
             Tempel prompt di sana, salin JSON, lalu kembali ke langkah 2.
           </p>
+          {handoff && (
+            <div className="mt-2 rounded-lg border border-secondary/40 bg-secondary/10 p-2.5 text-[10px] text-secondary">
+              <div className="flex items-center gap-1.5 font-semibold">
+                <ArrowUpRight className="h-3.5 w-3.5" /> {handoff} sudah dibuka
+              </div>
+              <p className="mt-1 leading-relaxed text-ink-dim">
+                Prompt sudah disalin. Tekan <strong>Ctrl+V</strong> di {handoff}, kirim, lalu salin JSON hasilnya.
+              </p>
+              <button
+                onClick={tempelDariClipboard}
+                className="mt-2 flex w-full items-center justify-center gap-1.5 rounded-md bg-secondary px-2.5 py-2 font-semibold text-deep hover:brightness-110"
+              >
+                <ClipboardCheck className="h-3.5 w-3.5" /> Tempel JSON &amp; Validasi Otomatis
+              </button>
+            </div>
+          )}
         </div>
 
         {/* ===== LANGKAH 2: PASTE ===== */}
