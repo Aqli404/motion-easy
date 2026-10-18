@@ -16,7 +16,7 @@ import ExportModal from "../components/ExportModal";
 import { SAMPLES, SAMPLE_KEYS } from "../engine/samples";
 import { renderFrame, activeLayerCount } from "../engine/renderer";
 import { usePlayer } from "../engine/player";
-import type { MotionDefinition, MotionSpec } from "../engine/schema";
+import type { MotionDefinition, MotionSpec, LayerSpec } from "../engine/schema";
 
 function fmt(t: number): string {
   const m = Math.floor(t / 60);
@@ -83,13 +83,25 @@ export default function Studio() {
     c.height = def.canvas.h;
     const ctx = c.getContext("2d");
     if (!ctx) return;
-    // Kalau di frame saat ini tidak ada layer aktif (mis. t=0 belum ada yang
-    // masuk), pakai frame paling "ramai" sebagai gantinya — supaya klik
-    // pertama tidak menghasilkan cover kosong.
+    // Kalau di frame saat ini tidak ada layer BERISI (di luar background
+    // fullscreen — mis. t=0 belum ada yang masuk), cari frame paling
+    // "ramai" dari beberapa kandidat supaya klik pertama tidak kosong.
+    const fullBg = (l: LayerSpec) =>
+      l.kind === "rect" && (l.geometry.w ?? 0) >= 0.95 && (l.geometry.h ?? 0) >= 0.95;
+    const hitungIsi = (t: number) =>
+      def.layers.filter((l) => t >= l.time.from && t <= l.time.to && !fullBg(l)).length;
     let t = player.getTime();
-    if (activeLayerCount(def, t) === 0) {
-      const kandidat = def.canvas.durationSec * 0.35;
-      if (activeLayerCount(def, kandidat) > 0) t = kandidat;
+    let isi = hitungIsi(t);
+    if (isi === 0) {
+      for (const f of [0.35, 0.5, 0.25, 0.7, 0.85]) {
+        const cand = def.canvas.durationSec * f;
+        const n = hitungIsi(cand);
+        if (n > isi) {
+          t = cand;
+          isi = n;
+          break;
+        }
+      }
     }
     renderFrame(ctx, def, t);
     const slug = def.name
