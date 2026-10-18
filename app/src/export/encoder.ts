@@ -46,8 +46,17 @@ const LEVEL_MBS: Array<[string, number]> = [
   ["34", 2_073_600],
 ];
 
-/** Profil AVC, dari paling umum (High) ke paling aman (Baseline). */
-const PROFIL = ["64", "4d", "42"];
+/**
+ * Profil AVC + constraint byte (2 digit profil + 2 digit constraint):
+ * HIGH=6400 · MAIN=4d00 · BASELINE=4200.
+ * ⚠️ Format codec H.264 = avc1.{profil2}{constraint2}{level2} — total 6 digit
+ * hex. Tanpa "00", stringnya 4 digit (mis. "avc1.6428") dan browser menolak
+ * SEMUANYA — termasuk 720p/1080p yang sebenarnya didukung.
+ */
+const PROFIL = ["6400", "4d00", "4200"];
+
+/** Pola sah codec AVC: avc1. + 6 digit hex. Penjaga terhadap salah ketik. */
+const POLA_AVC = /^avc1\.[0-9a-f]{6}$/;
 
 /**
  * Kandidat codec: dimulai dari level TERKECIL yang cukup untuk resolusi+fps
@@ -59,7 +68,12 @@ function kandidatCodec(w: number, h: number, fps: number): string[] {
   const butuh = mbPerFrame * fps;
   let awal = LEVEL_MBS.findIndex(([, maks]) => maks >= butuh);
   if (awal < 0) awal = LEVEL_MBS.length - 1; // di atas tabel → level tertinggi
-  return PROFIL.flatMap((p) => LEVEL_MBS.slice(awal).map(([lv]) => `avc1.${p}${lv}`));
+  const hasil = PROFIL.flatMap((p) => LEVEL_MBS.slice(awal).map(([lv]) => `avc1.${p}${lv}`));
+  // jaring pengaman: bila ada string cacat, lempar saat pengembangan (bukan diam-diam)
+  if (import.meta.env.DEV && hasil.some((c) => !POLA_AVC.test(c))) {
+    throw new Error(`BUG: codec string tidak sah: ${hasil.filter((c) => !POLA_AVC.test(c)).join(", ")}`);
+  }
+  return hasil;
 }
 
 /** Bitrate turun bertahap bila encoder menolak bitrate tinggi. */
@@ -244,6 +258,11 @@ export async function probeDukunganPreset(
       hasil[preset.id] = false;
     }
   }
+  // Anti-lockdown: kalau SEMUA preset dikatakan tidak didukung, kemungkinan
+  // besar itu salah di logika kita (bukan mesin yang lemah) — anggap tidak
+  // meyakinkan dan jangan matikan apa pun. Biarkan percobaan ekspor yang
+  // melaporkan pesan sebenarnya.
+  if (Object.values(hasil).every((ok) => !ok)) return {};
   return hasil;
 }
 
