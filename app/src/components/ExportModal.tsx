@@ -165,7 +165,7 @@ export default function ExportModal({ def, open, onClose }: Props) {
                     {p.label}
                   </span>
                   <span className="font-mono text-[9px] text-muted">
-                    {s.width}×{s.height} · {estimasiMb(def.canvas.durationSec, p.bitrate)} MB
+                    {s.width}×{s.height} · maks ~{estimasiMb(def.canvas.durationSec, p.bitrate)} MB
                   </span>
                 </span>
                 <span className="flex items-center gap-2">

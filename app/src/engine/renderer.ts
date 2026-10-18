@@ -288,11 +288,28 @@ export function renderFrame(
   t: number,
 ) {
   const { w: W, h: H } = def.canvas;
+  // PENTING: ukur skala dari ukuran KANVAS TUJUAN (`ctx.canvas`), bukan
+  // asumsikan kanvas = kanvas definisi. Saat export 720p/2K/4K kandasnya
+  // beda ukuran — tanpa ini semua gambar mampir ke kuadran kiri-atas.
+  // Rapikan di tengah bila rasio kanvas tujuan sedikit berbeda (pembulatan).
+  const TW = ctx.canvas.width;
+  const TH = ctx.canvas.height;
+  const s = W > 0 && H > 0 ? Math.min(TW / W, TH / H) : 1;
+  const ox = (TW - W * s) / 2;
+  const oy = (TH - H * s) / 2;
   ctx.save();
-  ctx.clearRect(0, 0, W, H);
+  // transformasi menangani skala + posisi; seluruh matematika gambar di bawah
+  // tetap memakai koordinat definisi (fraksi × W/H definisi) — tidak berubah.
+  ctx.setTransform(s, 0, 0, s, ox, oy);
+
+  // latar: bila warna latar diatur, isi SELURUH kanvas tujuan (bukan hanya
+  // area definisi) supaya hasil export tidak punya tepi kosong/hitam.
+  // Bila tidak diatur, tetap bening (perilaku lama).
   if (def.canvas.background) {
     ctx.fillStyle = def.canvas.background;
-    ctx.fillRect(0, 0, W, H);
+    ctx.fillRect(-ox / s, -oy / s, TW / s, TH / s);
+  } else {
+    ctx.clearRect(0, 0, W, H);
   }
   for (const l of def.layers) {
     if (t < l.time.from || t > l.time.to) continue;
