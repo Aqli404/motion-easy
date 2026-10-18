@@ -1,8 +1,8 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Download, Crown, X, CheckCircle2, XCircle, Loader2 } from "lucide-react";
 import Modal from "./Modal";
 import { EXPORT_PRESETS, resolveExportSize, estimasiMb, slugify, type ExportPreset } from "../export/presets";
-import { exportMp4, unduhBlob, webCodecsSupported, type ExportProgress } from "../export/encoder";
+import { exportMp4, unduhBlob, webCodecsSupported, probeDukunganPreset, type ExportProgress } from "../export/encoder";
 import { useLicense } from "../license/useLicense";
 import { premiumAktif, premiumEfektif, MODE_DEV, labelTier, expiryLabel } from "../license/license";
 import type { MotionDefinition } from "../engine/schema";
@@ -27,6 +27,30 @@ export default function ExportModal({ def, open, onClose }: Props) {
   const cancelRef = useRef({ cancelled: false });
   const blobRef = useRef<Blob | null>(null);
   const supported = webCodecsSupported();
+  const [dukungan, setDukungan] = useState<Record<string, boolean> | null>(null);
+  const [infoTersalin, setInfoTersalin] = useState(false);
+
+  // Setelah modal terbuka, cek sekali: preset mana yang benar-benar didukung
+  // mesin ini. Preset aktif yang ternyata gak sanggup otomatis diganti.
+  useEffect(() => {
+    if (!open || dukungan) return;
+    let batal = false;
+    probeDukunganPreset(def).then((hasil) => {
+      if (batal) return;
+      setDukungan(hasil);
+      setPresetId((id) => {
+        if (hasil[id] !== false) return id;
+        const penerus = [...EXPORT_PRESETS]
+          .reverse()
+          .find((p) => (!p.premium || premium) && hasil[p.id] !== false);
+        return penerus ? penerus.id : id;
+      });
+    });
+    return () => {
+      batal = true;
+    };
+    // dependensi disengaja: probe hanya dijalankan sekali per def terbuka
+  }, [open, def]);
 
   const reset = () => {
     setStatus({ state: "idle" });
@@ -62,6 +86,28 @@ export default function ExportModal({ def, open, onClose }: Props) {
     }
   };
 
+  /** Kumpulkan info mesin untuk dukungan via WhatsApp. */
+  const salinInfoPerangkat = () => {
+    const baris = EXPORT_PRESETS.map(
+      (p) => `${p.label}: ${dukungan?.[p.id] === false ? "tidak didukung" : "didukung"}`,
+    ).join("\n");
+    const teks = [
+      "Info Perangkat — Motion Easy",
+      navigator.userAgent,
+      `WebCodecs: ${supported ? "ada" : "tidak ada"}`,
+      baris,
+    ].join("\n");
+    navigator.clipboard
+      .writeText(teks)
+      .then(() => {
+        setInfoTersalin(true);
+        setTimeout(() => setInfoTersalin(false), 2500);
+      })
+      .catch(() => {
+        // clipboard diblokir — abaikan, pengguna bisa screenshot
+      });
+  };
+
   const presetAktif = EXPORT_PRESETS.find((p) => p.id === presetId) as ExportPreset;
   const ukuran = resolveExportSize(def, presetAktif);
   const berjalan = status.state === "running";
@@ -92,26 +138,30 @@ export default function ExportModal({ def, open, onClose }: Props) {
           const s = resolveExportSize(def, p);
           const aktif = presetId === p.id;
           const terkunci = p.premium && !premium;
-          const badge = p.premium
-            ? premium
-              ? "aktif ✓"
-              : "butuh lisensi"
-            : "gratis";
+          const tidakDukung = dukungan ? dukungan[p.id] === false : false;
+          const mati = terkunci || tidakDukung;
+          const badge = tidakDukung
+            ? "mesin tak sanggup"
+            : p.premium
+              ? premium
+                ? "aktif ✓"
+                : "butuh lisensi"
+              : "gratis";
           return (
             <li key={p.id}>
               <button
-                onClick={() => !terkunci && !berjalan && setPresetId(p.id)}
-                disabled={terkunci || berjalan}
+                onClick={() => !mati && !berjalan && setPresetId(p.id)}
+                disabled={mati || berjalan}
                 className={`flex w-full items-center justify-between rounded-lg border px-3 py-2.5 text-xs transition-colors ${
-                  aktif && !terkunci
+                  aktif && !mati
                     ? "border-accent bg-panel-high"
-                    : terkunci
+                    : mati
                       ? "border-edge bg-panel-low opacity-60"
                       : "border-edge bg-panel-low hover:bg-panel"
                 }`}
               >
                 <span className="flex items-center gap-2">
-                  <span className={`font-mono font-semibold ${terkunci ? "text-muted" : "text-ink-dim"}`}>
+                  <span className={`font-mono font-semibold ${mati ? "text-muted" : "text-ink-dim"}`}>
                     {p.label}
                   </span>
                   <span className="font-mono text-[9px] text-muted">
@@ -119,13 +169,13 @@ export default function ExportModal({ def, open, onClose }: Props) {
                   </span>
                 </span>
                 <span className="flex items-center gap-2">
-                  <span className={`font-mono text-[9px] ${terkunci ? "text-error" : premium && p.premium ? "text-tertiary" : "text-muted"}`}>
+                  <span className={`font-mono text-[9px] ${mati ? "text-error" : premium && p.premium ? "text-tertiary" : "text-muted"}`}>
                     {badge}
                   </span>
                   {p.premium ? (
                     <Crown className={`h-3.5 w-3.5 ${terkunci ? "text-muted" : "text-primary"}`} />
                   ) : (
-                    aktif && <CheckCircle2 className="h-3.5 w-3.5 text-accent" />
+                    aktif && !tidakDukung && <CheckCircle2 className="h-3.5 w-3.5 text-accent" />
                   )}
                 </span>
               </button>
@@ -180,7 +230,15 @@ export default function ExportModal({ def, open, onClose }: Props) {
       {status.state === "error" && (
         <div className="mt-3 flex items-start gap-2 rounded-lg bg-error/10 px-3 py-2 text-[11px] text-error">
           <XCircle className="mt-0.5 h-3.5 w-3.5 shrink-0" />
-          <span>{status.message}</span>
+          <div className="flex-1">
+            <span>{status.message}</span>
+            <button
+              onClick={salinInfoPerangkat}
+              className="mt-1 block font-mono text-[10px] underline opacity-80 hover:opacity-100"
+            >
+              {infoTersalin ? "tersalin ✓ (tempel di WhatsApp admin)" : "Salin Info Perangkat"}
+            </button>
+          </div>
         </div>
       )}
 
@@ -195,7 +253,7 @@ export default function ExportModal({ def, open, onClose }: Props) {
         ) : (
           <button
             onClick={mulai}
-            disabled={berjalan || !supported}
+            disabled={berjalan || !supported || dukungan?.[presetId] === false}
             className="flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-amber-400 via-orange-500 to-rose-500 px-3 py-2.5 text-sm font-semibold text-deep shadow disabled:opacity-50"
           >
             {berjalan ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}

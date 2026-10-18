@@ -8,7 +8,7 @@
 import { Muxer, ArrayBufferTarget } from "mp4-muxer";
 import { renderFrame } from "../engine/renderer";
 import type { MotionDefinition } from "../engine/schema";
-import { resolveExportSize } from "./presets";
+import { EXPORT_PRESETS, resolveExportSize } from "./presets";
 import type { ExportPreset, ExportSize } from "./presets";
 
 export interface ExportProgress {
@@ -24,32 +24,87 @@ export function webCodecsSupported(): boolean {
   return typeof window !== "undefined" && "VideoEncoder" in window;
 }
 
-/** Urutan codec H.264 dari kualitas terbaik ke paling aman. */
-const CANDIDATE_CODECS = ["avc1.640028", "avc1.4d0028", "avc1.42001f"];
+export interface KonfigurasiEncoder {
+  codec: string;
+  bitrate: number;
+  hardwareAcceleration?: "prefer-software";
+}
 
-async function pickCodec(
+/**
+ * Level AVC dipilih sesuai resolusi & fps — byte terakhir codec string
+ * adalah level dalam hex. Batas makroblock/detik dari spesifikasi AVC:
+ * 1f=3.1 · 28=4.0 · 29=4.1 · 2a=4.2 · 32=5.0 · 33=5.1 · 34=5.2
+ * Tanpa ini, 2K/4K ditolak encoder karena level-nya kurang tinggi.
+ */
+const LEVEL_MBS: Array<[string, number]> = [
+  ["1f", 108_000],
+  ["28", 245_760],
+  ["29", 245_760],
+  ["2a", 522_240],
+  ["32", 589_824],
+  ["33", 983_040],
+  ["34", 2_073_600],
+];
+
+/** Profil AVC, dari paling umum (High) ke paling aman (Baseline). */
+const PROFIL = ["64", "4d", "42"];
+
+/**
+ * Kandidat codec: dimulai dari level TERKECIL yang cukup untuk resolusi+fps
+ * ini (paling kompatibel), lalu naik sebagai cadangan. Tiap level diberi
+ * 3 profil (High/Main/Baseline).
+ */
+function kandidatCodec(w: number, h: number, fps: number): string[] {
+  const mbPerFrame = Math.ceil(w / 16) * Math.ceil(h / 16);
+  const butuh = mbPerFrame * fps;
+  let awal = LEVEL_MBS.findIndex(([, maks]) => maks >= butuh);
+  if (awal < 0) awal = LEVEL_MBS.length - 1; // di atas tabel → level tertinggi
+  return PROFIL.flatMap((p) => LEVEL_MBS.slice(awal).map(([lv]) => `avc1.${p}${lv}`));
+}
+
+/** Bitrate turun bertahap bila encoder menolak bitrate tinggi. */
+const LANGKAH_BITRATE = [1, 0.6, 0.35, 0.2];
+
+export function pesanEncoderTidakAda(): string {
+  return "Komputer/browser ini tidak sanggup meng-encode H.264 pada resolusi ini. Coba preset yang lebih kecil (1080p/720p), atau buka di Chrome/Edge desktop.";
+}
+
+/**
+ * Cari kombinasi codec + bitrate + akselerasi yang BENAR-BENAR didukung
+ * mesin (terverifikasi lewat isConfigSupported), dari kualitas tertinggi
+ * ke paling hemat. Kombinasi terpilih langsung dipakai saat configure —
+ * jadi tidak ada celah "tervalidasi tapi gagal saat eksekusi".
+ */
+export async function pilihKonfigurasiEncoder(
   width: number,
   height: number,
-  bitrate: number,
   fps: number,
-): Promise<string> {
-  for (const codec of CANDIDATE_CODECS) {
-    try {
-      const support = await VideoEncoder.isConfigSupported({
-        codec,
-        width,
-        height,
-        bitrate,
-        framerate: fps,
-      });
-      if (support.supported) return codec;
-    } catch {
-      // coba codec berikutnya
+  targetBitrate: number,
+): Promise<KonfigurasiEncoder> {
+  for (const soft of [false, true]) {
+    for (const codec of kandidatCodec(width, height, fps)) {
+      for (const faktor of LANGKAH_BITRATE) {
+        const bitrate = Math.max(500_000, Math.round((targetBitrate * faktor) / 1000) * 1000);
+        const softnya = soft ? ({ hardwareAcceleration: "prefer-software" } as const) : {};
+        try {
+          const support = await VideoEncoder.isConfigSupported({
+            codec,
+            width,
+            height,
+            bitrate,
+            framerate: fps,
+            ...softnya,
+          });
+          if (support.supported) {
+            return { codec, bitrate, ...softnya };
+          }
+        } catch {
+          // lanjut ke kandidat berikutnya
+        }
+      }
     }
   }
-  throw new Error(
-    "Tidak ada codec H.264 yang didukung browser ini. Gunakan Chrome/Edge terbaru.",
-  );
+  throw new Error(pesanEncoderTidakAda());
 }
 
 export interface ExportResult {
@@ -75,7 +130,8 @@ export async function exportMp4(
   const { width, height } = size;
 
   onProgress({ phase: "preparing", frame: 0, totalFrames: 0, pct: 0 });
-  const codec = await pickCodec(width, height, preset.bitrate, fps);
+  // negosiasi otomatis: codec yang pas + bitrate yang bisa ditanggung mesin
+  const konfig = await pilihKonfigurasiEncoder(width, height, fps, preset.bitrate);
 
   const muxer = new Muxer({
     target: new ArrayBufferTarget(),
@@ -98,11 +154,14 @@ export async function exportMp4(
   });
 
   encoder.configure({
-    codec,
+    codec: konfig.codec,
     width,
     height,
-    bitrate: preset.bitrate,
+    bitrate: konfig.bitrate,
     framerate: fps,
+    ...(konfig.hardwareAcceleration
+      ? { hardwareAcceleration: konfig.hardwareAcceleration }
+      : {}),
   });
 
   // Canvas untuk menggambar frame (renderer yang sama dengan preview!)
@@ -164,6 +223,28 @@ export async function exportMp4(
       // abaikan
     }
   }
+}
+
+/**
+ * Cek cepat (tanpa render): preset mana saja yang sanggup di-encode mesin ini.
+ * Dipakai Modal Ekspor untuk menandai preset yang tidak didukung SEBELUM
+ * pengguna menekan tombol — tidak ada lagi error mengejutkan.
+ */
+export async function probeDukunganPreset(
+  def: MotionDefinition,
+): Promise<Record<string, boolean>> {
+  if (!webCodecsSupported()) return {};
+  const hasil: Record<string, boolean> = {};
+  for (const preset of EXPORT_PRESETS) {
+    const { width, height } = resolveExportSize(def, preset);
+    try {
+      await pilihKonfigurasiEncoder(width, height, def.canvas.fps, preset.bitrate);
+      hasil[preset.id] = true;
+    } catch {
+      hasil[preset.id] = false;
+    }
+  }
+  return hasil;
 }
 
 /** Unduh blob dengan nama file yang rapi. */

@@ -64,6 +64,11 @@ export default function Panduan() {
               Chrome &amp; Edge desktop untuk export MP4 (WebCodecs). Preview
               tetap jalan di browser lain.
             </p>
+            <p className="mt-1.5 font-mono text-[10px] leading-relaxed text-muted">
+              Catatan: komputer tanpa encoder GPU bisa saja hanya sanggup 720p /
+              1080p — aplikasi mendeteksinya otomatis dan menandai preset yang
+              tidak didukung.
+            </p>
           </div>
           <div className="rounded-xl border border-edge bg-panel-low p-4">
             <Rocket className="h-4 w-4 text-tertiary" />

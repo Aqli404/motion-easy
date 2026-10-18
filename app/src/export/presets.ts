@@ -18,8 +18,8 @@ export interface ExportPreset {
 export const EXPORT_PRESETS: ExportPreset[] = [
   { id: "720", label: "720p", short: 720, bitrate: 8_000_000, premium: false, caption: "Web & preview cepat" },
   { id: "1080", label: "1080p", short: 1080, bitrate: 25_000_000, premium: false, caption: "Standar microstock" },
-  { id: "1440", label: "2K", short: 1440, bitrate: 45_000_000, premium: true, caption: "High-res stock (Fase 5)" },
-  { id: "2160", label: "4K", short: 2160, bitrate: 80_000_000, premium: true, caption: "Master ultra (Fase 5)" },
+  { id: "1440", label: "2K", short: 1440, bitrate: 45_000_000, premium: true, caption: "High-res microstock" },
+  { id: "2160", label: "4K", short: 2160, bitrate: 80_000_000, premium: true, caption: "Master ultra (butuh mesin kuat)" },
 ];
 
 export interface ExportSize {
