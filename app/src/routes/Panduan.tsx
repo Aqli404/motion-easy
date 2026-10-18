@@ -24,7 +24,7 @@ const tahap = [
   {
     n: 5,
     t: "Export MP4",
-    d: "Pilih resolusi 720p–4K, tunggu progres bar, video tersimpan di Download. (Fase 4)",
+    d: "Pilih resolusi 720p–4K, tunggu progres bar, video tersimpan di Download.",
   },
 ];
 
