@@ -11,6 +11,7 @@ import {
 import Modal from "./Modal";
 import { EXPORT_PRESETS, slugify, estimasiMb, type ExportPreset } from "../export/presets";
 import { exportMp4, unduhBlob, webCodecsSupported } from "../export/encoder";
+import { TARGET_MB_OPTIONS, padMp4Blob } from "../export/pad";
 import { buatZip, type ArsipFile } from "../export/zip";
 import { parsingBatch, type BatchItem } from "../export/batch";
 import { useLicense } from "../license/useLicense";
@@ -44,6 +45,7 @@ export default function BulkModal({ def, open, onClose }: Props) {
   const [teks, setTeks] = useState("");
   const [sertakanAktif, setSertakanAktif] = useState(false);
   const [presetId, setPresetId] = useState("720"); // default 720: batch = banyak file, mulai dari yang ringan
+  const [targetMb, setTargetMb] = useState<number>(0);
   const [baris, setBaris] = useState<BarisAntre[]>([]);
   const [status, setStatus] = useState<finishing>({ state: "idle" });
   const [berjalan, setBerjalan] = useState(false);
@@ -89,7 +91,8 @@ export default function BulkModal({ def, open, onClose }: Props) {
           (pr) => setBaris((b) => b.map((x, j) => (j === i ? { ...x, pct: pr.pct } : x))),
           cancelRef.current,
         );
-        const data = new Uint8Array(await hasil.blob.arrayBuffer());
+        const finalBlob = await padMp4Blob(hasil.blob, targetMb);
+        const data = new Uint8Array(await finalBlob.arrayBuffer());
         arsip.push({
           nama: `${String(arsip.length + 1).padStart(2, "0")}-${slugify(items[i].nama)}-${hasil.size.width}x${hasil.size.height}.mp4`,
           data,
@@ -97,7 +100,7 @@ export default function BulkModal({ def, open, onClose }: Props) {
         setBaris((b) =>
           b.map((x, j) =>
             j === i
-              ? { ...x, state: "ok", pct: 100, mb: hasil.blob.size / 1_000_000 }
+              ? { ...x, state: "ok", pct: 100, mb: finalBlob.size / 1_000_000 }
               : x,
           ),
         );
@@ -185,6 +188,23 @@ export default function BulkModal({ def, open, onClose }: Props) {
       <p className="font-mono text-[9px] text-muted">
         saran: untuk batch, mulai dari {preset.caption.toLowerCase()} — bisa dim-render ulang per karya kalau perlu kualitas lebih.
       </p>
+
+      {/* Target Ukuran File (Enlarge MB) */}
+      <div className="rounded-lg border border-edge bg-panel-low p-2">
+        <label className="block font-mono text-[9px] uppercase tracking-widest text-muted">
+          Target Ukuran per Video (Enlarge MB)
+        </label>
+        <select
+          value={targetMb}
+          onChange={(e) => setTargetMb(Number(e.target.value))}
+          disabled={berjalan}
+          className="mt-1 w-full rounded-md border border-edge bg-well px-2 py-1 text-[10px] text-ink-dim"
+        >
+          {TARGET_MB_OPTIONS.map((o) => (
+            <option key={o.mb} value={o.mb}>{o.label}</option>
+          ))}
+        </select>
+      </div>
 
       {/* Tempel banyak definisi */}
       <div>

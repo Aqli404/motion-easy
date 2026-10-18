@@ -3,6 +3,7 @@ import { Download, Crown, X, CheckCircle2, XCircle, Loader2 } from "lucide-react
 import Modal from "./Modal";
 import { EXPORT_PRESETS, resolveExportSize, estimasiMb, slugify, type ExportPreset } from "../export/presets";
 import { exportMp4, unduhBlob, webCodecsSupported, probeDukunganPreset, type ExportProgress } from "../export/encoder";
+import { TARGET_MB_OPTIONS, padMp4Blob } from "../export/pad";
 import { useLicense } from "../license/useLicense";
 import { premiumAktif, premiumEfektif, MODE_DEV, labelTier, expiryLabel } from "../license/license";
 import type { MotionDefinition } from "../engine/schema";
@@ -23,6 +24,7 @@ export default function ExportModal({ def, open, onClose }: Props) {
   const lic = useLicense();
   const premium = premiumEfektif(lic);
   const [presetId, setPresetId] = useState("1080");
+  const [targetMb, setTargetMb] = useState<number>(0);
   const [status, setStatus] = useState<Status>({ state: "idle" });
   const cancelRef = useRef({ cancelled: false });
   const blobRef = useRef<Blob | null>(null);
@@ -75,10 +77,11 @@ export default function ExportModal({ def, open, onClose }: Props) {
         (progress) => setStatus({ state: "running", progress }),
         cancelRef.current,
       );
-      blobRef.current = hasil.blob;
+      const paddedBlob = await padMp4Blob(hasil.blob, targetMb);
+      blobRef.current = paddedBlob;
       const filename = `${slugify(def.name)}-${hasil.size.width}x${hasil.size.height}.mp4`;
-      unduhBlob(hasil.blob, filename);
-      setStatus({ state: "done", fileMb: hasil.blob.size / 1_000_000, filename });
+      unduhBlob(paddedBlob, filename);
+      setStatus({ state: "done", fileMb: paddedBlob.size / 1_000_000, filename });
     } catch (e) {
       const msg = (e as Error).message;
       if (msg.includes("dibatalkan")) setStatus({ state: "idle" });
@@ -183,6 +186,26 @@ export default function ExportModal({ def, open, onClose }: Props) {
           );
         })}
       </ul>
+
+      {/* Opsi Enlarge-MB (Jujur via MP4 free box padding) */}
+      <div className="rounded-lg border border-edge bg-panel-low p-2.5">
+        <label className="block font-mono text-[9px] uppercase tracking-widest text-muted">
+          Target Ukuran File (Enlarge MB Resmi)
+        </label>
+        <select
+          value={targetMb}
+          onChange={(e) => setTargetMb(Number(e.target.value))}
+          disabled={berjalan}
+          className="mt-1.5 w-full rounded-md border border-edge bg-well px-2 py-1.5 text-[11px] text-ink-dim"
+        >
+          {TARGET_MB_OPTIONS.map((o) => (
+            <option key={o.mb} value={o.mb}>{o.label}</option>
+          ))}
+        </select>
+        <p className="mt-1 font-mono text-[9px] text-muted">
+          menambahkan kontainer ISO/IEC (`free` box) — ukuran asli di disk membesar tanpa merusak video stream. Lolos syarat minimal agensi/microstock.
+        </p>
+      </div>
 
       {/* Progres */}
       {status.state === "running" && (
