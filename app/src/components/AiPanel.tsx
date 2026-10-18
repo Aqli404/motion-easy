@@ -7,6 +7,7 @@ import {
   XCircle,
   Trash2,
   Hammer,
+  ExternalLink,
 } from "lucide-react";
 import {
   KATEGORI,
@@ -62,6 +63,17 @@ export default function AiPanel({ def, adalahKustom, onApplyDef }: Props) {
     tulisLog(
       ok ? `prompt disalin ke clipboard (${prompt.length.toLocaleString("id-ID")} karakter)` : "gagal salin — coba blok & Ctrl+C manual",
       ok ? "ok" : "err",
+    );
+  };
+
+  const bukaAi = async (nama: "Gemini" | "ChatGPT" | "Claude", url: string) => {
+    const ok = await copyText(prompt);
+    window.open(url, "_blank", "noopener,noreferrer");
+    tulisLog(
+      ok
+        ? `prompt disalin — ${nama} dibuka di tab baru, tempel prompt lalu bawa JSON kembali`
+        : `${nama} dibuka — salin prompt manual jika clipboard tidak tersedia`,
+      ok ? "info" : "err",
     );
   };
 
@@ -225,6 +237,33 @@ export default function AiPanel({ def, adalahKustom, onApplyDef }: Props) {
           >
             <Copy className="h-3.5 w-3.5" /> Salin Prompt
           </button>
+          <div className="mt-2 grid grid-cols-3 gap-1.5">
+            <button
+              onClick={() => bukaAi("Gemini", "https://gemini.google.com/app")}
+              className="flex items-center justify-center gap-1 rounded-lg border border-secondary/40 bg-secondary/10 px-2 py-2 text-[10px] font-semibold text-secondary hover:bg-secondary/20"
+              title="Salin prompt lalu buka Gemini"
+            >
+              Gemini <ExternalLink className="h-3 w-3" />
+            </button>
+            <button
+              onClick={() => bukaAi("ChatGPT", "https://chatgpt.com/")}
+              className="flex items-center justify-center gap-1 rounded-lg border border-edge bg-panel-low px-2 py-2 text-[10px] font-semibold text-ink-dim hover:bg-panel-high hover:text-ink"
+              title="Salin prompt lalu buka ChatGPT"
+            >
+              ChatGPT <ExternalLink className="h-3 w-3" />
+            </button>
+            <button
+              onClick={() => bukaAi("Claude", "https://claude.ai/new")}
+              className="flex items-center justify-center gap-1 rounded-lg border border-edge bg-panel-low px-2 py-2 text-[10px] font-semibold text-ink-dim hover:bg-panel-high hover:text-ink"
+              title="Salin prompt lalu buka Claude"
+            >
+              Claude <ExternalLink className="h-3 w-3" />
+            </button>
+          </div>
+          <p className="mt-1.5 font-mono text-[9px] leading-relaxed text-muted">
+            Tombol AI menyalin prompt otomatis lalu membuka layanan pilihanmu di tab baru.
+            Tempel prompt di sana, salin JSON, lalu kembali ke langkah 2.
+          </p>
         </div>
 
         {/* ===== LANGKAH 2: PASTE ===== */}
