@@ -47,6 +47,9 @@ const paket: Array<{
     isian: [
       "Export 720p & 1080p",
       "Semua preview & sample",
+      "Mode Kanvas Bebas (efek organik AI)",
+      "Bulk ZIP render batch (720p/1080p)",
+      "Cover PNG resolusi penuh",
       "Render 100% di perangkat sendiri",
     ],
     warna: "border-edge",
@@ -59,6 +62,7 @@ const paket: Array<{
     isian: [
       "Semua fitur Gratis",
       "Export 2K",
+      "Bulk ZIP batch render kualitas 2K",
       "Dukungan via WhatsApp",
     ],
     warna: "border-primary/60",
@@ -73,6 +77,7 @@ const paket: Array<{
     isian: [
       "Semua fitur Bulanan",
       "Export 4K",
+      "Bulk ZIP batch render kualitas 4K",
       "Tanpa perpanjangan tahunan",
     ],
     warna: "border-secondary/60",
