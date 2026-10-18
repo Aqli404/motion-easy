@@ -138,6 +138,25 @@ Contoh:
 
 > Buat video pembuka untuk channel YouTube bernama “Ruang Kreatif”. Tampilkan judul “Ruang Kreatif” dan subjudul “Ide sederhana, dampak luar biasa”. Gunakan gaya neon gelap, aksen cyan, durasi 8 detik. Judul masuk dari bawah dan keluar dengan fade out halus.
 
+## AI Handoff: Buka Gemini, ChatGPT, atau Claude
+
+Di bawah tombol **Salin Prompt**, tersedia tombol **Gemini**, **ChatGPT**, dan **Claude**. Tombol ini membantu pemula karena prompt langsung disalin dan layanan AI pilihan dibuka di tab baru.
+
+Alurnya:
+
+1. Isi brief atau pilih tema.
+2. Klik Gemini, ChatGPT, atau Claude.
+3. Prompt otomatis disalin ke clipboard.
+4. Layanan AI terbuka di tab baru.
+5. Tempel prompt dan kirim.
+6. Salin seluruh JSON hasil AI.
+7. Kembali ke Motion Easy.
+8. Tempel JSON, lalu klik **Validasi & Preview**.
+
+Fitur ini tidak memerlukan API key Motion Easy. Anda menggunakan akun atau subscription AI milik sendiri. Motion Easy tidak mengirim hasil secara otomatis dari layanan AI; pengguna tetap menyalin JSON kembali agar dapat diperiksa validator.
+
+Jika clipboard tidak tersedia, klik **Salin Prompt** dan gunakan `Ctrl+C`, lalu tempel manual dengan `Ctrl+V`.
+
 ## Menyalin prompt
 
 1. Isi brief atau pilih tema.
