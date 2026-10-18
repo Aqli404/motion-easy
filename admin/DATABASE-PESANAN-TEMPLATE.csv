@@ -1,0 +1,4 @@
+ID Pesanan,Tanggal Masuk,Nama Pembeli,No WhatsApp,Email,Paket,Harga,Metode Pembayaran,Status Pembayaran,Tanggal Kode Dibuat,Masa Berlaku,Tanggal Expired,Status Lisensi,Status Kirim Kode,Catatan Internal
+ME-2026-0001,2026-10-18,Budi Santoso,081234567890,budi@gmail.com,Lifetime,55000,QRIS,Lunas,2026-10-18,Selamanya,Selamanya,Aktif,Sudah Dikirim,Pembeli pertama dari TikTok
+ME-2026-0002,2026-10-18,Siti Rahma,085712345678,siti@yahoo.com,Bulanan,15000,BCA,Lunas,2026-10-18,30 Hari,2026-11-17,Aktif,Sudah Dikirim,Creator microstock
+ME-2026-0003,2026-10-18,Ahmad Fauzi,089987654321,ahmad@fauzi.id,Bulanan,15000,DANA,Menunggu,Belum Dibuat,30 Hari,-,Belum Dibuat,Belum Dikirim,Menunggu bukti transfer

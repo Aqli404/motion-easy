@@ -8,11 +8,13 @@ import Skema from "./routes/Skema";
 import Harga from "./routes/Harga";
 import Lisensi from "./routes/Lisensi";
 import Privasi from "./routes/Privasi";
+import Admin from "./routes/Admin";
 
 export default function App() {
   return (
     <Routes>
       <Route path="/" element={<Landing />} />
+      <Route path="/admin" element={<Admin />} />
       <Route element={<Shell />}>
         <Route path="/studio" element={<Studio />} />
         <Route path="/proyek" element={<Proyek />} />
