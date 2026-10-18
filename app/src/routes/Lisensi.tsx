@@ -159,7 +159,8 @@ export default function Lisensi() {
             <CircleCheckBig className="h-4 w-4 text-muted" />
             <h3 className="mt-2 text-xs font-semibold">Tanpa lisensi tetap bisa</h3>
             <p className="mt-1 font-mono text-[10px] text-muted">
-              720p &amp; 1080p selamanya gratis — perbedaan cuma resolusi tinggi &amp; kualitas
+              720p &amp; 1080p gratis (5 ekspor/hari) — Premium membuka ekspor tanpa batas,
+              2K/4K, Bulk ZIP, dan Enlarge-MB
             </p>
           </div>
         </div>

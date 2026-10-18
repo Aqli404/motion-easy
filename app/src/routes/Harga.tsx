@@ -11,6 +11,7 @@ import {
   ShieldCheck,
   Zap,
   HelpCircle,
+  X,
 } from "lucide-react";
 import Modal from "../components/Modal";
 import {
@@ -51,12 +52,12 @@ const paket: Array<{
     periode: "tanpa batas waktu",
     subjudul: "Buktikan sendiri kualitasnya langsung di browser",
     isian: [
-      "Ekspor video kualitas 720p & 1080p",
-      "Mode Kanvas Bebas (efek visual organik)",
-      "Bulk ZIP (render banyak video jadi 1 arsip)",
+      "Ekspor 720p & 1080p (5 video/hari)",
+      "Mode Kanvas Bebas + efek visual organik",
       "Simpan Cover PNG resolusi tinggi",
       "20 koleksi tema prompt instan",
       "100% proses lokal di komputer sendiri",
+      "Tanpa watermark, tanpa registrasi",
     ],
     warna: "border-edge bg-panel-low",
     tombol: "border border-edge bg-panel text-ink-dim hover:text-ink hover:border-bright",
@@ -69,10 +70,11 @@ const paket: Array<{
     subjudul: "Solusi hemat untuk kebutuhan proyek jangka pendek",
     isian: [
       "Semua fitur di Paket Gratis",
-      "Buka ekspor resolusi tinggi 2K (1440p)",
-      "Bulk ZIP resolusi 2K tanpa batas jumlah",
-      "Dukungan teknis prioritas via WhatsApp",
-      "Bisa diperpanjang kapan saja sesuai kebutuhan",
+      "Ekspor tanpa batas (unlimited)",
+      "Buka ekspor 2K (1440p)",
+      "Bulk ZIP — render banyak karya, 1 file",
+      "Enlarge-MB 10/25/50 MB (ISO resmi)",
+      "Dukungan prioritas via WhatsApp",
     ],
     warna: "border-edge bg-panel-low",
     tombol: "border border-edge bg-panel text-ink-dim hover:text-ink hover:border-bright",
@@ -86,11 +88,11 @@ const paket: Array<{
     subjudul: "Paling hemat. Setara hanya 3,6 bulan paket bulanan",
     isian: [
       "Semua fitur di Paket Bulanan",
-      "Buka ekspor master ultra 4K (2160p)",
-      "Bulk ZIP batch render kualitas 4K",
+      "Buka ekspor master 4K (2160p)",
+      "Bulk ZIP 4K tanpa batas jumlah",
       "Akses permanen tanpa tagihan perpanjangan",
       "Kode lisensi offline, anti server down",
-      "Termasuk semua update fitur studio di masa depan",
+      "Termasuk semua update fitur mendatang",
     ],
     warna: "border-accent bg-panel-high shadow-xl shadow-primary/10 relative md:-translate-y-2",
     tombol: "bg-gradient-to-r from-amber-400 via-orange-500 to-rose-500 text-deep font-bold shadow-md hover:scale-[1.01] transition-transform",
@@ -99,6 +101,28 @@ const paket: Array<{
     microcopy: "Sekali investasi, nikmati kebebasan produksi selamanya",
     id: "lifetime",
   },
+];
+
+/** Baris tabel perbandingan: true = centang, false = silang, string = nilai khusus. */
+type NilaiMatriks = boolean | string;
+
+const matriks: Array<{
+  fitur: string;
+  gratis: NilaiMatriks;
+  bulanan: NilaiMatriks;
+  lifetime: NilaiMatriks;
+}> = [
+  { fitur: "Live preview 60 fps di browser", gratis: true, bulanan: true, lifetime: true },
+  { fitur: "20 tema prompt + Kanvas Bebas", gratis: true, bulanan: true, lifetime: true },
+  { fitur: "Cover PNG resolusi penuh", gratis: true, bulanan: true, lifetime: true },
+  { fitur: "Tanpa watermark", gratis: true, bulanan: true, lifetime: true },
+  { fitur: "Kuota ekspor MP4 harian", gratis: "5 video/hari", bulanan: "Tanpa batas", lifetime: "Tanpa batas" },
+  { fitur: "Resolusi maksimal", gratis: "1080p", bulanan: "2K", lifetime: "4K" },
+  { fitur: "Bulk ZIP (banyak karya → 1 file)", gratis: false, bulanan: true, lifetime: true },
+  { fitur: "Enlarge-MB 10/25/50 MB (ISO resmi)", gratis: false, bulanan: true, lifetime: true },
+  { fitur: "Update fitur baru", gratis: false, bulanan: "Selama aktif", lifetime: "Selamanya" },
+  { fitur: "Dukungan WhatsApp", gratis: false, bulanan: true, lifetime: "Prioritas VIP" },
+  { fitur: "Masa aktif", gratis: "Selamanya", bulanan: "30 hari", lifetime: "Selamanya" },
 ];
 
 const faqs = [
@@ -113,6 +137,10 @@ const faqs = [
   {
     q: "Mengapa disarankan menggunakan Chrome atau Edge desktop?",
     a: "Motion Easy memanfaatkan teknologi WebCodecs untuk merender video langsung menggunakan GPU perangkatmu tanpa mengirim data ke server. Saat ini teknologi rendering grafis berkecepatan tinggi ini didukung paling optimal di Google Chrome dan Microsoft Edge versi desktop.",
+  },
+  {
+    q: "Bagaimana kuota ekspor paket gratis bekerja?",
+    a: "Paket gratis memberi 5 ekspor MP4 per hari, reset otomatis tiap tengah malam waktu lokal perangkatmu. Kuota hanya terpotong bila ekspor benar-benar berhasil — ekspor yang gagal atau kamu batalkan tidak dihitung. Paket Bulanan dan Lifetime bebas ekspor tanpa batas.",
   },
 ];
 
@@ -225,6 +253,78 @@ export default function Harga() {
               </article>
             );
           })}
+        </div>
+
+        {/* Tabel Perbandingan Fitur */}
+        <div className="mt-14">
+          <div className="text-center">
+            <h3 className="text-lg font-black tracking-tight text-ink sm:text-xl">
+              Bandingkan Fitur, Bukan Cuma Harga
+            </h3>
+            <p className="mx-auto mt-1.5 max-w-xl text-xs text-ink-dim">
+              Semua paket bebas watermark. Bedanya ada di kecepatan produksi dan kualitas master.
+            </p>
+          </div>
+
+          <div className="mt-6 overflow-x-auto rounded-2xl border border-edge bg-panel">
+            <table className="w-full min-w-[640px] border-collapse text-left">
+              <thead>
+                <tr className="border-b border-edge">
+                  <th className="px-4 py-3 font-mono text-[10px] uppercase tracking-widest text-muted">
+                    Fitur
+                  </th>
+                  <th className="px-3 py-3 text-center text-xs font-bold text-ink-dim">
+                    Gratis
+                    <div className="font-mono text-[10px] font-normal text-muted">Rp 0</div>
+                  </th>
+                  <th className="px-3 py-3 text-center text-xs font-bold text-ink-dim">
+                    Bulanan
+                    <div className="font-mono text-[10px] font-normal text-muted">
+                      {hargaRp(HARGA.bulanan)}
+                    </div>
+                  </th>
+                  <th className="relative px-3 py-3 text-center text-xs font-bold text-primary">
+                    <span className="absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r from-amber-400 via-orange-500 to-rose-500" />
+                    Lifetime
+                    <div className="font-mono text-[10px] font-normal text-muted">
+                      {hargaRp(HARGA.lifetime)}
+                    </div>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {matriks.map((row) => (
+                  <tr key={row.fitur} className="border-b border-edge/50 last:border-0">
+                    <td className="px-4 py-2.5 text-[11px] text-ink-dim">{row.fitur}</td>
+                    {(["gratis", "bulanan", "lifetime"] as const).map((k) => {
+                      const v = row[k];
+                      return (
+                        <td key={k} className="px-3 py-2.5 text-center">
+                          {v === true ? (
+                            <Check className="mx-auto h-4 w-4 text-tertiary" aria-label="tersedia" />
+                          ) : v === false ? (
+                            <X className="mx-auto h-4 w-4 text-muted/40" aria-label="tidak tersedia" />
+                          ) : (
+                            <span
+                              className={`font-mono text-[10px] ${
+                                k === "lifetime" ? "font-semibold text-primary" : "text-ink-dim"
+                              }`}
+                            >
+                              {v}
+                            </span>
+                          )}
+                        </td>
+                      );
+                    })}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <p className="mt-3 text-center font-mono text-[10px] text-muted">
+            Gratis = 5 ekspor MP4 per hari · kuota reset otomatis tiap tengah malam (waktu lokal)
+          </p>
         </div>
 
         {/* Keamanan & Garansi */}

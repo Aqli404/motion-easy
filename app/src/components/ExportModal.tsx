@@ -1,11 +1,13 @@
 import { useEffect, useRef, useState } from "react";
-import { Download, Crown, X, CheckCircle2, XCircle, Loader2 } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Download, Crown, X, CheckCircle2, XCircle, Loader2, Lock, Sparkles } from "lucide-react";
 import Modal from "./Modal";
 import { EXPORT_PRESETS, resolveExportSize, estimasiMb, slugify, type ExportPreset } from "../export/presets";
 import { exportMp4, unduhBlob, webCodecsSupported, probeDukunganPreset, type ExportProgress } from "../export/encoder";
 import { TARGET_MB_OPTIONS, padMp4Blob } from "../export/pad";
 import { useLicense } from "../license/useLicense";
 import { premiumAktif, premiumEfektif, MODE_DEV, labelTier, expiryLabel } from "../license/license";
+import { useKuota, recordDailyExport } from "../license/kuota";
 import type { MotionDefinition } from "../engine/schema";
 
 interface Props {
@@ -23,6 +25,7 @@ type Status =
 export default function ExportModal({ def, open, onClose }: Props) {
   const lic = useLicense();
   const premium = premiumEfektif(lic);
+  const kuota = useKuota(premium);
   const [presetId, setPresetId] = useState("1080");
   const [targetMb, setTargetMb] = useState<number>(0);
   const [status, setStatus] = useState<Status>({ state: "idle" });
@@ -67,6 +70,14 @@ export default function ExportModal({ def, open, onClose }: Props) {
       setStatus({ state: "error", message: "Preset ini butuh lisensi premium — aktivasi di menu Lisensi." });
       return;
     }
+    // penjaga kuota harian paket gratis
+    if (!kuota.unlimited && kuota.remaining <= 0) {
+      setStatus({
+        state: "error",
+        message: `Kuota ${kuota.limit} ekspor gratis hari ini sudah habis. Upgrade ke Premium untuk ekspor tanpa batas.`,
+      });
+      return;
+    }
     cancelRef.current = { cancelled: false };
     blobRef.current = null;
     setStatus({ state: "running", progress: { phase: "preparing", frame: 0, totalFrames: 0, pct: 0 } });
@@ -77,10 +88,12 @@ export default function ExportModal({ def, open, onClose }: Props) {
         (progress) => setStatus({ state: "running", progress }),
         cancelRef.current,
       );
-      const paddedBlob = await padMp4Blob(hasil.blob, targetMb);
+      const paddedBlob = await padMp4Blob(hasil.blob, premium ? targetMb : 0);
       blobRef.current = paddedBlob;
       const filename = `${slugify(def.name)}-${hasil.size.width}x${hasil.size.height}.mp4`;
       unduhBlob(paddedBlob, filename);
+      // kuota hanya dipotong setelah ekspor benar-benar sukses
+      if (!kuota.unlimited) recordDailyExport();
       setStatus({ state: "done", fileMb: paddedBlob.size / 1_000_000, filename });
     } catch (e) {
       const msg = (e as Error).message;
@@ -136,6 +149,39 @@ export default function ExportModal({ def, open, onClose }: Props) {
         {def.canvas.durationSec}s @ {def.canvas.fps}fps
       </p>
 
+      {/* Kuota harian paket gratis */}
+      {!kuota.unlimited && (
+        <div
+          className={`flex items-start gap-2 rounded-lg px-3 py-2 text-[11px] ${
+            kuota.remaining > 0
+              ? "bg-panel-low text-ink-dim"
+              : "bg-error/10 text-error"
+          }`}
+        >
+          {kuota.remaining > 0 ? (
+            <Sparkles className="mt-0.5 h-3.5 w-3.5 shrink-0 text-secondary" />
+          ) : (
+            <Lock className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+          )}
+          <span>
+            {kuota.remaining > 0 ? (
+              <>
+                Paket gratis: <strong className="text-ink">{kuota.remaining}</strong> dari{" "}
+                {kuota.limit} ekspor tersisa hari ini.
+              </>
+            ) : (
+              <>
+                Kuota {kuota.limit} ekspor gratis hari ini sudah habis.{" "}
+                <Link to="/harga" className="font-semibold underline" onClick={onClose}>
+                  Upgrade Premium
+                </Link>{" "}
+                untuk ekspor tanpa batas.
+              </>
+            )}
+          </span>
+        </div>
+      )}
+
       <ul className="space-y-1.5">
         {EXPORT_PRESETS.map((p) => {
           const s = resolveExportSize(def, p);
@@ -187,23 +233,36 @@ export default function ExportModal({ def, open, onClose }: Props) {
         })}
       </ul>
 
-      {/* Opsi Enlarge-MB (Jujur via MP4 free box padding) */}
-      <div className="rounded-lg border border-edge bg-panel-low p-2.5">
-        <label className="block font-mono text-[9px] uppercase tracking-widest text-muted">
-          Target Ukuran File (Enlarge MB Resmi)
+      {/* Opsi Enlarge-MB (Jujur via MP4 free box padding) — fitur Premium */}
+      <div
+        className={`rounded-lg border p-2.5 ${
+          premium ? "border-edge bg-panel-low" : "border-edge bg-panel-low/60"
+        }`}
+      >
+        <label className="flex items-center justify-between font-mono text-[9px] uppercase tracking-widest text-muted">
+          <span>Target Ukuran File (Enlarge MB Resmi)</span>
+          {!premium && (
+            <span className="flex items-center gap-1 rounded bg-panel-high px-1.5 py-0.5 text-[8px] text-primary">
+              <Lock className="h-2.5 w-2.5" /> Premium
+            </span>
+          )}
         </label>
         <select
-          value={targetMb}
+          value={premium ? targetMb : 0}
           onChange={(e) => setTargetMb(Number(e.target.value))}
-          disabled={berjalan}
-          className="mt-1.5 w-full rounded-md border border-edge bg-well px-2 py-1.5 text-[11px] text-ink-dim"
+          disabled={berjalan || !premium}
+          className="mt-1.5 w-full rounded-md border border-edge bg-well px-2 py-1.5 text-[11px] text-ink-dim disabled:cursor-not-allowed disabled:opacity-60"
         >
           {TARGET_MB_OPTIONS.map((o) => (
-            <option key={o.mb} value={o.mb}>{o.label}</option>
+            <option key={o.mb} value={o.mb}>
+              {o.label}
+            </option>
           ))}
         </select>
-        <p className="mt-1 font-mono text-[9px] text-muted">
-          menambahkan kontainer ISO/IEC (`free` box) — ukuran asli di disk membesar tanpa merusak video stream. Lolos syarat minimal agensi/microstock.
+        <p className="mt-1 font-mono text-[9px] leading-relaxed text-muted">
+          {premium
+            ? "menambahkan kontainer ISO/IEC (`free` box) — ukuran file membesar tanpa merusak video stream. Lolos syarat minimal agensi/microstock."
+            : "khusus Premium — menaikkan ukuran file ke 10/25/50 MB lewat kotak ISO resmi, aman untuk syarat minimal microstock."}
         </p>
       </div>
 
@@ -276,11 +335,20 @@ export default function ExportModal({ def, open, onClose }: Props) {
         ) : (
           <button
             onClick={mulai}
-            disabled={berjalan || !supported || dukungan?.[presetId] === false}
+            disabled={
+              berjalan ||
+              !supported ||
+              dukungan?.[presetId] === false ||
+              (!kuota.unlimited && kuota.remaining <= 0)
+            }
             className="flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-amber-400 via-orange-500 to-rose-500 px-3 py-2.5 text-sm font-semibold text-deep shadow disabled:opacity-50"
           >
             {berjalan ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
-            {berjalan ? "Mengencode…" : `Ekspor ${presetAktif.label}`}
+            {berjalan
+              ? "Mengencode…"
+              : !kuota.unlimited && kuota.remaining <= 0
+                ? "Kuota hari ini habis — Upgrade Premium"
+                : `Ekspor ${presetAktif.label}`}
           </button>
         )}
       </div>

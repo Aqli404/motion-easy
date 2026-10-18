@@ -102,7 +102,7 @@ export default function Shell() {
               <span className="font-semibold text-tertiary">Paket Gratis</span>
             </div>
             <p className="mt-1.5 font-mono text-[10px] leading-relaxed text-muted">
-              720p &amp; 1080p gratis · upgrade di Harga
+              720p &amp; 1080p gratis · 5 ekspor/hari · upgrade di Harga
             </p>
           </div>
         </div>

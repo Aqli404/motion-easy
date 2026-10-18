@@ -1,4 +1,5 @@
 import { useMemo, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import {
   Package,
   CheckCircle2,
@@ -7,6 +8,7 @@ import {
   Download,
   Crown,
   AlertTriangle,
+  Lock,
 } from "lucide-react";
 import Modal from "./Modal";
 import { EXPORT_PRESETS, slugify, estimasiMb, type ExportPreset } from "../export/presets";
@@ -66,6 +68,10 @@ export default function BulkModal({ def, open, onClose }: Props) {
   const beringat = perkiraanTotal > 400;
 
   const jalankan = async () => {
+    if (!premium) {
+      setStatus({ state: "error", message: "Bulk ZIP khusus Premium — aktivasi lisensi di menu Harga." });
+      return;
+    }
     if (terkunci) {
       setStatus({ state: "error", message: "Preset ini butuh lisensi premium — aktivasi di menu Lisensi." });
       return;
@@ -154,6 +160,36 @@ export default function BulkModal({ def, open, onClose }: Props) {
 
   return (
     <Modal open={open} title="Bulk ZIP — Render Batch (SATU file ZIP)" onClose={() => !berjalan && onClose()}>
+      {/* Bulk ZIP = fitur Premium */}
+      {!premium && (
+        <div className="rounded-xl border border-accent/40 bg-gradient-to-br from-amber-400/10 via-orange-500/10 to-rose-500/10 p-4">
+          <h4 className="flex items-center gap-2 text-sm font-bold text-ink">
+            <Lock className="h-4 w-4 text-primary" /> Bulk ZIP khusus Premium
+          </h4>
+          <p className="mt-1.5 text-[11px] leading-relaxed text-ink-dim">
+            Render <strong className="text-ink">banyak karya sekaligus</strong> lalu unduh
+            sebagai <strong className="text-ink">satu file ZIP</strong> — tanpa popup-blocker,
+            tanpa download satu-satu. Fitur ini tersedia di paket Bulanan &amp; Lifetime.
+          </p>
+          <ul className="mt-2 space-y-1 text-[11px] text-ink-dim">
+            <li>• Batch 10–50 karya dalam sekali antre</li>
+            <li>• Nama file otomatis rapi &amp; berurutan</li>
+            <li>• Enlarge-MB per video ikut aktif</li>
+          </ul>
+          <Link
+            to="/harga"
+            onClick={onClose}
+            className="mt-3 flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-amber-400 via-orange-500 to-rose-500 px-3 py-2.5 text-xs font-bold text-deep shadow"
+          >
+            <Crown className="h-4 w-4" /> Lihat Paket Premium
+          </Link>
+          <p className="mt-2 text-center font-mono text-[9px] text-muted">
+            mulai Rp 15.000/bulan · atau Rp 55.000 sekali bayar
+          </p>
+        </div>
+      )}
+
+      <div className={premium ? "space-y-3" : "pointer-events-none select-none space-y-3 opacity-40"}>
       {!supported && (
         <div className="flex items-start gap-2 rounded-lg bg-error/10 px-3 py-2 text-[11px] text-error">
           <XCircle className="mt-0.5 h-3.5 w-3.5 shrink-0" />
@@ -345,6 +381,7 @@ export default function BulkModal({ def, open, onClose }: Props) {
         {MODE_DEV ? "mode pengembangan — premium terbuka (lokal) · " : ""}
         encode 100% lokal (WebCodecs) · karya gagal tidak menghentikan antrean · hasil = satu ZIP siap upload microstock
       </p>
+      </div>
     </Modal>
   );
 }

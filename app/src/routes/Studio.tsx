@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import {
   Play,
   Pause,
@@ -10,6 +11,7 @@ import {
   Crown,
   Activity,
   Cpu,
+  Lock,
 } from "lucide-react";
 import Modal from "../components/Modal";
 import AiPanel from "../components/AiPanel";
@@ -18,6 +20,9 @@ import BulkModal from "../components/BulkModal";
 import { SAMPLES, SAMPLE_KEYS } from "../engine/samples";
 import { renderFrame, activeLayerCount } from "../engine/renderer";
 import { usePlayer } from "../engine/player";
+import { useLicense } from "../license/useLicense";
+import { premiumEfektif } from "../license/license";
+import { useKuota } from "../license/kuota";
 import type { MotionDefinition, MotionSpec } from "../engine/schema";
 
 function fmt(t: number): string {
@@ -76,6 +81,11 @@ export default function Studio() {
   const [exportOpen, setExportOpen] = useState(false);
   const [premiumOpen, setPremiumOpen] = useState(false);
   const [bulkOpen, setBulkOpen] = useState(false);
+  const [bulkLockOpen, setBulkLockOpen] = useState(false);
+
+  const lic = useLicense();
+  const premium = premiumEfektif(lic);
+  const kuota = useKuota(premium);
 
   // ===== Quick Wins =====
 
@@ -201,6 +211,24 @@ export default function Studio() {
             {def.canvas.w}×{def.canvas.h} · {def.canvas.fps} fps ·{" "}
             {def.canvas.durationSec.toFixed(1)}s · {def.layers.length} layer
           </span>
+          {kuota.unlimited ? (
+            <span className="hidden items-center gap-1 rounded-md border border-tertiary/40 bg-tertiary/10 px-2 py-1 font-mono text-[9px] text-tertiary md:flex">
+              <Crown className="h-2.5 w-2.5" /> ekspor tanpa batas
+            </span>
+          ) : (
+            <span
+              className={`hidden items-center gap-1 rounded-md border px-2 py-1 font-mono text-[9px] md:flex ${
+                kuota.remaining > 0
+                  ? "border-edge bg-panel-low text-muted"
+                  : "border-error/40 bg-error/10 text-error"
+              }`}
+              title={`Kuota ekspor gratis harian: ${kuota.used}/${kuota.limit} terpakai`}
+            >
+              {kuota.remaining > 0
+                ? `kuota gratis ${kuota.remaining}/${kuota.limit}`
+                : "kuota habis"}
+            </span>
+          )}
           <div className="hidden items-center gap-0.5 md:flex" title="Preset durasi — gerak ikut diskalakan">
             {[5, 10, 15, 30, 60].map((d) => (
               <button
@@ -217,11 +245,14 @@ export default function Studio() {
             ))}
           </div>
           <button
-            onClick={() => setBulkOpen(true)}
-            title="Bulk ZIP — render banyak karya sekaligus jadi 1 file ZIP"
-            className="rounded-md border border-edge bg-panel p-2 text-ink-dim hover:text-secondary"
+            onClick={() => (premium ? setBulkOpen(true) : setBulkLockOpen(true))}
+            title="Bulk ZIP — render banyak karya sekaligus jadi 1 file ZIP (Premium)"
+            className="relative rounded-md border border-edge bg-panel p-2 text-ink-dim hover:text-secondary"
           >
             <Package className="h-4 w-4" />
+            {!premium && (
+              <Lock className="absolute -right-0.5 -top-0.5 h-2.5 w-2.5 text-primary" />
+            )}
           </button>
           <button
             onClick={ambilCover}
@@ -341,6 +372,32 @@ export default function Studio() {
 
       {/* Modal Bulk ZIP */}
       <BulkModal def={def} open={bulkOpen} onClose={() => setBulkOpen(false)} />
+
+      {/* Modal kunci Bulk ZIP (pengguna gratis) */}
+      <Modal
+        open={bulkLockOpen}
+        title="Bulk ZIP — Fitur Premium"
+        onClose={() => setBulkLockOpen(false)}
+      >
+        <div className="flex items-start gap-3 rounded-xl border border-accent/40 bg-gradient-to-br from-amber-400/10 via-orange-500/10 to-rose-500/10 p-3">
+          <Lock className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+          <p className="text-[11px] leading-relaxed text-ink-dim">
+            Render <strong className="text-ink">banyak karya sekaligus</strong> dan unduh
+            sebagai <strong className="text-ink">satu file ZIP</strong> — tanpa popup-blocker,
+            tanpa klik unduh satu per satu. Tersedia di paket Bulanan &amp; Lifetime.
+          </p>
+        </div>
+        <p className="rounded-lg bg-panel-low px-3 py-2 font-mono text-[10px] leading-relaxed text-muted">
+          paket gratis: 5 ekspor MP4/hari · 720p &amp; 1080p · Cover PNG · 20 tema prompt
+        </p>
+        <Link
+          to="/harga"
+          onClick={() => setBulkLockOpen(false)}
+          className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-amber-400 via-orange-500 to-rose-500 px-3 py-2.5 text-xs font-bold text-deep shadow"
+        >
+          <Crown className="h-4 w-4" /> Lihat Paket Premium
+        </Link>
+      </Modal>
 
       {/* Modal Premium */}
       <Modal

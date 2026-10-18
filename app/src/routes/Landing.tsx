@@ -19,7 +19,7 @@ const features = [
     icon: Layers,
     t: "Produksi Massal Bulk ZIP",
     d: "Tempel banyak konsep sekaligus, klik render, dan dapatkan satu file ZIP rapi berisi semua video MP4. Tidak ada lagi download manual yang tercegat.",
-    tag: "Siap Jual Microstock",
+    tag: "Fitur Premium",
   },
   {
     icon: ShieldCheck,
@@ -109,7 +109,7 @@ export default function Landing() {
         <dl className="mx-auto mt-14 grid max-w-3xl grid-cols-3 gap-4 font-mono">
           {[
             ["720p – 4K", "Kualitas Master Ekspor"],
-            ["1 Klik Bulk", "Download Banyak Video Sekaligus"],
+            ["1 Klik Bulk", "Banyak Video, Satu File ZIP"],
             ["100% Lokal", "Privasi Aman di Komputer Sendiri"],
           ].map(([val, desc]) => (
             <div key={desc} className="rounded-xl border border-edge bg-panel p-4 text-center">
