@@ -83,7 +83,15 @@ export default function Studio() {
     c.height = def.canvas.h;
     const ctx = c.getContext("2d");
     if (!ctx) return;
-    renderFrame(ctx, def, player.getTime());
+    // Kalau di frame saat ini tidak ada layer aktif (mis. t=0 belum ada yang
+    // masuk), pakai frame paling "ramai" sebagai gantinya — supaya klik
+    // pertama tidak menghasilkan cover kosong.
+    let t = player.getTime();
+    if (activeLayerCount(def, t) === 0) {
+      const kandidat = def.canvas.durationSec * 0.35;
+      if (activeLayerCount(def, kandidat) > 0) t = kandidat;
+    }
+    renderFrame(ctx, def, t);
     const slug = def.name
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, "-")
