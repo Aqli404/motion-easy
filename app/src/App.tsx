@@ -7,6 +7,7 @@ import Panduan from "./routes/Panduan";
 import Skema from "./routes/Skema";
 import Harga from "./routes/Harga";
 import Lisensi from "./routes/Lisensi";
+import Privasi from "./routes/Privasi";
 
 export default function App() {
   return (
@@ -19,6 +20,7 @@ export default function App() {
         <Route path="/skema" element={<Skema />} />
         <Route path="/harga" element={<Harga />} />
         <Route path="/lisensi" element={<Lisensi />} />
+        <Route path="/privasi" element={<Privasi />} />
       </Route>
       <Route path="*" element={<Landing />} />
     </Routes>

@@ -4,22 +4,22 @@ const tahap = [
   {
     n: 1,
     t: "Isi Brief",
-    d: "Kategori, gaya, durasi, rasio — form sederhana di Studio. (Fase 3)",
+    d: "Kategori, gaya, durasi, rasio — form sederhana di Studio.",
   },
   {
     n: 2,
     t: "Copy Prompt",
-    d: "App menyusun prompt siap-pakai. Kamu tempel di ChatGPT/Gemini/Claude milikmu sendiri. (Fase 3)",
+    d: "App menyusun prompt siap-pakai. Kamu tempel di ChatGPT/Gemini/Claude milikmu sendiri.",
   },
   {
     n: 3,
     t: "Paste Hasil",
-    d: "AI-mu membalas dengan kode animasi; app memvalidasi lalu preview langsung. (Fase 1–3)",
+    d: "AI-mu membalas dengan animasi; app memvalidasi lalu preview langsung.",
   },
   {
     n: 4,
     t: "Atur & Preview",
-    d: "Play/pause/reset di viewport, geser timeline, edit warna & keyframe di Inspector. (Fase 2)",
+    d: "Play/pause/reset di viewport, geser timeline, ganti sampel, dan pantau jumlah layer aktif.",
   },
   {
     n: 5,
@@ -67,9 +67,10 @@ export default function Panduan() {
           </div>
           <div className="rounded-xl border border-edge bg-panel-low p-4">
             <Rocket className="h-4 w-4 text-tertiary" />
-            <h3 className="mt-2 text-xs font-semibold">Status Build</h3>
+            <h3 className="mt-2 text-xs font-semibold">Privasi</h3>
             <p className="mt-1 font-mono text-[10px] leading-relaxed text-muted">
-              Fase 0 — fondasi. Konten tiap halaman menyusul di fase masing-masing.
+              Semua render terjadi di perangkatmu — brief, animasi, dan MP4 tidak
+              pernah diunggah. Yang tersimpan hanya kode lisensi di browser.
             </p>
           </div>
         </div>

@@ -12,9 +12,9 @@ import Logo from "./Logo";
 
 const nav = [
   { to: "/studio", label: "Studio", icon: Clapperboard, hint: "Editor" },
-  { to: "/skema", label: "Kamus Animasi", icon: FileCode2, hint: "Fase 1" },
+  { to: "/skema", label: "Kamus Animasi", icon: FileCode2, hint: "Spesifikasi" },
   { to: "/panduan", label: "Panduan", icon: BookOpen, hint: "Cara pakai" },
-  { to: "/proyek", label: "Proyek Saya", icon: FolderOpen, hint: "Koleksi" },
+  { to: "/proyek", label: "Proyek Saya", icon: FolderOpen, hint: "Segera" },
   { to: "/harga", label: "Harga & Paket", icon: Tag, hint: "Upgrade" },
   { to: "/lisensi", label: "Aktivasi Lisensi", icon: KeyRound, hint: "Kode" },
 ];
@@ -26,6 +26,7 @@ const titles: Record<string, string> = {
   "/proyek": "Proyek Saya",
   "/harga": "Harga & Paket",
   "/lisensi": "Aktivasi Lisensi",
+  "/privasi": "Privasi & Ketentuan",
 };
 
 export default function Shell() {
@@ -77,7 +78,7 @@ export default function Shell() {
               <span className="font-semibold text-tertiary">Paket Gratis</span>
             </div>
             <p className="mt-1.5 font-mono text-[10px] leading-relaxed text-muted">
-              720p + watermark · upgrade di Harga
+              720p &amp; 1080p gratis · upgrade di Harga
             </p>
           </div>
         </div>
@@ -88,7 +89,7 @@ export default function Shell() {
         <header className="flex items-center justify-between border-b border-edge px-6 py-3.5">
           <h1 className="text-sm font-semibold">{title}</h1>
           <span className="rounded-full border border-edge bg-panel px-3 py-1 font-mono text-[10px] uppercase tracking-widest text-muted">
-            Fase 0 · Fondasi
+            v0.5 · Client-side
           </span>
         </header>
 

@@ -105,14 +105,14 @@ export default function Studio() {
           </span>
           <button
             onClick={() => setExportOpen(true)}
-            title="Ekspor Video (Fase 4)"
+            title="Ekspor Video MP4"
             className="rounded-md border border-edge bg-panel p-2 text-ink-dim hover:text-ink"
           >
             <Download className="h-4 w-4" />
           </button>
           <button
             onClick={() => setPremiumOpen(true)}
-            title="Upgrade 4K (Fase 5)"
+            title="Buka 2K / 4K (Premium)"
             className="rounded-md border border-edge bg-panel p-2 text-primary hover:text-accent"
           >
             <Crown className="h-4 w-4" />
@@ -209,21 +209,24 @@ export default function Studio() {
         </aside>
       </div>
 
-      {/* Modal Ekspor (Fase 4 — functional) */}
+      {/* Modal Ekspor */}
       <ExportModal def={def} open={exportOpen} onClose={() => setExportOpen(false)} />
 
       {/* Modal Premium */}
       <Modal
         open={premiumOpen}
-        title="Limit 4K — Premium"
+        title="Export 2K & 4K — Premium"
         onClose={() => setPremiumOpen(false)}
       >
         <p className="text-xs">
-          4K setelah paket <strong className="text-primary">Premium</strong>{" "}
-          aktif. Lihat menu <em>Harga &amp; Paket</em>.
+          Export <strong className="text-primary">2K &amp; 4K</strong> terbuka setelah
+          kode lisensi <strong className="text-primary">Premium</strong> aktif. Beli
+          di menu <em>Harga &amp; Paket</em>, lalu tempel kodenya di menu{" "}
+          <em>Aktivasi Lisensi</em>.
         </p>
-        <p className="rounded-lg bg-panel-low px-3 py-2 font-mono text-[10px] text-muted">
-          gating: Fase 5 · lisensi di perangkat
+        <p className="rounded-lg bg-panel-low px-3 py-2 font-mono text-[10px] leading-relaxed text-muted">
+          export 720p &amp; 1080p tetap gratis · kode lisensi tersimpan di browser ·
+          export butuh Chrome/Edge desktop
         </p>
       </Modal>
     </div>

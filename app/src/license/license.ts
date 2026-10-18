@@ -115,12 +115,52 @@ export function muatLisensi(): ActiveLicense | null {
     const raw = localStorage.getItem(STORE_KEY);
     if (!raw) return null;
     const data = JSON.parse(raw) as ActiveLicense;
-    if (!data?.payload?.tier) return null;
+    // bentuk yang wajar saja (perbaikan uji publik: jangan percaya bentuk aneh)
+    if (!data?.payload?.tier || typeof data.code !== "string" || typeof data.payload.iat !== "number") {
+      return null;
+    }
     if (data.payload.exp !== null && data.payload.exp * 1000 <= Date.now()) return null;
     return data;
   } catch {
     return null;
   }
+}
+
+/**
+ * Pembuka khusus mode pengembangan (hanya saat `npm run dev` di localhost).
+ * ⚠️ Keamanan: pada build produksi Vite mengganti `import.meta.env.DEV` menjadi
+ * `false` lalu menghapus cabang ini dari bundle — jadi TIDAK ada pembuka gratis
+ * di situs online.
+ */
+export const MODE_DEV = !!import.meta.env.DEV;
+
+/** Premium yang efektif dipakai UI: lisensi sah ATAU mode pengembangan lokal. */
+export function premiumEfektif(lic: ActiveLicense | null): boolean {
+  return premiumAktif(lic) || MODE_DEV;
+}
+
+/**
+ * Verifikasi ulang tanda tangan lisensi yang tersimpan (anti-tamper F12).
+ * Bila tanda tangannya tidak sah, kedaluwarsa, atau bentuknya diutak-atik,
+ * lisensi DIHAPUS. Ini menutup celah "localStorage dipercaya mentah-mentah".
+ */
+export async function validasiUlangTersimpan(): Promise<boolean> {
+  const lic = muatLisensi();
+  if (!lic) return false;
+  // konteks tidak aman (bukan https/localhost)? jangan hapus — hanya lewati
+  if (!subtleAda()) return true;
+  const hasil = await verifikasiKode(lic.code);
+  const payload = hasil.ok ? hasil.payload : undefined;
+  const cocok =
+    !!payload &&
+    payload.v === lic.payload.v &&
+    payload.tier === lic.payload.tier &&
+    payload.exp === lic.payload.exp;
+  if (!cocok) {
+    hapusLisensi();
+    return false;
+  }
+  return true;
 }
 
 /** Premium aktif? (bulanan belum kedaluwarsa ATAU lifetime) */

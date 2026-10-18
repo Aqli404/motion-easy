@@ -69,7 +69,7 @@ export default function Landing() {
       {/* Hero */}
       <section className="mx-auto max-w-4xl px-6 pt-20 pb-16 text-center">
         <span className="rounded-full border border-edge bg-panel px-3 py-1 font-mono text-[10px] uppercase tracking-widest text-tertiary">
-          Versi Fondasi · Fase 0
+          100% di browser · tanpa server
         </span>
         <h1 className="mt-5 text-4xl font-black leading-tight tracking-tight sm:text-5xl">
          {"Bikin Motion Graphics "}
@@ -142,7 +142,10 @@ export default function Landing() {
       </section>
 
       <footer className="border-t border-edge px-6 py-6 text-center font-mono text-[10px] text-muted">
-        © 2026 Motion Easy · Aplikasi client-side · Fase 0 fondasi sedang dibangun
+        © 2026 Motion Easy · Aplikasi client-side ·{" "}
+        <Link to="/privasi" className="underline hover:text-muted">
+          Privasi &amp; Ketentuan
+        </Link>
       </footer>
     </div>
   );

@@ -4,7 +4,7 @@ import Modal from "./Modal";
 import { EXPORT_PRESETS, resolveExportSize, estimasiMb, slugify, type ExportPreset } from "../export/presets";
 import { exportMp4, unduhBlob, webCodecsSupported, type ExportProgress } from "../export/encoder";
 import { useLicense } from "../license/useLicense";
-import { premiumAktif, labelTier, expiryLabel } from "../license/license";
+import { premiumAktif, premiumEfektif, MODE_DEV, labelTier, expiryLabel } from "../license/license";
 import type { MotionDefinition } from "../engine/schema";
 
 interface Props {
@@ -21,7 +21,7 @@ type Status =
 
 export default function ExportModal({ def, open, onClose }: Props) {
   const lic = useLicense();
-  const premium = premiumAktif(lic);
+  const premium = premiumEfektif(lic);
   const [presetId, setPresetId] = useState("1080");
   const [status, setStatus] = useState<Status>({ state: "idle" });
   const cancelRef = useRef({ cancelled: false });
@@ -36,6 +36,11 @@ export default function ExportModal({ def, open, onClose }: Props) {
 
   const mulai = async () => {
     const preset = EXPORT_PRESETS.find((p) => p.id === presetId)!;
+    // penjaga tegas: preset premium hanya boleh diekspor bila premium efektif
+    if (preset.premium && !premiumEfektif(lic)) {
+      setStatus({ state: "error", message: "Preset ini butuh lisensi premium — aktivasi di menu Lisensi." });
+      return;
+    }
     cancelRef.current = { cancelled: false };
     blobRef.current = null;
     setStatus({ state: "running", progress: { phase: "preparing", frame: 0, totalFrames: 0, pct: 0 } });
@@ -200,9 +205,11 @@ export default function ExportModal({ def, open, onClose }: Props) {
       </div>
 
       <p className="mt-2 font-mono text-[9px] leading-relaxed text-muted">
-        {premium
-          ? `lisensi ${labelTier(lic!.payload.tier)} · berlaku ${expiryLabel(lic!.payload)} · 2K/4K terbuka`
-          : "encode di GPU-mu (WebCodecs) · 2K/4K butuh lisensi — aktivasi di menu Lisensi"}
+        {lic && premiumAktif(lic)
+          ? `lisensi ${labelTier(lic.payload.tier)} · berlaku ${expiryLabel(lic.payload)} · 2K/4K terbuka`
+          : MODE_DEV
+            ? "mode pengembangan — premium terbuka (hanya di komputer lokal ini)"
+            : "encode di GPU-mu (WebCodecs) · 2K/4K butuh lisensi — aktivasi di menu Lisensi"}
       </p>
     </Modal>
   );

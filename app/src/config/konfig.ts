@@ -1,9 +1,9 @@
 /**
- * Konfigurasi global Motion Easy (Fase 5).
+ * Konfigurasi global Motion Easy.
  *
- * ⚠️ SATU FILE INI yang perlu diganti sebelum rilis:
- *  1. Ganti isi PAYMENT_LINKS dengan link Lynk.id asli (dan nomor WhatsApp).
- *  2. PUBLIC_KEY_JWK sudah benar — jangan diubah kecuali regenerate kunci.
+ * Saat ini pembayaran dilayani via WhatsApp (QRIS / e-wallet / transfer).
+ * Link Lynk.id boleh diisi nanti — begitu terisi, tombol Harga otomatis
+ * berubah jadi "Bayar Sekarang".
  */
 
 /** Kunci publik ECDSA untuk verifikasi kode lisensi (aman untuk dibagikan). */
@@ -15,12 +15,12 @@ export const PUBLIC_KEY_JWK = {
   ext: true,
 };
 
-/** Link pembayaran — GANTI dengan milikmu (Lynk.id, gratis) sebelum rilis. */
+/** Link pembayaran — opsional. Kosong = tombol memakai jalur WhatsApp. */
 export const PAYMENT_LINKS = {
-  bulanan: "", // mis. "https://lynk.id/MUUSERNAME/xxxxx" — kosong = belum diset
-  lifetime: "",
+  bulanan: "", // mis. "https://lynk.id/USERNAME/bulanan-rp15000"
+  lifetime: "", // mis. "https://lynk.id/USERNAME/lifetime-rp55000"
   /** nomor WhatsApp format internasional tanpa +, mis. "6281234567890" */
-  whatsapp: "",
+  whatsapp: "6285792945213",
 };
 
 export const HARGA = {
@@ -28,7 +28,17 @@ export const HARGA = {
   lifetime: 55_000,
 } as const;
 
-/** True bila link pembayaran belum diisi admin. */
+/** True bila kedua link pembayaran terisi (mode Lynk.id penuh). */
 export function linkPembayaranSiap(): boolean {
   return PAYMENT_LINKS.bulanan.length > 0 && PAYMENT_LINKS.lifetime.length > 0;
+}
+
+/** True bila link pembayaran untuk satu paket terisi. */
+export function linkPaketTerisi(id: "bulanan" | "lifetime"): boolean {
+  return PAYMENT_LINKS[id].length > 0;
+}
+
+/** True bila nomor WhatsApp terisi (jalur pembayaran manual aktif). */
+export function waSiap(): boolean {
+  return PAYMENT_LINKS.whatsapp.length > 0;
 }

@@ -50,7 +50,8 @@ Proyek ini ter-deploy via **Cloudflare Workers Builds** (bukan Pages) di repo `A
 | 2 | Studio: render canvas + player | ✅ |
 | 3 | Alur AI (BYO-AI): prompt/paste/validator/self-heal | ✅ |
 | 4 | Export MP4 (WebCodecs) | ✅ |
-| 5 | Lisensi & pembayaran (Rp 0/15rb/55rb) | ✅ (link pembayaran perlu diisi admin) |
+| 5 | Lisensi & pembayaran (Rp 0/15rb/55rb) | ✅ (pembayaran via WhatsApp; Lynk.id opsional menyusul) |
+| — | Halaman Privasi & Ketentuan + anti-tamper lisensi | ✅ |
 | 6 | Proyek saya, asset manager, template | ⏳ |
 
 Harga mengacu: kompetitor 10rb/25rb/65rb → Motion Easy **0/15rb/55rb**.
