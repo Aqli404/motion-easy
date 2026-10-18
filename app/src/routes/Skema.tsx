@@ -7,7 +7,7 @@ const aturan = [
   "Waktu = detik, bukan frame",
   "Warna = hex 6 digit, tanpa gradasi",
   "Gerakan = preset in / out / loop",
-  "Maks 60 layer · durasi 1–30 detik",
+  "Maks 60 layer · durasi 1–60 detik",
   "Kind \"canvas\" = kanvas bebas: kode draw(ctx, time, w, h, fx) untuk efek organik (partikel, glow, gelombang) — deterministik via fx",
 ];
 

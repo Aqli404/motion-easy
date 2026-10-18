@@ -5,6 +5,7 @@ import {
   RotateCcw,
   Layers,
   Download,
+  Camera,
   Crown,
   Activity,
   Cpu,
@@ -15,7 +16,7 @@ import ExportModal from "../components/ExportModal";
 import { SAMPLES, SAMPLE_KEYS } from "../engine/samples";
 import { renderFrame, activeLayerCount } from "../engine/renderer";
 import { usePlayer } from "../engine/player";
-import type { MotionDefinition } from "../engine/schema";
+import type { MotionDefinition, MotionSpec } from "../engine/schema";
 
 function fmt(t: number): string {
   const m = Math.floor(t / 60);
@@ -73,6 +74,68 @@ export default function Studio() {
   const [exportOpen, setExportOpen] = useState(false);
   const [premiumOpen, setPremiumOpen] = useState(false);
 
+  // ===== Quick Wins =====
+
+  /** Simpan frame saat ini sebagai PNG resolusi penuh definisi (thumbnail/cover). */
+  const ambilCover = () => {
+    const c = document.createElement("canvas");
+    c.width = def.canvas.w;
+    c.height = def.canvas.h;
+    const ctx = c.getContext("2d");
+    if (!ctx) return;
+    renderFrame(ctx, def, player.getTime());
+    const slug = def.name
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "");
+    c.toBlob((blob) => {
+      if (!blob) return;
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `cover-${slug}.png`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 4000);
+    }, "image/png");
+  };
+
+  /**
+   * Ubah durasi: SEMUA waktu layer (from/to + motion.at + motion.before)
+   * ikut diskalakan proporsional, jadi koreografi tetap utuh.
+   */
+  const ubahDurasi = (d: number) => {
+    const old = def.canvas.durationSec;
+    if (Math.abs(old - d) < 0.05) return;
+    const k = d / old;
+    const layers = def.layers.map((l) => {
+      const from = Math.min(d - 0.2, Math.max(0, l.time.from * k));
+      const to = Math.max(from + 0.2, Math.min(d, l.time.to * k));
+      const mo: MotionSpec | undefined = l.motion;
+      const span = Math.max(0.2, to - from);
+      const inM = mo?.in
+        ? { ...mo.in, at: Math.max(0, Math.min(span - 0.1, (mo.in.at ?? 0) * k)) }
+        : undefined;
+      const outM = mo?.out
+        ? { ...mo.out, before: Math.max(0, Math.min(span - 0.1, (mo.out.before ?? 0) * k)) }
+        : undefined;
+      return {
+        ...l,
+        time: { from: Number(from.toFixed(3)), to: Number(to.toFixed(3)) },
+        motion: inM || outM ? { in: inM, out: outM } : undefined,
+      };
+    });
+    setCustom({
+      ...def,
+      name: `${def.name} · ${d}s`,
+      notes: "durasi diubah lewat preset durasi Studio",
+      canvas: { ...def.canvas, durationSec: d },
+      layers,
+    });
+    player.seek(0);
+  };
+
   return (
     <div className="flex h-full flex-col gap-3 p-4">
       {/* Baris atas: pilih sample + sumber + aksi */}
@@ -103,6 +166,28 @@ export default function Studio() {
             {def.canvas.w}×{def.canvas.h} · {def.canvas.fps} fps ·{" "}
             {def.canvas.durationSec.toFixed(1)}s · {def.layers.length} layer
           </span>
+          <div className="hidden items-center gap-0.5 md:flex" title="Preset durasi — gerak ikut diskalakan">
+            {[5, 10, 15, 30, 60].map((d) => (
+              <button
+                key={d}
+                onClick={() => ubahDurasi(d)}
+                className={`rounded-md border px-1.5 py-1 font-mono text-[10px] transition-colors ${
+                  Math.abs(duration - d) < 0.05
+                    ? "border-accent bg-panel-high font-semibold text-primary"
+                    : "border-edge bg-panel-low text-muted hover:text-ink-dim"
+                }`}
+              >
+                {d}s
+              </button>
+            ))}
+          </div>
+          <button
+            onClick={ambilCover}
+            title="Simpan Cover (PNG resolusi penuh, frame saat ini)"
+            className="rounded-md border border-edge bg-panel p-2 text-ink-dim hover:text-secondary"
+          >
+            <Camera className="h-4 w-4" />
+          </button>
           <button
             onClick={() => setExportOpen(true)}
             title="Ekspor Video MP4"

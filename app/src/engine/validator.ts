@@ -78,8 +78,8 @@ export function validateDefinition(json: unknown): ValidationResult {
     if (c.fps !== 24 && c.fps !== 30 && c.fps !== 60) {
       E("canvas.fps", "canvas.fps wajib 24, 30, atau 60.");
     }
-    if (!isNum(c.durationSec) || c.durationSec < 1 || c.durationSec > 30) {
-      E("canvas.durationSec", "durasi wajib 1-30 detik.");
+    if (!isNum(c.durationSec) || c.durationSec < 1 || c.durationSec > 60) {
+      E("canvas.durationSec", "durasi wajib 1-60 detik.");
     }
     if (c.background !== null && !isStr(c.background)) {
       E("canvas.background", "canvas.background wajib hex atau null (transparan).");

@@ -61,6 +61,42 @@ const KATEGORI_HINT: Record<string, string> = {
   "Bebas / Custom": "ikuti deskripsi ide pengguna.",
 };
 
+/**
+ * Koleksi "tema siap pakai" — satu klik mengisi brief (ide + kategori + gaya)
+ * dengan resep yang sudah teruji menghasilkan MotionDefinition bagus.
+ * Ini jawaban kita atas "150+ preset tema"-nya kompetitor, tapi lebih
+ * transparan: user melihat & bisa mengubah isi brief sebelum menyalin prompt.
+ */
+export interface Tema {
+  label: string;
+  ide: string;
+  kategori: string;
+  gaya: string;
+}
+
+export const TEMAS: Tema[] = [
+  { label: "Hook TikTok 3-2-1", ide: "Hitungan 3-2-1 muncul pop berurutan lalu teks hook utama meledak dengan easing bounce", kategori: "Judul / Intro", gaya: "Playful" },
+  { label: "Promo Diskon 50%", ide: "Badge DISKON 50% muncul pop berdenyut di tengah, diapit dua garis aksen berkilau", kategori: "Judul / Intro", gaya: "Playful" },
+  { label: "UMKM Produk Terbaik", ide: "Teks produk naik dari bawah dengan bola-bola aksen memantul di latar gelap", kategori: "Judul / Intro", gaya: "Playful" },
+  { label: "Cyberpunk Neon Grid", ide: "Latar grid neon berkilau dengan partikel glow melayang dan garis gelombang sirkuit", kategori: "Partikel & Efek Organik", gaya: "Neon Gelap" },
+  { label: "Medan Bintang Galaxy", ide: "Sekitar 100 bintang berkelip deterministik plus nebula ungu-biru untuk judul sinematik", kategori: "Partikel & Efek Organik", gaya: "Elegan Gelap" },
+  { label: "Waveform Podcast", ide: "Batang gelombang audio berdenyut mengikuti ritme di bawah judul episode podcast", kategori: "Partikel & Efek Organik", gaya: "Neon Gelap" },
+  { label: "Ramadhan Elegan", ide: "Bulan dan bintang ber-glow emas berdenyut lembut dengan teks sambutan elegan", kategori: "Background Loop", gaya: "Elegan Gelap" },
+  { label: "Logo Reveal Modern", ide: "Bentuk logo dari rect dan ellipse pop dengan easeOutBack lalu flash putih tipis", kategori: "Logo Sting", gaya: "Corporate" },
+  { label: "Sertifikat Penghargaan", ide: "Border bingkai slide dari sisi kiri-kanan, teks SERTIFIKAT muncul fadeIn elegan", kategori: "Judul / Intro", gaya: "Elegan Gelap" },
+  { label: "Grafik Bisnis 2026", ide: "Empat bar statistik naik berjenjang dengan angka persen dan judul Pertumbuhan 2026", kategori: "Infografik / Statistik", gaya: "Corporate" },
+  { label: "Lower Third Berita", ide: "Kotak nama dan jabatan muncul slide kiri ala breaking news dengan garis aksen merah", kategori: "Lower Third", gaya: "Corporate" },
+  { label: "Bokeh Hangat Lembut", ide: "Bola-bola bokeh hangat blur melayang perlahan untuk latar video wawancara", kategori: "Background Loop", gaya: "Elegan Gelap" },
+  { label: "Denyut Like Hati", ide: "Hati berdenyut pop berturut-turut dengan lingkaran glow meluas setiap detak", kategori: "Partikel & Efek Organik", gaya: "Playful" },
+  { label: "Judul Film Sinematik", ide: "Judul film muncul fadeIn sangat lambat dengan partikel debu emas melayang", kategori: "Judul / Intro", gaya: "Elegan Gelap" },
+  { label: "Countdown Ring Neon", ide: "Angka 3-2-1 dalam ring melingkar ber-glow yang memendek tiap detik", kategori: "Infografik / Statistik", gaya: "Neon Gelap" },
+  { label: "Teks Glitch Pop", ide: "Huruf judul muncul pop satu per satu dengan offset kedalaman gaya glitch", kategori: "Judul / Intro", gaya: "Playful" },
+  { label: "Tombol Subscribe", ide: "Tombol SUBSCRIBE slide naik dengan lonceng notifikasi berdenyut di sebelahnya", kategori: "Lower Third", gaya: "Playful" },
+  { label: "Hujan Koin Promo", ide: "Simbol koin dan rupiah jatuh perlahan dari atas dengan teks promo besar", kategori: "Partikel & Efek Organik", gaya: "Playful" },
+  { label: "Grafik Saham Menaik", ide: "Garis grafik harga naik bertahap dengan ticker angka persen, latar financial gelap", kategori: "Infografik / Statistik", gaya: "Corporate" },
+  { label: "Loading Ring Teknologi", ide: "Ring melingkar berputar dengan teks LOADING untuk latar aplikasi atau presentasi", kategori: "Background Loop", gaya: "Neon Gelap" },
+];
+
 const GAYA_HINT: Record<string, string> = {
   "Minimal Flat": "warna flat, radius kecil, whitespace luas, gerak fadeIn/slide halus.",
   "Neon Gelap": "background sangat gelap, elemen cerah, kesan glow lewat stroke cerah tipis.",

@@ -13,7 +13,7 @@
 4. Waktu berupa **detik** (`0..canvas.durationSec`), BUKAN frame.
 5. Semua warna hex 6 digit (`#f97316`). Gradasi di layer biasa **tidak ada di v1** — buat 2 layer bertumpuk (di kind `canvas` gradasi boleh, via `fx.gradient`).
 6. Gerakan hanya preset resmi. **Tidak ada kode JS di layer data, tidak ada fitur eksperimen** — SATU-satunya pengecualian: kind `canvas` (lian. §3a).
-7. Layer maksimal **60 per karya**. `durationSec` maksimal 30, minimal 1.
+7. Layer maksimal **60 per karya**. `durationSec` maksimal 60, minimal 1.
 8. Semua layer wajib punya `id` unik, `time` (from < to), dan `geometry`.
 9. Teks: huruf latin. Napakuti baris dengan `\n` kalau perlu.
 

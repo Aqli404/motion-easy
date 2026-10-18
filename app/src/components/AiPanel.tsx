@@ -11,6 +11,7 @@ import {
 import {
   KATEGORI,
   GAYA,
+  TEMAS,
   defaultBrief,
   buildPrompt,
   buildRepairPrompt,
@@ -125,6 +126,21 @@ export default function AiPanel({ def, adalahKustom, onApplyDef }: Props) {
           <p className="font-mono text-[9px] uppercase tracking-widest text-muted">
             1 · brief
           </p>
+          <select
+            value=""
+            onChange={(e) => {
+              const t = TEMAS.find((x) => x.label === e.target.value);
+              if (!t) return;
+              setBrief((b) => ({ ...b, ide: t.ide, kategori: t.kategori, gaya: t.gaya }));
+              tulisLog(`tema "${t.label}" dimuat — ide/kategori/gaya terisi, bebas edit`, "info");
+            }}
+            className="mt-2 w-full rounded-md border border-edge bg-well px-1.5 py-1.5 text-[10px] text-ink-dim"
+          >
+            <option value="">⚡ Tema siap pakai… ({TEMAS.length} tema)</option>
+            {TEMAS.map((t) => (
+              <option key={t.label} value={t.label}>{t.label}</option>
+            ))}
+          </select>
           <input
             value={brief.ide}
             onChange={(e) => setB("ide", e.target.value)}
@@ -156,7 +172,7 @@ export default function AiPanel({ def, adalahKustom, onApplyDef }: Props) {
               onChange={(e) => setB("durasi", Number(e.target.value))}
               className="rounded-md border border-edge bg-well px-1.5 py-1.5"
             >
-              {[5, 8, 10, 15, 20].map((d) => (
+              {[5, 8, 10, 15, 20, 30, 60].map((d) => (
                 <option key={d} value={d}>{d} detik</option>
               ))}
             </select>
