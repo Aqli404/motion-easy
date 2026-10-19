@@ -20,7 +20,7 @@ Artboard proyek adalah 1920×1080; SVG dipasang proporsional di tengah dengan ru
 - Maksimal 3.000 elemen, 60 layer tingkat atas, artboard 1–16.384 unit per sisi, dan 8 juta karakter asset hasil pemisahan.
 - Preview checkerboard tidak masuk ke hasil render.
 - MP4 H.264 tidak menyimpan alpha; area transparan menjadi hitam. Pilih warna latar jika diperlukan. Cover PNG mempertahankan alpha.
-- Belum mencakup draw-path/reveal, recolor, ungroup rekursif, timeline drag, atau MOV Alpha.
+- Belum mencakup ungroup rekursif atau MOV Alpha. Draw-path reveal, recolor, dan timeline drag sudah ada (lihat bagian di bawah).
 - Tidak ada perubahan harga maupun fitur Premium baru pada fase ini.
 
 ## Panel layer: thumbnail dan multi-select
@@ -39,6 +39,17 @@ Artboard proyek adalah 1920×1080; SVG dipasang proporsional di tengah dengan ru
 - Recolor layer draw mengubah asset dan spec draw sekaligus agar visual reveal dan versi statis selalu sama warna; tombol **Asli** mengembalikan warna draw dari `assetAwal` juga.
 - Batas kecil: reveal digambar per path bersamaan (paralel), bukan berurutan; jitter path sangat panjang dapat terlihat pada MP4 bitrate rendah — naik kualitas atau pakai PNG Sequence untuk master.
 
+## Timeline drag
+
+Panel Studio sekarang punya **timeline visual** di bawah play kontrol: ruler detik + bar per layer (`time.from`–`time.to`).
+
+- **Geser badan bar** memindahkan waktu tampil layer (clamp dalam track; layer full-span tidak bisa bergeser — pangkas dulu).
+- **Tarik tepi kiri/kanan** (gagang 6 px) memangkas bar: span minimal 0,2 detik, snap 0,05 detik agar mudah segaris, keras dibatasi dalam durasi track.
+- **Klik latar** (track kosong atau ruler) → playhead lompat; seret latar untuk seek berkelanjutan.
+- Playhead sinkron player (diperbarui per frame tanpa re-render). Slider scrub lama tetap ada.
+- Menyeret memutakhirkan preview tanpa menambah history; saat bar dilepas, perubahan dikomit **satu langkah** ke Undo/Redo (memakai snapshot pre-drag, bukan state menengah).
+- Aksesibilitas: bar punya role button + aria-label `Bar waktu <layer>`; gagang trim punya aria-label `Trim kiri/kanan <layer>`.
+
 ## Pengujian
 
 Jalankan `npm run dev` dari `app`, buka Studio, lalu jalankan dari console browser lokal:
@@ -56,6 +67,8 @@ Uji pivot per objek: `await import('/tests/svgPivot.browser.ts').then(m => m.tes
 Uji recolor: `await import('/tests/svgRecolor.browser.ts').then(m => m.testSvgRecolor())` — 16 pemeriksaan: fill/stroke berganti per mode, gradien url + stop tetap, `fill="none"` tetap none, anak group ikut, warna non-hex ditolak, hasil terlihat di pixel render, tombol "Asli" via `assetAwal`, dan proyek recolored lolos simpan-buka. Rekologi UI manual: helper `ujiRecolor()` di `tests/svgSelectUi.browser.ts`.
 
 Uji draw reveal: `await import('/tests/svgDraw.browser.ts').then(m => m.testSvgDraw())` — 26 pemeriksaan: type draw otomatis + dur 1,2, panjang getTotalLength, permukaan digambar parsial (uji piksel), akhir path tersembunyi lalu utuh, fallback statis fadeIn, group dua warna, group non-path tidak jadi draw, isi segitiga muncul setelah garis, outline magenta, batas d dan jumlah path, sinkron recolor garis/isi, tombol Asli, dan warning validator pada non-image.
+
+Uji timeline drag (UI, 22 pemeriksaan: move 150 px tepat dengan lebar tetap, trim kanan 240 px, clamp kiri/kanan track, span minimal 0,2 dtk, 5 undo kembali full-span, 5 redo mengulang clamp, seek 30% → playhead 30%) dijalankan via `tests` helper bantuan manual — gunakan skrip seret sintetis pada halaman `/studio`.
 
 ## Simpan/buka proyek dan edit layer
 

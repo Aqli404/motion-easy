@@ -20,6 +20,7 @@ import AiPanel from "../components/AiPanel";
 import ExportModal from "../components/ExportModal";
 import BulkModal from "../components/BulkModal";
 import SvgControls from "../components/SvgControls";
+import Timeline from "../components/Timeline";
 import SequenceModal from "../components/SequenceModal";
 import SvgAiModal from "../components/SvgAiModal";
 import { SAMPLES, SAMPLE_KEYS } from "../engine/samples";
@@ -82,9 +83,13 @@ export default function Studio() {
     if (sliderRef.current) sliderRef.current.value = String(t);
     if (countRef.current)
       countRef.current.textContent = `${activeLayerCount(def, t)}/${def.layers.length}`;
+    if (playheadRef.current)
+      playheadRef.current.style.left = `${(Math.min(t, duration) / Math.max(0.001, duration)) * 100}%`;
   };
 
   const player = usePlayer((t) => drawRef.current(t), duration);
+  // Timeline drag: playhead diperbarui langsung dari draw callback (tanpa re-render).
+  const playheadRef = useRef<HTMLDivElement | null>(null);
 
   // setup canvas + reset saat definisi berganti
   useEffect(() => {
@@ -256,6 +261,16 @@ export default function Studio() {
       layers,
     });
     player.seek(0);
+  };
+
+  // Timeline drag: menyeret memperbarui def tanpa menambah history (mulus);
+  // lepas → komit sekali bersama snapshot pre-drag sehingga Undo/Redo
+  // = 1 langkah per seretan.
+  const setTimelineDraft = (next: MotionDefinition) => setCustomState(next);
+  const commitTimeline = (next: MotionDefinition, asal: MotionDefinition) => {
+    if (next === asal) return;
+    setHistory((state) => ({ past: [...state.past.slice(-29), asal], future: [] }));
+    setCustomState(next);
   };
 
   return (
@@ -470,6 +485,14 @@ export default function Studio() {
               preview loop
             </span>
           </div>
+
+          <Timeline
+            def={def}
+            playheadRef={playheadRef}
+            onSeek={player.seek}
+            onDraft={setTimelineDraft}
+            onCommit={commitTimeline}
+          />
         </section>
 
         {/* Kanan: Alur AI */}
