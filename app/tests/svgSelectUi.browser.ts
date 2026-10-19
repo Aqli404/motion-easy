@@ -49,3 +49,20 @@ export async function ujiHapusMulti() {
   await wait(400);
   return { label, thumbnailsSesudah: [...panel.querySelectorAll("button img")].length };
 }
+
+/** Uji recolor UI: klik Terapkan lalu Asli, laporkan pesan panel. */
+export async function ujiRecolor() {
+  const panel = panelSvg();
+  if (!panel) return "no-panel";
+  const terapkan = [...panel.querySelectorAll("button")].find((b) => (b.textContent || "").trim() === "Terapkan");
+  if (!terapkan) return "no-terapkan";
+  terapkan.click();
+  await wait(700);
+  const pesanSetelah = [...panel.querySelectorAll("p")].map((p) => p.textContent || "").find((t) => t.includes("diterapkan") || t.includes("Tidak ada"));
+  const asli = [...panel.querySelectorAll("button")].find((b) => (b.textContent || "").trim() === "Asli");
+  if (!asli) return "no-asli";
+  const asliDisabled = asli.disabled;
+  asli.click();
+  await wait(500);
+  return { pesanSetelah, tombolAsliAda: true, asliDisabled };
+}

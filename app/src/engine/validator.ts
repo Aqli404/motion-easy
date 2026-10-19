@@ -207,6 +207,9 @@ export function validateDefinition(json: unknown): ValidationResult {
         if (!isStr(l.asset) || !l.asset.startsWith("data:image/svg+xml;charset=utf-8,")) {
           E(`${path}.asset`, "kind image wajib punya asset SVG lokal dari import SVG Motion.");
         }
+        if (l.assetAwal !== undefined && (!isStr(l.assetAwal) || !l.assetAwal.startsWith("data:image/svg+xml;charset=utf-8,"))) {
+          E(`${path}.assetAwal`, "assetAwal harus asset SVG lokal dengan format yang sama seperti asset.");
+        }
       }
 
       // kanvas wajib utk kind canvas

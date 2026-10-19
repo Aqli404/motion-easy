@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import type { InOutType, LayerSpec, LoopType, MotionDefinition } from "../engine/schema";
 import { duplicateLayer, moveLayer } from "../engine/project";
+import { recolorLayerAsset, type ModeWarna } from "../engine/svg";
 
 const BOX_THUMB = "overflow-hidden rounded border border-edge";
 
@@ -55,6 +56,31 @@ export default function SvgControls({ def, onChange }: { def: MotionDefinition; 
     setId("");
     onChange({ ...def, layers: sisa });
   };
+  // Recolor: mengganti warna hex di dalam asset layer (buffer aman, gagal
+  // per-layer tidak menghentikan layer lain yang bisa diganti).
+  const [recMode, setRecMode] = useState<ModeWarna>("isi");
+  const [recWarna, setRecWarna] = useState("#ff5722");
+  const [recPesan, setRecPesan] = useState("");
+  const recolor = () => {
+    const gagal: string[] = [];
+    let perubahan = 0;
+    const layersBaru = def.layers.map((item) => {
+      if (!targets.includes(item.id) || item.kind !== "image" || !item.asset) return item;
+      try {
+        perubahan++;
+        return { ...item, asset: recolorLayerAsset(item.asset, recMode, recWarna) };
+      } catch (error) {
+        gagal.push(`${item.name}: ${(error as Error).message}`);
+        return item;
+      }
+    });
+    setRecPesan(gagal.length ? gagal.join(" · ") : `Warna ${recWarna} (mode ${recMode}) diterapkan ke ${perubahan} layer.`);
+    if (perubahan) onChange({ ...def, layers: layersBaru });
+  };
+  const warnaAsli = () => {
+    setRecPesan("");
+    onChange({ ...def, layers: def.layers.map((item) => targets.includes(item.id) && item.assetAwal ? { ...item, asset: item.assetAwal } : item) });
+  };
   const field = "w-full rounded border border-edge bg-panel px-2 py-1.5 text-xs";
   const numeric = (label: string, value: number, min: number, max: number, change: (n: number) => void) => (
     <label className="space-y-1 text-xs text-ink-dim">{label}<input aria-label={label} className={field} type="number" step="0.1" min={min} max={max} value={Number(value.toFixed(2))} onChange={(event) => { const n = event.target.valueAsNumber; if (Number.isFinite(n)) change(Math.max(min, Math.min(max, n))); }} /></label>
@@ -97,6 +123,15 @@ export default function SvgControls({ def, onChange }: { def: MotionDefinition; 
       {numeric("Selesai (detik)", layer.time.to, layer.time.from + 0.1, def.canvas.durationSec, (n) => update({ time: { ...layer.time, to: n } }))}
       <label className="text-xs">Latar MP4<input aria-label="Warna latar SVG" type="color" className={field} value={def.canvas.background ?? "#101827"} onChange={(e) => onChange({ ...def, canvas: { ...def.canvas, background: e.target.value } })} /></label>
       <button className="rounded border border-edge px-2 text-xs" onClick={() => onChange({ ...def, canvas: { ...def.canvas, background: null } })}>Latar transparan</button>
+      <label className="text-xs">Recolor<select aria-label="Mode recolor" className={field} value={recMode} onChange={(e) => setRecMode(e.target.value as ModeWarna)}><option value="isi">isi (fill)</option><option value="garis">garis (stroke)</option><option value="semua">isi + garis</option></select></label>
+      <label className="text-xs gap-1.5">Warna
+        <div className="flex items-center gap-1.5">
+          <input aria-label="Warna pengganti recolor" type="color" className={field} value={recWarna} onChange={(e) => setRecWarna(e.target.value)} />
+          <button className="rounded border border-secondary/50 bg-secondary/10 px-2 py-1.5 text-[11px] text-secondary hover:bg-secondary/20" onClick={recolor}>Terapkan</button>
+          <button className="rounded border border-edge px-2 py-1.5 text-[11px] text-ink-dim disabled:opacity-40 hover:text-ink" disabled={!targets.some((tid) => def.layers.find((i) => i.id === tid)?.assetAwal)} onClick={warnaAsli} title="Kembali ke asset asli sebelum recolor">Asli</button>
+        </div>
+      </label>
+      {recPesan && <p role="status" className="col-span-2 text-[10px] text-muted md:col-span-4 xl:col-span-6">{recPesan}</p>}
     </div>
     <p className="mt-3 text-xs text-muted">MP4 tidak mendukung alpha (area transparan menjadi hitam). Cover PNG mempertahankan transparansi. Rotasi/scale memakai pivot pusat tiap objek.</p>
   </section>;

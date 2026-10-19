@@ -15,6 +15,7 @@ Artboard proyek adalah 1920×1080; SVG dipasang proporsional di tengah dengan ru
 
 - Shape, path, grup, teks, gradient lokal, dan clip-path lokal didukung.
 - Sanitasi memakai allowlist elemen dan atribut; script, CSS/style, event handler, external resource, embedded image, `use`, filter, foreignObject, dan animasi SVG bawaan dibuang.
+- Recolor hanya mengganti nilai hex (`#rrggbb`) attr fill/stroke; warna bernama CSS tidak diganti.
 - SVG berbasis CSS perlu diekspor ulang dengan presentation attributes; tampilan font bergantung pada font lokal browser.
 - Maksimal 3.000 elemen, 60 layer tingkat atas, artboard 1–16.384 unit per sisi, dan 8 juta karakter asset hasil pemisahan.
 - Preview checkerboard tidak masuk ke hasil render.
@@ -25,9 +26,10 @@ Artboard proyek adalah 1920×1080; SVG dipasang proporsional di tengah dengan ru
 ## Panel layer: thumbnail dan multi-select
 
 - Thumbnail tiap layer SVG ditampilkan di panel Kontrol; klik memilih layer primer, **Ctrl/Cmd/Shift+klik** menambah/mengurangi seleksi banyak layer.
+- Pillar Kontrol: **Recolor** — pilih mode `isi (fill)` / `garis (stroke)` / `isi + garis`, pilih warna, klik **Terapkan**. Hanya warna hex 6 digit di asset yang diganti; gradien (`fill="url(#…)"`, stop), `fill="none"` (outline), dan teks CSS bernama tidak tersentuh. Bekerja juga saat multi-select. Tombol **Asli** mengembalikan asset ke kondisi impor (asset asli disimpan terpisah sebagai `assetAwal`).
 - **Duplikat/Hapus** bekerja pada semua layer terpilih (label menampilkan jumlah); **Ke depan/belakang** hanya layer primer.
 - **Gerak masuk, Loop, dan Opacity** diterapkan ke semua layer terpilih — praktis untuk mengatur satu gaya gerak sekaligus. Posisi, ukuran, rotasi, dan waktu hanya untuk layer primer.
-- Simpan/buka proyek tetap memakai format lama; multi-select tidak disimpan (sesi panel).
+- Simpan/buka proyek tetap memakai format lama; multi-select tidak disimpan (sesi panel). Berhasil recolor tetap tersimpan oleh proyek melalui `asset` yang baru; asset asli ikut disimpan lewat `assetAwal`.
 
 ## Pengujian
 
@@ -42,6 +44,8 @@ Suite mencakup pemisahan layer, aspect-fit, origin viewBox, validasi schema, ras
 Pemeriksaan manual: import SVG → pilih layer → pop/pulse → rotasi → scrub → export MP4 720p → selesai. Screenshot memerlukan peninjauan visual manual tambahan.
 
 Uji pivot per objek: `await import('/tests/svgPivot.browser.ts').then(m => m.testSvgPivot())` — 11 pemeriksaan geometry bbox, rotasi 180° tetap di tempat (dan titik pivot artboard lama kosong), bbox dilampi ke irisan artboard, fallback elemen di luar viewBox, dan bbox grup ber-transform. Helper interaksi UI thumbnail/multi-select: `tests/svgSelectUi.browser.ts` (manual).
+
+Uji recolor: `await import('/tests/svgRecolor.browser.ts').then(m => m.testSvgRecolor())` — 16 pemeriksaan: fill/stroke berganti per mode, gradien url + stop tetap, `fill="none"` tetap none, anak group ikut, warna non-hex ditolak, hasil terlihat di pixel render, tombol "Asli" via `assetAwal`, dan proyek recolored lolos simpan-buka. Rekologi UI manual: helper `ujiRecolor()` di `tests/svgSelectUi.browser.ts`.
 
 ## Simpan/buka proyek dan edit layer
 

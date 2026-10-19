@@ -130,6 +130,7 @@ export interface LayerSpec {
   line?: LineSpec; // wajib untuk kind "line"
   kanvas?: CanvasSpec; // wajib untuk kind "canvas"
   asset?: string; // SVG lokal tersanitasi sebagai data URL untuk kind "image"
+  assetAwal?: string; // asset asli sebelum recolor — untuk tombol "warna asli"
   motion?: MotionSpec;
 }
 

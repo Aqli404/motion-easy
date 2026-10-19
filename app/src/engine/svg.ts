@@ -160,13 +160,14 @@ export function svgToMotionDefinition(fileName: string, source: string): MotionD
       time: { from: 0, to: 6 },
       geometry: { x: geoX, y: geoY, w: geoW, h: geoH },
       asset: svgDataUrl(wrapElement(root, element, assetViewBox)),
+      assetAwal: svgDataUrl(wrapElement(root, element, assetViewBox)),
       motion: {
         in: { type: "fadeIn", dur: 0.55, at: Math.min(index * 0.12, 1.5), easing: "easeOut" },
         loop: { type: "float", dur: 3, amount: 0.008, phase: index / Math.max(1, selected.length) },
       },
     };
   });
-  if (layers.reduce((size, layer) => size + (layer.asset?.length ?? 0), 0) > 8_000_000) {
+  if (layers.reduce((size, layer) => size + (layer.asset?.length ?? 0) + (layer.assetAwal?.length ?? 0), 0) > 8_000_000) {
     fail("Total asset SVG terlalu besar setelah pemisahan layer. Sederhanakan SVG atau kelompokkan elemen.");
   }
 
@@ -177,6 +178,47 @@ export function svgToMotionDefinition(fileName: string, source: string): MotionD
     canvas: { w: canvasWidth, h: canvasHeight, fps: 30, durationSec: 6, background: null },
     layers,
   };
+}
+
+export type ModeWarna = "isi" | "garis" | "semua";
+
+const WARNA_HEX = /^#[0-9a-fA-F]{6}$/;
+function decodeAssetSvg(asset: string) {
+  if (!asset.startsWith("data:image/svg+xml;charset=utf-8,")) {
+    throw new Error("Layer ini tidak punya asset SVG lokal.");
+  }
+  const decoded = decodeURIComponent(asset.slice(asset.indexOf(",") + 1));
+  if (new Blob([decoded]).size > MAX_SVG_BYTES) throw new Error("Asset layer terlalu besar untuk recolor.");
+  const doc = new DOMParser().parseFromString(decoded, "image/svg+xml");
+  if (doc.querySelector("parsererror") || doc.documentElement.localName !== "svg") {
+    throw new Error("Asset SVG layer tidak dapat dibaca.");
+  }
+  return doc;
+}
+
+/**
+ * Recolor asset layer SVG: ganti nilai fill/stroke hex pada elemen layer
+ * (termasuk anak-anak group). Aman by-construction: gradien via url(#…) dan
+ * fill "none" tidak disentuh, dan tidak ada atribut lain yang berganti.
+ */
+export function recolorLayerAsset(asset: string, mode: ModeWarna, warna: string): string {
+  if (!WARNA_HEX.test(warna)) throw new Error("Warna harus hex 6 digit (#rrggbb).");
+  if (mode !== "isi" && mode !== "garis" && mode !== "semua") throw new Error("Mode recolor tidak dikenal.");
+  const doc = decodeAssetSvg(asset);
+  const sasaran = mode === "isi" ? ["fill"] : mode === "garis" ? ["stroke"] : ["fill", "stroke"];
+  let berubah = 0;
+  for (const element of Array.from(doc.querySelectorAll("*"))) {
+    if (element.localName === "stop") continue;
+    for (const attribute of sasaran) {
+      const nilai = (element.getAttribute(attribute) ?? "").trim();
+      // "none" = outline/tanpa isi; url(#id) = gradien; bukan hex = warna css bernama → lewati.
+      if (!nilai || nilai === "none" || /^url\(/i.test(nilai) || !WARNA_HEX.test(nilai)) continue;
+      element.setAttribute(attribute, warna);
+      berubah++;
+    }
+  }
+  if (!berubah) throw new Error("Tidak ada warna hex yang cocok di layer ini — coba mode lain.");
+  return svgDataUrl(new XMLSerializer().serializeToString(doc.documentElement));
 }
 
 export function loadImageAsset(source: string): Promise<HTMLImageElement> {
