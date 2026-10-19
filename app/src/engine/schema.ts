@@ -129,7 +129,7 @@ export interface LayerSpec {
   text?: TextSpec; // wajib untuk kind "text"
   line?: LineSpec; // wajib untuk kind "line"
   kanvas?: CanvasSpec; // wajib untuk kind "canvas"
-  asset?: string; // id aset untuk kind "image" — diisi setelah asset manager (Fase 6)
+  asset?: string; // SVG lokal tersanitasi sebagai data URL untuk kind "image"
   motion?: MotionSpec;
 }
 

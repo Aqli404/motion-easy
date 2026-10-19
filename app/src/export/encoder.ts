@@ -10,6 +10,7 @@ import { renderFrame } from "../engine/renderer";
 import type { MotionDefinition } from "../engine/schema";
 import { EXPORT_PRESETS, resolveExportSize } from "./presets";
 import type { ExportPreset, ExportSize } from "./presets";
+import { prepareImageAssets } from "../engine/svg";
 
 export interface ExportProgress {
   phase: "preparing" | "encoding" | "muxing";
@@ -144,6 +145,7 @@ export async function exportMp4(
   const { width, height } = size;
 
   onProgress({ phase: "preparing", frame: 0, totalFrames: 0, pct: 0 });
+  await prepareImageAssets(def);
   // negosiasi otomatis: codec yang pas + bitrate yang bisa ditanggung mesin
   const konfig = await pilihKonfigurasiEncoder(width, height, fps, preset.bitrate);
 

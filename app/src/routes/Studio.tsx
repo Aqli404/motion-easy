@@ -12,11 +12,14 @@ import {
   Activity,
   Cpu,
   Lock,
+  FileImage,
 } from "lucide-react";
 import Modal from "../components/Modal";
 import AiPanel from "../components/AiPanel";
 import ExportModal from "../components/ExportModal";
 import BulkModal from "../components/BulkModal";
+import SvgControls from "../components/SvgControls";
+import SequenceModal from "../components/SequenceModal";
 import { SAMPLES, SAMPLE_KEYS } from "../engine/samples";
 import { renderFrame, activeLayerCount } from "../engine/renderer";
 import { usePlayer } from "../engine/player";
@@ -24,6 +27,10 @@ import { useLicense } from "../license/useLicense";
 import { premiumEfektif } from "../license/license";
 import { useKuota } from "../license/kuota";
 import type { MotionDefinition, MotionSpec } from "../engine/schema";
+import { prepareImageAssets, svgToMotionDefinition } from "../engine/svg";
+import { MAX_PROJECT_BYTES, openProject, projectText } from "../engine/project";
+import { slugify } from "../export/presets";
+import { unduhBlob } from "../export/encoder";
 
 function fmt(t: number): string {
   const m = Math.floor(t / 60);
@@ -33,11 +40,29 @@ function fmt(t: number): string {
 
 export default function Studio() {
   const [defId, setDefId] = useState(SAMPLE_KEYS[0]);
-  const [custom, setCustom] = useState<MotionDefinition | null>(null);
+  const [custom, setCustomState] = useState<MotionDefinition | null>(null);
+  const [history, setHistory] = useState<{ past: MotionDefinition[]; future: MotionDefinition[] }>({ past: [], future: [] });
   const adalahKustom = custom !== null;
   const def: MotionDefinition =
     custom ?? SAMPLES[defId]?.def ?? SAMPLES[SAMPLE_KEYS[0]].def;
   const duration = def.canvas.durationSec;
+  const setCustom = (next: MotionDefinition | null) => {
+    if (next === def) return;
+    setHistory((state) => ({ past: [...state.past.slice(-29), def], future: [] }));
+    setCustomState(next);
+  };
+  const undo = () => {
+    const previous = history.past.at(-1);
+    if (!previous) return;
+    setHistory({ past: history.past.slice(0, -1), future: [def, ...history.future] });
+    setCustomState(previous);
+  };
+  const redo = () => {
+    const next = history.future[0];
+    if (!next) return;
+    setHistory({ past: [...history.past, def], future: history.future.slice(1) });
+    setCustomState(next);
+  };
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const ctxRef = useRef<CanvasRenderingContext2D | null>(null);
@@ -66,26 +91,75 @@ export default function Studio() {
     c.width = def.canvas.w;
     c.height = def.canvas.h;
     ctxRef.current = c.getContext("2d");
-    if (ctxRef.current) {
-      renderFrame(ctxRef.current, def, 0);
-    }
+    let active = true;
+    prepareImageAssets(def).then(() => {
+      if (active && ctxRef.current) renderFrame(ctxRef.current, def, player.getTime());
+    }).catch((error: Error) => { if (active) setSvgError(error.message); });
+    if (ctxRef.current) renderFrame(ctxRef.current, def, player.getTime());
     if (sliderRef.current) {
       sliderRef.current.max = String(duration);
-      sliderRef.current.value = "0";
+      sliderRef.current.value = String(Math.min(player.getTime(), duration));
     }
-    if (labelRef.current) labelRef.current.textContent = fmt(0);
+    if (labelRef.current) labelRef.current.textContent = fmt(Math.min(player.getTime(), duration));
     if (countRef.current)
       countRef.current.textContent = `0/${def.layers.length}`;
+    return () => { active = false; };
   }, [def, duration]);
 
   const [exportOpen, setExportOpen] = useState(false);
+  const [sequenceOpen, setSequenceOpen] = useState(false);
   const [premiumOpen, setPremiumOpen] = useState(false);
   const [bulkOpen, setBulkOpen] = useState(false);
   const [bulkLockOpen, setBulkLockOpen] = useState(false);
+  const [svgError, setSvgError] = useState("");
+  const svgInputRef = useRef<HTMLInputElement | null>(null);
+  const projectInputRef = useRef<HTMLInputElement | null>(null);
+  const [projectBusy, setProjectBusy] = useState(false);
+  const [projectMessage, setProjectMessage] = useState("");
+
+  const importProject = async (file: File) => {
+    setProjectBusy(true);
+    setSvgError("");
+    setProjectMessage("");
+    try {
+      if (file.size > MAX_PROJECT_BYTES) throw new Error("Proyek terlalu besar. Maksimal 12 MB.");
+      const next = await openProject(await file.text());
+      player.pause();
+      setCustom(next);
+      player.seek(0);
+      setProjectMessage(`Proyek dibuka: ${next.name}`);
+    } catch (error) { setSvgError((error as Error).message); }
+    finally { setProjectBusy(false); if (projectInputRef.current) projectInputRef.current.value = ""; }
+  };
+  const saveProject = () => {
+    try {
+      unduhBlob(new Blob([projectText(def)], { type: "application/json" }), `${slugify(def.name)}.motion.json`);
+      setProjectMessage("File proyek diunduh. Simpan file ini untuk membuka kembali pengaturan dan asset SVG.");
+      setSvgError("");
+    } catch (error) { setSvgError((error as Error).message); }
+  };
 
   const lic = useLicense();
   const premium = premiumEfektif(lic);
   const kuota = useKuota(premium);
+
+  const importSvg = async (file: File) => {
+    setSvgError("");
+    try {
+      if (!file.name.toLowerCase().endsWith(".svg")) throw new Error("Pilih file SVG.");
+      if (file.size > 2_000_000) throw new Error("File SVG terlalu besar. Maksimal 2 MB.");
+      const source = await file.text();
+      const imported = svgToMotionDefinition(file.name, source);
+      await prepareImageAssets(imported);
+      setCustom(imported);
+      setSvgError("");
+      player.seek(0);
+    } catch (error) {
+      setSvgError((error as Error).message || "SVG tidak dapat diimpor.");
+    } finally {
+      if (svgInputRef.current) svgInputRef.current.value = "";
+    }
+  };
 
   // ===== Quick Wins =====
 
@@ -168,7 +242,7 @@ export default function Studio() {
       return {
         ...l,
         time: { from: Number(from.toFixed(3)), to: Number(to.toFixed(3)) },
-        motion: inM || outM ? { in: inM, out: outM } : undefined,
+        motion: mo ? { ...mo, in: inM, out: outM } : undefined,
       };
     });
     setCustom({
@@ -183,6 +257,15 @@ export default function Studio() {
 
   return (
     <div className="flex h-full flex-col gap-3 p-4">
+      <div className="flex flex-wrap items-center gap-2 text-xs">
+        <button className="rounded border border-edge px-3 py-2 disabled:opacity-40" disabled={projectBusy} onClick={() => projectInputRef.current?.click()}>{projectBusy ? "Membuka…" : "Buka proyek"}</button>
+        <button className="rounded border border-edge px-3 py-2" onClick={saveProject}>Simpan proyek</button>
+        <button className="rounded border border-edge px-3 py-2" onClick={() => { player.pause(); setSequenceOpen(true); }}>PNG Sequence ZIP</button>
+        <button className="rounded border border-edge px-3 py-2 disabled:opacity-40" disabled={!history.past.length} onClick={undo}>Undo</button>
+        <button className="rounded border border-edge px-3 py-2 disabled:opacity-40" disabled={!history.future.length} onClick={redo}>Redo</button>
+        <span role="status" className="text-muted">{projectMessage || "Proyek disimpan sebagai file lokal, bukan otomatis di cloud."}</span>
+        <input aria-label="File proyek Motion Easy" ref={projectInputRef} className="hidden" type="file" accept=".json,application/json" onChange={(e) => { const file = e.target.files?.[0]; if (file) void importProject(file); }} />
+      </div>
       {/* Baris atas: pilih sample + sumber + aksi */}
       <div className="flex flex-wrap items-center gap-2">
         <span className="font-mono text-[10px] uppercase tracking-widest text-muted">
@@ -191,7 +274,7 @@ export default function Studio() {
         {SAMPLE_KEYS.map((k) => (
           <button
             key={k}
-            onClick={() => setDefId(k)}
+            onClick={() => { setCustom(null); setDefId(k); player.reset(); }}
             className={`rounded-lg border px-3 py-1.5 text-xs transition-colors ${
               !adalahKustom && defId === k
                 ? "border-accent bg-panel-high font-semibold text-primary"
@@ -203,9 +286,27 @@ export default function Studio() {
         ))}
         {adalahKustom && (
           <span className="flex items-center gap-1.5 rounded-lg border border-secondary/50 bg-secondary/10 px-2.5 py-1.5 text-xs text-secondary">
-            <Cpu className="h-3.5 w-3.5" /> Custom AI: {def.name}
+            <Cpu className="h-3.5 w-3.5" /> Proyek: {def.name}
           </span>
         )}
+        <input
+          ref={svgInputRef}
+          type="file"
+          accept="image/svg+xml,.svg"
+          className="hidden"
+          onChange={(event) => {
+            const file = event.target.files?.[0];
+            if (file) void importSvg(file);
+          }}
+        />
+        <button
+          onClick={() => svgInputRef.current?.click()}
+          title="Impor SVG menjadi layer animasi"
+          className="flex items-center gap-1.5 rounded-md border border-secondary/40 bg-secondary/10 px-2.5 py-1.5 text-xs text-secondary hover:bg-secondary/20"
+        >
+          <FileImage className="h-3.5 w-3.5" /> SVG Motion
+        </button>
+        {svgError && <span role="alert" className="max-w-xs text-[10px] text-error">{svgError}</span>}
         <div className="ml-auto flex items-center gap-2">
           <span className="hidden font-mono text-[10px] text-muted sm:block">
             {def.canvas.w}×{def.canvas.h} · {def.canvas.fps} fps ·{" "}
@@ -278,6 +379,7 @@ export default function Studio() {
         </div>
       </div>
 
+      {def.layers.some((layer) => layer.tag === "svg") && <SvgControls def={def} onChange={setCustom} />}
       <div className="flex min-h-0 flex-1 gap-3">
         {/* Kiri: layer list */}
         <aside className="hidden w-56 shrink-0 flex-col rounded-xl border border-edge bg-panel-low p-3 lg:flex">
@@ -317,6 +419,7 @@ export default function Studio() {
           <div className="grid min-h-0 flex-1 place-items-center p-4">
             <canvas
               ref={canvasRef}
+              style={!def.canvas.background ? { backgroundImage: "conic-gradient(#252833 25%, #383b47 0 50%, #252833 0 75%, #383b47 0)", backgroundSize: "20px 20px" } : undefined}
               className="h-auto max-h-full w-auto max-w-full rounded-lg shadow-2xl"
             />
           </div>
@@ -369,6 +472,7 @@ export default function Studio() {
 
       {/* Modal Ekspor */}
       <ExportModal def={def} open={exportOpen} onClose={() => setExportOpen(false)} />
+      <SequenceModal def={def} open={sequenceOpen} onClose={() => setSequenceOpen(false)} />
 
       {/* Modal Bulk ZIP */}
       <BulkModal def={def} open={bulkOpen} onClose={() => setBulkOpen(false)} />

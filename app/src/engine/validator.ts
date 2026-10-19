@@ -204,7 +204,9 @@ export function validateDefinition(json: unknown): ValidationResult {
         }
       }
       if (kind === "image") {
-        W(`${path}`, "kind image belum didukung (Fase 6) — akan digambar placeholder.");
+        if (!isStr(l.asset) || !l.asset.startsWith("data:image/svg+xml;charset=utf-8,")) {
+          E(`${path}.asset`, "kind image wajib punya asset SVG lokal dari import SVG Motion.");
+        }
       }
 
       // kanvas wajib utk kind canvas

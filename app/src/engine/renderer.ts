@@ -11,6 +11,7 @@
 import type { MotionDefinition, LayerSpec } from "./schema";
 import { getEase } from "./easing";
 import { compileKanvas, jalankanKanvas } from "./kanvas";
+import { getImageAsset } from "./svg";
 
 const SLIDE = 0.18; // jarak slide masuk/keluar (fraksi kanvas)
 
@@ -207,11 +208,17 @@ function drawShapeBody(
       break;
     }
     case "image":
-      // Aset tersedia di Fase 6 — gambar placeholder
-      ctx.beginPath();
-      ctx.rect(-0.1 * W, -0.1 * H, 0.2 * W, 0.2 * H);
+      if (l.asset) {
+        const image = getImageAsset(l.asset);
+        if (image) {
+          const w = (l.geometry.w ?? 1) * W;
+          const h = (l.geometry.h ?? 1) * H;
+          ctx.drawImage(image, -w / 2, -h / 2, w, h);
+          break;
+        }
+      }
       ctx.fillStyle = "#32343f";
-      ctx.fill();
+      ctx.fillRect(-0.1 * W, -0.1 * H, 0.2 * W, 0.2 * H);
       break;
   }
 }

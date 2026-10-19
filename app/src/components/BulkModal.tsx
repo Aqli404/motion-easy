@@ -19,6 +19,7 @@ import { parsingBatch, type BatchItem } from "../export/batch";
 import { useLicense } from "../license/useLicense";
 import { premiumEfektif, MODE_DEV } from "../license/license";
 import type { MotionDefinition } from "../engine/schema";
+import type { ProjectZipResult } from "../export/projectZip";
 
 interface Props {
   /** definisi aktif di Studio — bisa ditambahkan ke batch sekali klik */
@@ -45,6 +46,20 @@ export default function BulkModal({ def, open, onClose }: Props) {
   const premium = premiumEfektif(lic);
   const supported = webCodecsSupported();
   const [teks, setTeks] = useState("");
+  const [zipInput, setZipInput] = useState<ProjectZipResult>({ ok: [], gagal: [] });
+  const [readingZip, setReadingZip] = useState(false);
+  const [zipError, setZipError] = useState("");
+  const importZip = async (file: File) => {
+    if (!premium || berjalan) return;
+    setReadingZip(true); setZipError("");
+    try {
+      if (file.size > 12_000_000) throw new Error("ZIP maksimal 12 MB.");
+      const { readProjectZip } = await import("../export/projectZip");
+      const next = await readProjectZip(new Uint8Array(await file.arrayBuffer()));
+      setZipInput(next); reset();
+    } catch (error) { setZipError((error as Error).message); }
+    finally { setReadingZip(false); }
+  };
   const [sertakanAktif, setSertakanAktif] = useState(false);
   const [presetId, setPresetId] = useState("720"); // default 720: batch = banyak file, mulai dari yang ringan
   const [targetMb, setTargetMb] = useState<number>(0);
@@ -57,8 +72,8 @@ export default function BulkModal({ def, open, onClose }: Props) {
   const hasilParse = useMemo(() => parsingBatch(teks), [teks]);
   const items: BatchItem[] = useMemo(() => {
     const tambahan = sertakanAktif ? [{ nama: def.name, def }] : [];
-    return [...hasilParse.ok, ...tambahan];
-  }, [hasilParse, sertakanAktif, def]);
+    return [...zipInput.ok, ...hasilParse.ok, ...tambahan];
+  }, [zipInput, hasilParse, sertakanAktif, def]);
 
   const preset = EXPORT_PRESETS.find((p) => p.id === presetId) as ExportPreset;
   const terkunci = preset.premium && !premium;
@@ -76,7 +91,7 @@ export default function BulkModal({ def, open, onClose }: Props) {
       setStatus({ state: "error", message: "Preset ini butuh lisensi premium — aktivasi di menu Lisensi." });
       return;
     }
-    if (items.length === 0) return;
+    if (items.length === 0 || readingZip) return;
 
     cancelRef.current = { cancelled: false };
     zipRef.current = null;
@@ -190,6 +205,16 @@ export default function BulkModal({ def, open, onClose }: Props) {
       )}
 
       <div className={premium ? "space-y-3" : "pointer-events-none select-none space-y-3 opacity-40"}>
+      <div className="space-y-2 rounded border border-edge p-3 text-xs">
+        <label className="block">Impor ZIP proyek (.motion.json)
+          <input aria-label="ZIP proyek" type="file" accept=".zip,application/zip" disabled={!premium || berjalan || readingZip} onChange={(event) => { const file = event.target.files?.[0]; if (file) void importZip(file); event.target.value = ""; }} className="mt-2 block w-full" />
+        </label>
+        <p className="text-muted">Maksimal 20 proyek · ZIP 12 MB · ekstraksi total 24 MB. Asset SVG harus embedded. Kode Canvas/JavaScript bebas tidak diterima.</p>
+        {readingZip && <p role="status">Membaca dan memvalidasi ZIP…</p>}
+        {zipError && <p role="alert" className="text-error">{zipError}</p>}
+        {zipInput.ok.length > 0 && <><p>{zipInput.ok.length} proyek ZIP siap render.</p><ul className="max-h-20 overflow-y-auto">{zipInput.ok.map((item, index) => <li key={index}>{item.nama}</li>)}</ul><button disabled={berjalan || readingZip} onClick={() => { setZipInput({ ok: [], gagal: [] }); reset(); }}>Hapus input ZIP</button></>}
+        {zipInput.gagal.length > 0 && <ul className="max-h-24 overflow-y-auto text-error">{zipInput.gagal.map((item, index) => <li key={index}>{item.label}: {item.pesan}</li>)}</ul>}
+      </div>
       {!supported && (
         <div className="flex items-start gap-2 rounded-lg bg-error/10 px-3 py-2 text-[11px] text-error">
           <XCircle className="mt-0.5 h-3.5 w-3.5 shrink-0" />
