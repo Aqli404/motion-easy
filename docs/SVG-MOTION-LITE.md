@@ -9,7 +9,7 @@
 5. Putar preview atau geser scrubber. Animasi fade dimulai pada detik 0 sehingga frame pertama dapat kosong.
 6. Gunakan ekspor MP4 seperti biasa. Kuota dan batas resolusi tetap mengikuti paket yang ada.
 
-Artboard proyek adalah 1920×1080; SVG dipasang proporsional di tengah dengan ruang tepi 10%. Rotasi dan scale menggunakan pusat artboard sumber, bukan bounding box path individual. Layer mempertahankan urutan sumber; layer terakhir berada di atas.
+Artboard proyek adalah 1920×1080; SVG dipasang proporsional di tengah dengan ruang tepi 10%. Setiap asset layer dipotong ke bounding box elemennya — rotasi dan scale memakai pivot di pusat objek, bukan pusat artboard. Elemen di luar viewBox tetap dilayani dengan artboard penuh. Layer mempertahankan urutan sumber; layer terakhir berada di atas. Ukuran bbox diukur di browser saat impor; font berbeda antar perangkat dapat menggeser bbox teks sedikit.
 
 ## Batasan versi Lite
 
@@ -19,8 +19,15 @@ Artboard proyek adalah 1920×1080; SVG dipasang proporsional di tengah dengan ru
 - Maksimal 3.000 elemen, 60 layer tingkat atas, artboard 1–16.384 unit per sisi, dan 8 juta karakter asset hasil pemisahan.
 - Preview checkerboard tidak masuk ke hasil render.
 - MP4 H.264 tidak menyimpan alpha; area transparan menjadi hitam. Pilih warna latar jika diperlukan. Cover PNG mempertahankan alpha.
-- Belum mencakup draw-path/reveal, recolor, ungroup rekursif, timeline drag, pivot per objek, atau MOV Alpha.
+- Belum mencakup draw-path/reveal, recolor, ungroup rekursif, timeline drag, atau MOV Alpha.
 - Tidak ada perubahan harga maupun fitur Premium baru pada fase ini.
+
+## Panel layer: thumbnail dan multi-select
+
+- Thumbnail tiap layer SVG ditampilkan di panel Kontrol; klik memilih layer primer, **Ctrl/Cmd/Shift+klik** menambah/mengurangi seleksi banyak layer.
+- **Duplikat/Hapus** bekerja pada semua layer terpilih (label menampilkan jumlah); **Ke depan/belakang** hanya layer primer.
+- **Gerak masuk, Loop, dan Opacity** diterapkan ke semua layer terpilih — praktis untuk mengatur satu gaya gerak sekaligus. Posisi, ukuran, rotasi, dan waktu hanya untuk layer primer.
+- Simpan/buka proyek tetap memakai format lama; multi-select tidak disimpan (sesi panel).
 
 ## Pengujian
 
@@ -33,6 +40,8 @@ await import('/tests/svg.browser.ts').then(m => m.testSvg())
 Suite mencakup pemisahan layer, aspect-fit, origin viewBox, validasi schema, rasterisasi nyata, alpha, sanitasi konten berbahaya, gradient, dimensi fallback, input rusak, batas ukuran, dan penolakan remote asset.
 
 Pemeriksaan manual: import SVG → pilih layer → pop/pulse → rotasi → scrub → export MP4 720p → selesai. Screenshot memerlukan peninjauan visual manual tambahan.
+
+Uji pivot per objek: `await import('/tests/svgPivot.browser.ts').then(m => m.testSvgPivot())` — 11 pemeriksaan geometry bbox, rotasi 180° tetap di tempat (dan titik pivot artboard lama kosong), bbox dilampi ke irisan artboard, fallback elemen di luar viewBox, dan bbox grup ber-transform. Helper interaksi UI thumbnail/multi-select: `tests/svgSelectUi.browser.ts` (manual).
 
 ## Simpan/buka proyek dan edit layer
 

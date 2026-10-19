@@ -73,6 +73,45 @@ function wrapElement(root: Element, element: Element, viewBox: string): string {
   return new XMLSerializer().serializeToString(clone);
 }
 
+/**
+ * Ukur bbox tiap elemen tingkat atas (koordinat user-space root) dengan
+ * memasang salinan SVG serentak ke DOM tersembunyi. Dipakai untuk pivot
+ * per objek: rotasi/scale berputar di sekitar bbox elemen, bukan pusat
+ * artboard. Elemen yang gagal diukur tetap memakai artboard penuh.
+ */
+function measureTopLevelBBoxes(
+  rootSerialized: string,
+  elements: Element[],
+): Map<Element, { x: number; y: number; width: number; height: number }> {
+  const boxes = new Map<Element, { x: number; y: number; width: number; height: number }>();
+  const holder = document.createElement("div");
+  holder.setAttribute("aria-hidden", "true");
+  holder.setAttribute("style", "position:absolute;left:-99999px;top:0;width:1px;height:1px;overflow:hidden;opacity:0");
+  const root = new DOMParser().parseFromString(rootSerialized, "image/svg+xml").documentElement;
+  holder.appendChild(root);
+  document.body.appendChild(holder);
+  try {
+    for (const element of elements) {
+      const probe = root.ownerDocument.createElementNS(SVG_NS, "g");
+      // Elemen dipindah ke probe agar bbox mencakup transform milik elemen.
+      probe.appendChild(element.cloneNode(true));
+      root.appendChild(probe);
+      try {
+        const box = probe.getBBox();
+        if (Number.isFinite(box.x) && Number.isFinite(box.y) && box.width > 0 && box.height > 0) {
+          boxes.set(element, { x: box.x, y: box.y, width: box.width, height: box.height });
+        }
+      } catch { /* pengukuran gagal — fallback artboard penuh */ }
+      probe.remove();
+    }
+  } finally {
+    holder.remove();
+  }
+  return boxes;
+}
+
+const r2 = (value: number) => Number(value.toFixed(2));
+
 /** Convert a local SVG into safe, independently animatable image layers. */
 export function svgToMotionDefinition(fileName: string, source: string): MotionDefinition {
   const { doc, viewBox, width, height } = cleanSvgDocument(source);
@@ -87,19 +126,46 @@ export function svgToMotionDefinition(fileName: string, source: string): MotionD
   const canvasWidth = 1920;
   const canvasHeight = 1080;
   const scale = Math.min(canvasWidth * 0.8 / width, canvasHeight * 0.8 / height);
-  const layers: LayerSpec[] = selected.map((element, index) => ({
-    id: `svg-${index + 1}`,
-    name: element.getAttribute("id") || `${element.localName} ${index + 1}`,
-    kind: "image",
-    tag: "svg",
-    time: { from: 0, to: 6 },
-    geometry: { x: 0.5, y: 0.5, w: width * scale / canvasWidth, h: height * scale / canvasHeight },
-    asset: svgDataUrl(wrapElement(root, element, viewBox)),
-    motion: {
-      in: { type: "fadeIn", dur: 0.55, at: Math.min(index * 0.12, 1.5), easing: "easeOut" },
-      loop: { type: "float", dur: 3, amount: 0.008, phase: index / Math.max(1, selected.length) },
-    },
-  }));
+  const parts = viewBox.split(/[\s,]+/).map(Number);
+  const vx0 = parts[0] || 0;
+  const vy0 = parts[1] || 0;
+  const boxes = measureTopLevelBBoxes(new XMLSerializer().serializeToString(root), selected);
+  const layers: LayerSpec[] = selected.map((element, index) => {
+    // Pivot per objek: asset dipotong ke bbox elemen (dibatasi artboard) dan
+    // geometry center mengikuti bbox — rotasi/scale berputar di pusat objek.
+    let assetViewBox = viewBox;
+    let geoW = width * scale / canvasWidth;
+    let geoH = height * scale / canvasHeight;
+    let geoX = 0.5;
+    let geoY = 0.5;
+    const box = boxes.get(element);
+    if (box) {
+      const x0 = Math.max(vx0, box.x);
+      const y0 = Math.max(vy0, box.y);
+      const x1 = Math.min(vx0 + width, box.x + box.width);
+      const y1 = Math.min(vy0 + height, box.y + box.height);
+      if (x1 - x0 > 0.5 && y1 - y0 > 0.5) {
+        assetViewBox = [r2(x0), r2(y0), r2(x1 - x0), r2(y1 - y0)].join(" ");
+        geoW = (x1 - x0) * scale / canvasWidth;
+        geoH = (y1 - y0) * scale / canvasHeight;
+        geoX = 0.5 + ((x0 + x1) / 2 - (vx0 + width / 2)) * scale / canvasWidth;
+        geoY = 0.5 + ((y0 + y1) / 2 - (vy0 + height / 2)) * scale / canvasHeight;
+      }
+    }
+    return {
+      id: `svg-${index + 1}`,
+      name: element.getAttribute("id") || `${element.localName} ${index + 1}`,
+      kind: "image",
+      tag: "svg",
+      time: { from: 0, to: 6 },
+      geometry: { x: geoX, y: geoY, w: geoW, h: geoH },
+      asset: svgDataUrl(wrapElement(root, element, assetViewBox)),
+      motion: {
+        in: { type: "fadeIn", dur: 0.55, at: Math.min(index * 0.12, 1.5), easing: "easeOut" },
+        loop: { type: "float", dur: 3, amount: 0.008, phase: index / Math.max(1, selected.length) },
+      },
+    };
+  });
   if (layers.reduce((size, layer) => size + (layer.asset?.length ?? 0), 0) > 8_000_000) {
     fail("Total asset SVG terlalu besar setelah pemisahan layer. Sederhanakan SVG atau kelompokkan elemen.");
   }
