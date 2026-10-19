@@ -215,6 +215,116 @@ export function buildPrompt(b: Brief): string {
   ].join("\n");
 }
 
+/* ===== Alur SVG Motion (AI → SVG berlapis) ===== */
+
+const SVG_KATEGORI_HINT: Record<string, string> = {
+  "Judul / Intro": "1 judul besar + subjudul + 2 dekorasi aksen; komposisi terpusat.",
+  "Lower Third": "Seluruh komposisi menumpuk di pita sepertiga bawah kanvas; bagian atas tetap bersih.",
+  "Infografik / Statistik": "3-5 kartu/bar angka, masing-masing kelompok <g> sendiri lengkap dengan label teksnya.",
+  "Logo Sting": "Bentuk logo sederhana 1-3 <g> besar di tengah; sisa area kosong rapi.",
+  "Background Loop": "Pola dekoratif merata sepanjang kanvas, 8-16 <g>; tanpa teks.",
+  "Partikel & Efek Organik": "Jangan ratusan titik terpisah — kelompokkan jadi 3-8 <g> berisi beberapa bentuk serupa.",
+  "Bebas / Custom": "ikuti deskripsi ide pengguna.",
+};
+
+function contohSvg(utama: string, aksen: string): string {
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080">
+  <defs>
+    <linearGradient id="grad-utama" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="${utama}"/>
+      <stop offset="1" stop-color="${aksen}"/>
+    </linearGradient>
+  </defs>
+  <rect id="background" width="1920" height="1080" fill="#0b0f1a"/>
+  <g id="dekorasi-lingkaran">
+    <circle cx="240" cy="880" r="150" fill="none" stroke="${utama}" stroke-width="6" opacity="0.5"/>
+    <circle cx="1790" cy="170" r="90" fill="none" stroke="${aksen}" stroke-width="4" opacity="0.4"/>
+  </g>
+  <g id="judul">
+    <text x="960" y="480" font-family="Arial, sans-serif" font-size="120" font-weight="800" fill="${utama}" text-anchor="middle">JUDUL UTAMA</text>
+    <text x="960" y="580" font-family="Arial, sans-serif" font-size="48" fill="#ffffff" opacity="0.85" text-anchor="middle">Subjudul singkat</text>
+  </g>
+  <g id="aksen-garis">
+    <rect x="860" y="640" width="200" height="10" rx="5" fill="url(#grad-utama)"/>
+  </g>
+</svg>`;
+}
+
+const SVG_RULES = `
+ATURAN WAJIB (validator membuang atau menolak bila dilanggar):
+1. Output = SATU blok kode <svg>…</svg> murni. Tanpa penjelasan, tanpa teks lain di luar blok.
+2. Root: <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080">. Artboard tetap 16:9.
+3. Setiap elemen atau <g> yang menjadi anak LANGSUNG dari root = satu layer animasi. Maksimal {MAX} layer tingkat atas.
+4. Setiap layer wajib punya id unik yang deskriptif (misal id="judul", id="kartu-1") — id dipakai sebagai nama layer di aplikasi.
+5. Kelompokkan bentuk yang satu kesatuan dalam <g id="...">. Detail kecil boleh path kompleks DI DALAM group.
+6. HANYA presentation attributes: fill, stroke, stroke-width, opacity, font-family, font-size, font-weight, font-style, text-anchor, transform, clip-path. DILARANG KERAS: atribut style/class, <style>, <script>, <use>, <filter>, <foreignObject>, <a>, <animate>/<animateTransform>/SMIL, dan semua gambar/URL eksternal.
+7. Gradien diperbolehkan hanya sebagai <defs> lokal dengan id unik, dipakai via fill="url(#id)".
+8. Teks: <text x=".." y=".." font-family="Arial, sans-serif" font-size="angka" fill="#hex" text-anchor="middle">. Maksimal 1-2 baris per layer; font serif/eksternal tidak dijamin tersedia.
+9. Latar: layer pertama = satu <rect> penuh 1920x1080 dengan fill gelap sesuai gaya, id="background", KECUALI brief meminta transparan.
+10. Urutan layer = urutan gambar; yang terakhir paling atas. Overlay/dekorasi halus taruh paling akhir.
+11. Total maksimal sekitar 3000 elemen. Utamakan bentuk sederhana yang mudah dibaca.`.trim();
+
+/** Prompt utama SVG Motion dari brief (ide/kategori/gaya/warna). */
+export function buildSvgPrompt(b: Brief): string {
+  const kategoriHint = SVG_KATEGORI_HINT[b.kategori] ?? SVG_KATEGORI_HINT["Bebas / Custom"];
+  const gayaHint = GAYA_HINT[b.gaya] ?? "";
+  const ide = b.ide.trim() || "(pengguna tidak menulis ide — buat yang menarik sesuai kategori)";
+  const maxLayer = Math.min(60, Math.max(2, b.maxLayer));
+
+  return [
+    "Peran: kamu adalah desainer grafis SVG. Ubah BRIEF di bawah menjadi SATU karya SVG berlapis yang siap dipecah menjadi layer animasi.",
+    "",
+    "OUTPUT WAJIB: satu blok kode ```svg``` berisi markup SVG murni.",
+    "",
+    SVG_RULES.replace("{MAX}", String(maxLayer)),
+    "",
+    "CONTOH FORMAT YANG VALID (amati strukturnya; ganti isi & warna mengikuti brief):",
+    "```svg",
+    contohSvg(b.warnaUtama, b.warnaAksen),
+    "```",
+    "",
+    "BRIEF PENGGUNA:",
+    `- Ide / tema: ${ide}`,
+    `- Kategori: ${b.kategori} — petunjuk: ${kategoriHint}`,
+    `- Gaya visual: ${b.gaya} — petunjuk: ${gayaHint}`,
+    `- Warna utama: ${b.warnaUtama}  |  Aksen: ${b.warnaAksen}`,
+    `- Maksimal ${maxLayer} layer tingkat atas. Bahasa teks: Indonesia`,
+    "",
+    "SARAN TEKNIS:",
+    "- Kontras kuat antara background dan elemen utama; gerak halus akan ditambahkan aplikasi, jadi fokus pada komposisi dan hierarki.",
+    "- Beri ruang kosong di tepi kanvas (sekitar 10%) supaya gerak/looping tidak memotong elemen penting.",
+    "- Jangan taruh transform di root <svg>; transforms hanya di dalam layer.",
+    "",
+    "Sekarang tulis SVG-nya.",
+  ].join("\n");
+}
+
+/** Prompt perbaikan SVG (self-heal) — dipakai saat validasi/parse gagal. */
+export function buildSvgRepairPrompt(
+  originalSvg: string,
+  messages: string[],
+  percobaan: number,
+): string {
+  return [
+    `Karya SVG kamu DITOLAK validator (percobaan ${percobaan} dari 3). Perbaiki dengan tepat.`,
+    "",
+    "PESAN VALIDATOR:",
+    ...messages.map((m, i) => `${i + 1}. ${m}`),
+    "",
+    "INGAT:",
+    "- viewBox \"0 0 1920 1080\", xmlns svg, tanpa <style>/<script>/class, tanpa URL eksternal",
+    "- setiap layer = anak langsung root dengan id unik, maksimal 60 layer tingkat atas",
+    "- gradien hanya <defs> lokal via url(#id)",
+    "",
+    "SVG SEBELUMNYA (perbaiki bagian yang bermasalah, pertahankan yang sudah benar):",
+    "```svg",
+    originalSvg,
+    "```",
+    "",
+    "Output ulang: SATU blok kode ```svg``` penuh, tanpa penjelasan.",
+  ].join("\n");
+}
+
 /** Prompt perbaikan (self-heal) — dipakai saat validasi gagal. */
 export function buildRepairPrompt(
   originalJson: string,

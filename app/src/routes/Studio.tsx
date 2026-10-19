@@ -13,6 +13,7 @@ import {
   Cpu,
   Lock,
   FileImage,
+  Sparkles,
 } from "lucide-react";
 import Modal from "../components/Modal";
 import AiPanel from "../components/AiPanel";
@@ -20,6 +21,7 @@ import ExportModal from "../components/ExportModal";
 import BulkModal from "../components/BulkModal";
 import SvgControls from "../components/SvgControls";
 import SequenceModal from "../components/SequenceModal";
+import SvgAiModal from "../components/SvgAiModal";
 import { SAMPLES, SAMPLE_KEYS } from "../engine/samples";
 import { renderFrame, activeLayerCount } from "../engine/renderer";
 import { usePlayer } from "../engine/player";
@@ -108,6 +110,7 @@ export default function Studio() {
 
   const [exportOpen, setExportOpen] = useState(false);
   const [sequenceOpen, setSequenceOpen] = useState(false);
+  const [svgAiOpen, setSvgAiOpen] = useState(false);
   const [premiumOpen, setPremiumOpen] = useState(false);
   const [bulkOpen, setBulkOpen] = useState(false);
   const [bulkLockOpen, setBulkLockOpen] = useState(false);
@@ -306,6 +309,13 @@ export default function Studio() {
         >
           <FileImage className="h-3.5 w-3.5" /> SVG Motion
         </button>
+        <button
+          onClick={() => setSvgAiOpen(true)}
+          title="Buat SVG berlapis via prompt ke AI (Gemini/ChatGPT/Claude)"
+          className="flex items-center gap-1.5 rounded-md border border-primary/40 bg-primary/10 px-2.5 py-1.5 text-xs text-primary hover:bg-primary/20"
+        >
+          <Sparkles className="h-3.5 w-3.5" /> SVG dari AI
+        </button>
         {svgError && <span role="alert" className="max-w-xs text-[10px] text-error">{svgError}</span>}
         <div className="ml-auto flex items-center gap-2">
           <span className="hidden font-mono text-[10px] text-muted sm:block">
@@ -473,6 +483,15 @@ export default function Studio() {
       {/* Modal Ekspor */}
       <ExportModal def={def} open={exportOpen} onClose={() => setExportOpen(false)} />
       <SequenceModal def={def} open={sequenceOpen} onClose={() => setSequenceOpen(false)} />
+      <SvgAiModal
+        open={svgAiOpen}
+        onClose={() => setSvgAiOpen(false)}
+        onApply={(next) => {
+          player.pause();
+          setCustom(next);
+          player.seek(0);
+        }}
+      />
 
       {/* Modal Bulk ZIP */}
       <BulkModal def={def} open={bulkOpen} onClose={() => setBulkOpen(false)} />

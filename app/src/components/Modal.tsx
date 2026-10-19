@@ -5,10 +5,12 @@ type Props = {
   open: boolean;
   title: string;
   children: ReactNode;
+  /** Lebar untuk konten panjang (prompt builder): max-w-2xl. */
+  wide?: boolean;
   onClose: () => void;
 };
 
-export default function Modal({ open, title, children, onClose }: Props) {
+export default function Modal({ open, title, children, wide, onClose }: Props) {
   useEffect(() => {
     const fn = (e: KeyboardEvent) => e.key === "Escape" && onClose();
     if (open) window.addEventListener("keydown", fn);
@@ -18,7 +20,7 @@ export default function Modal({ open, title, children, onClose }: Props) {
   if (!open) return null;
   return (
     <div className="fixed inset-0 z-50 grid place-items-center bg-black/70 p-4">
-      <div className="w-full max-w-md rounded-xl border border-edge bg-panel shadow-2xl">
+      <div className={`w-full ${wide ? "max-w-2xl" : "max-w-md"} rounded-xl border border-edge bg-panel shadow-2xl`}>
         <div className="flex items-center justify-between border-b border-edge px-5 py-3.5">
           <h3 className="text-sm font-semibold">{title}</h3>
           <button

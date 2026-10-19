@@ -71,3 +71,14 @@ Modal **Bulk ZIP** sekarang menerima tambahan input ZIP berisi proyek `.motion.j
 Batas keamanan: ZIP maksimal 12 MB, 100 entri, 20 proyek valid, ekstraksi total 24 MB dan 12 MB per proyek; nama path `..`, awalan `/`, dan backslash ditolak sehingga isi arsip hanya data, bukan lokasi tulis. Asset remote dalam proyek juga ditolak oleh validator proyek.
 
 Uji: `await import('/tests/projectZip.browser.ts').then(m => m.testProjectZip())` — 12 pemeriksaan: dimuat dua proyek + subfolder, file asing diabaikan, perubahan layer tersimpan, kode canvas ditolak tanpa dieksekusi, path traversal/arsip non-ZIP/ZIP kosong/101 entri ditolak, dan proyek rusak tidak menggagalkan yang sah. Uji UI lokal: ZIP 2 proyek → render 2/2 sukses.
+
+## SVG dari AI (prompt builder)
+
+Tombol **SVG dari AI** di toolbar Studio memandu alur AI → SVG berlapis → layer animasi:
+
+1. Isi brief (tema siap pakai, ide, kategori, gaya, dua warna) lalu **Salin Prompt SVG** atau buka Gemini/ChatGPT/Claude langsung dari modal.
+2. Prompt memerintahkan AI menghasilkan blok ` ```svg ` dengan aturan yang cocok dengan SVG Motion Lite: `viewBox="0 0 1920 1080"`, setiap layer = anak langsung root ber-`id` unik (maksimal mengikuti brief, hard-cap 60), hanya presentation attributes, tanpa `<style>`/`<script>`/SMIL/URL eksternal, gradien hanya `<defs>` lokal, dan layer `background` sebagai latar.
+3. Tempel jawaban AI di kotak tempel. Konten dibersihkan otomatis (ambil blok svg pertama atau substring `<svg…</svg>`), lalu **Validasi & Muat Jadi Layer** menjalankan sanitasi yang sama seperti impor file.
+4. Jika ditolak, tombol **Salin Prompt Perbaikan** mengirim ulang SVG + pesan validator ke AI (maksimal 3 percobaan dalam satu sesi).
+
+Batas dan keamanan tetap sama dengan impor file: 2 MB, 3.000 elemen, 60 layer, asset remote dibuang, teks bergantung font lokal browser. Artboard tetap 16:9 — pekerjaan vertikal perlu diubah manual. Jawaban AI bebas prosa; hanya markup SVG yang dipakai. Uji: `await import('/tests/svgAi.browser.ts').then(m => m.testSvgAi())` — 18 pemeriksaan isi prompt, penggali blok kode, contoh SVG di prompt (valid & jadi 4 layer), jawaban hostile tersanitasi, >60 layer ditolak, dan prompt perbaikan. Helper interaksi UI: `tests/svgAiUi.browser.ts` (manual, bukan suite).
