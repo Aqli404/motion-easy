@@ -41,14 +41,16 @@ Artboard proyek adalah 1920×1080; SVG dipasang proporsional di tengah dengan ru
 
 ## Timeline drag
 
-Panel Studio sekarang punya **timeline visual** di bawah play kontrol: ruler detik + bar per layer (`time.from`–`time.to`).
+Dock di bawah Studio (selebar area kerja, di bawah baris 3 kolom): ruler detik + bar per layer (`time.from`–`time.to`) dengan **gutter nama layer di kiri** (nama tak terpotong bar pendek).
 
 - **Geser badan bar** memindahkan waktu tampil layer (clamp dalam track; layer full-span tidak bisa bergeser — pangkas dulu).
-- **Tarik tepi kiri/kanan** (gagang 6 px) memangkas bar: span minimal 0,2 detik, snap 0,05 detik agar mudah segaris, keras dibatasi dalam durasi track.
+- **Tarik tepi kiri/kanan** (gagang 6 px) memangkas bar: span minimal 0,2 detik, snap 0,05 detik, murah dibatasi 0–durasi.
 - **Klik latar** (track kosong atau ruler) → playhead lompat; seret latar untuk seek berkelanjutan.
 - Playhead sinkron player (diperbarui per frame tanpa re-render). Slider scrub lama tetap ada.
-- Menyeret memutakhirkan preview tanpa menambah history; saat bar dilepas, perubahan dikomit **satu langkah** ke Undo/Redo (memakai snapshot pre-drag, bukan state menengah).
-- Aksesibilitas: bar punya role button + aria-label `Bar waktu <layer>`; gagang trim punya aria-label `Trim kiri/kanan <layer>`.
+- Menyeret memutakhirkan preview tanpa menambah history; saat bar dilepas, perubahan dikomit **satu langkah** ke Undo/Redo (memakai snapshot pre-drag + hasil usai drag disimpan ref, komit tak bergantung saat React merender ulang).
+- **Ruang hemat**: bar 16 px, area track maksimal 9 baris lalu scroll; dock bisa dilipat lewat tombol chevron (pilihan diingat di `localStorage` — kunci `timeline-lipat`); tersembunyi otomatis di layar < md.
+- **Kanvas tidak rentan tertutup**: viewport kanvas memakai pola `relative` + kanvas `absolute inset-0 m-auto` dengan `overflow-hidden`, latar baris play dan timeline solid `bg-well` — kanvas video tidak pernah menembus kontrol/timeline lagi (bug melimpah ±300 px yang dulu kelihatan "timeline menutupi video" sudah hilang).
+- Aksesibilitas: bar punya role button + aria-label `Bar waktu <layer>`; gagang trim punya aria-label `Trim kiri/kanan <layer>`; track `Track timeline` dan ruler `Ruler timeline`.
 
 ## Pengujian
 
@@ -68,7 +70,7 @@ Uji recolor: `await import('/tests/svgRecolor.browser.ts').then(m => m.testSvgRe
 
 Uji draw reveal: `await import('/tests/svgDraw.browser.ts').then(m => m.testSvgDraw())` — 26 pemeriksaan: type draw otomatis + dur 1,2, panjang getTotalLength, permukaan digambar parsial (uji piksel), akhir path tersembunyi lalu utuh, fallback statis fadeIn, group dua warna, group non-path tidak jadi draw, isi segitiga muncul setelah garis, outline magenta, batas d dan jumlah path, sinkron recolor garis/isi, tombol Asli, dan warning validator pada non-image.
 
-Uji timeline drag (UI, 22 pemeriksaan: move 150 px tepat dengan lebar tetap, trim kanan 240 px, clamp kiri/kanan track, span minimal 0,2 dtk, 5 undo kembali full-span, 5 redo mengulang clamp, seek 30% → playhead 30%) dijalankan via `tests` helper bantuan manual — gunakan skrip seret sintetis pada halaman `/studio`.
+Uji timeline drag (26 pemeriksaan: move 150 px tepat dengan lebar tetap, trim kanan 240 px, clamp kiri/kanan track, span minimal 0,2 dtk, 5 undo kembali full-span, 5 redo mengulang clamp, seek 30% → playhead 30%, kanvas pas dalam areanya, gutta + lipat tersedia) — jalankan lewat skrip seret sintetis PointerEvent pada halaman `/studio`.
 
 ## Simpan/buka proyek dan edit layer
 

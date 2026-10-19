@@ -441,15 +441,18 @@ export default function Studio() {
             </span>
           </div>
 
-          <div className="grid min-h-0 flex-1 place-items-center p-4">
+          {/* Viewport: kanvas dipaku dalam kotak (inset-0 + margin auto) supaya
+              tingginya terikat area yang benar-benar tersedia — tanpa ini kanvas
+              melimpah menembus baris play dan timeline. */}
+          <div className="relative min-h-0 flex-1 overflow-hidden">
             <canvas
               ref={canvasRef}
               style={!def.canvas.background ? { backgroundImage: "conic-gradient(#252833 25%, #383b47 0 50%, #252833 0 75%, #383b47 0)", backgroundSize: "20px 20px" } : undefined}
-              className="h-auto max-h-full w-auto max-w-full rounded-lg shadow-2xl"
+              className="absolute inset-0 m-auto max-h-full max-w-full rounded-lg shadow-2xl"
             />
           </div>
 
-          <div className="flex items-center gap-3 border-t border-edge px-4 py-3">
+          <div className="flex items-center gap-3 border-t border-edge bg-well px-4 py-3">
             <button
               onClick={player.toggle}
               className="rounded-md bg-gradient-to-r from-amber-400 via-orange-500 to-rose-500 p-2 text-deep shadow"
@@ -485,14 +488,6 @@ export default function Studio() {
               preview loop
             </span>
           </div>
-
-          <Timeline
-            def={def}
-            playheadRef={playheadRef}
-            onSeek={player.seek}
-            onDraft={setTimelineDraft}
-            onCommit={commitTimeline}
-          />
         </section>
 
         {/* Kanan: Alur AI */}
@@ -502,6 +497,15 @@ export default function Studio() {
           </div>
         </aside>
       </div>
+
+      {/* Dock bawah selebar halaman: lebar penuh → presisi geser/trim bar 2× */}
+      <Timeline
+        def={def}
+        playheadRef={playheadRef}
+        onSeek={player.seek}
+        onDraft={setTimelineDraft}
+        onCommit={commitTimeline}
+      />
 
       {/* Modal Ekspor */}
       <ExportModal def={def} open={exportOpen} onClose={() => setExportOpen(false)} />
