@@ -28,8 +28,16 @@ Artboard proyek adalah 1920×1080; SVG dipasang proporsional di tengah dengan ru
 - Thumbnail tiap layer SVG ditampilkan di panel Kontrol; klik memilih layer primer, **Ctrl/Cmd/Shift+klik** menambah/mengurangi seleksi banyak layer.
 - Pillar Kontrol: **Recolor** — pilih mode `isi (fill)` / `garis (stroke)` / `isi + garis`, pilih warna, klik **Terapkan**. Hanya warna hex 6 digit di asset yang diganti; gradien (`fill="url(#…)"`, stop), `fill="none"` (outline), dan teks CSS bernama tidak tersentuh. Bekerja juga saat multi-select. Tombol **Asli** mengembalikan asset ke kondisi impor (asset asli disimpan terpisah sebagai `assetAwal`).
 - **Duplikat/Hapus** bekerja pada semua layer terpilih (label menampilkan jumlah); **Ke depan/belakang** hanya layer primer.
-- **Gerak masuk, Loop, dan Opacity** diterapkan ke semua layer terpilih — praktis untuk mengatur satu gaya gerak sekaligus. Posisi, ukuran, rotasi, dan waktu hanya untuk layer primer.
+- **Gerak masuk, Loop, dan Opacity** diterapkan ke semua layer terpilih — praktis untuk mengatur satu gaya gerak sekaligus. Posisi, ukuran, rotasi, dan waktu hanya untuk layer primer. Pilihan gerak masuk termasuk `draw (garis digambar)` — lihat bagian draw reveal di bawah.
 - Simpan/buka proyek tetap memakai format lama; multi-select tidak disimpan (sesi panel). Berhasil recolor tetap tersimpan oleh proyek melalui `asset` yang baru; asset asli ikut disimpan lewat `assetAwal`.
+
+## Draw reveal (garis digambar)
+
+- Layer SVG yang isi `<path>` ber-outline (stroke hex, tunggal atau group yang seluruh turunannya path) otomatis memakai gerak masuk `draw`: garis digambar progresif 1,2 detik dengan easing easeInOut — teknik outline logo masuk singkat lalu menetap.
+- Gambar progresif memakai dash per frame pada Path2D (lebih halus dari raster); koordinat memakai satuan viewBox asset sehingga rotasi/scale layer tetap bekerja. Warna/tebal tiap path dibaca dari attr SVG (termasuk warisan group). Isi (`fill` hex) memudar muncul setelah 75% garis tersambung.
+- Layer lain memakai fadeIn. Draw tidak berlaku untuk group yang memuat bentuk non-path (rect/circle/text), path tanpa stroke hex ber-tujuan warna CSS, atau path dengan `d` > 20.000 karakter / group > 40 path / total `d` > 100 ribu karakter — layer-kalau begitu tetap normal (asset gambar).
+- Recolor layer draw mengubah asset dan spec draw sekaligus agar visual reveal dan versi statis selalu sama warna; tombol **Asli** mengembalikan warna draw dari `assetAwal` juga.
+- Batas kecil: reveal digambar per path bersamaan (paralel), bukan berurutan; jitter path sangat panjang dapat terlihat pada MP4 bitrate rendah — naik kualitas atau pakai PNG Sequence untuk master.
 
 ## Pengujian
 
@@ -46,6 +54,8 @@ Pemeriksaan manual: import SVG → pilih layer → pop/pulse → rotasi → scru
 Uji pivot per objek: `await import('/tests/svgPivot.browser.ts').then(m => m.testSvgPivot())` — 11 pemeriksaan geometry bbox, rotasi 180° tetap di tempat (dan titik pivot artboard lama kosong), bbox dilampi ke irisan artboard, fallback elemen di luar viewBox, dan bbox grup ber-transform. Helper interaksi UI thumbnail/multi-select: `tests/svgSelectUi.browser.ts` (manual).
 
 Uji recolor: `await import('/tests/svgRecolor.browser.ts').then(m => m.testSvgRecolor())` — 16 pemeriksaan: fill/stroke berganti per mode, gradien url + stop tetap, `fill="none"` tetap none, anak group ikut, warna non-hex ditolak, hasil terlihat di pixel render, tombol "Asli" via `assetAwal`, dan proyek recolored lolos simpan-buka. Rekologi UI manual: helper `ujiRecolor()` di `tests/svgSelectUi.browser.ts`.
+
+Uji draw reveal: `await import('/tests/svgDraw.browser.ts').then(m => m.testSvgDraw())` — 26 pemeriksaan: type draw otomatis + dur 1,2, panjang getTotalLength, permukaan digambar parsial (uji piksel), akhir path tersembunyi lalu utuh, fallback statis fadeIn, group dua warna, group non-path tidak jadi draw, isi segitiga muncul setelah garis, outline magenta, batas d dan jumlah path, sinkron recolor garis/isi, tombol Asli, dan warning validator pada non-image.
 
 ## Simpan/buka proyek dan edit layer
 

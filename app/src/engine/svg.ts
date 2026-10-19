@@ -1,4 +1,4 @@
-import type { LayerSpec, MotionDefinition } from "./schema";
+import type { Color, DrawSpec, InOutType, EaseName, LayerSpec, MotionDefinition } from "./schema";
 
 const MAX_SVG_BYTES = 2_000_000;
 const SVG_NS = "http://www.w3.org/2000/svg";
@@ -112,6 +112,84 @@ function measureTopLevelBBoxes(
 
 const r2 = (value: number) => Number(value.toFixed(2));
 
+const WARNA_HEX6 = /^#[0-9a-fA-F]{6}$/;
+
+/** Warisin nilai hex (stroke/fill) dari elemen ke arah root; null kalau tidak ada/cakupan lain. */
+function warnaInherited(element: Element | null, attribute: "stroke" | "fill"): string | null {
+  let node: Element | null = element;
+  while (node) {
+    const value = (node.getAttribute(attribute) ?? "").trim();
+    if (value && value !== "none") return WARNA_HEX6.test(value) ? value.toLowerCase() : null;
+    node = node.parentElement;
+  }
+  return null;
+}
+
+const MAX_DRAW_PATHS = 40;
+const MAX_DRAW_D_CHARS = 100_000;
+
+/**
+ * Deteksi layer path ber-outline untuk draw reveal: elemen = <path> tunggal,
+ * atau <g> yang seluruh keturunan visualnya path. Mengukur getTotalLength
+ * di DOM tersembunyi (satu kali, saat impor). Environs gagal → null.
+ */
+function measureDrawSpecs(
+  rootSerialized: string,
+  elements: Element[],
+): Map<Element, DrawSpec | null> {
+  const specs = new Map<Element, DrawSpec | null>(elements.map((element) => [element, null]));
+  const root = new DOMParser().parseFromString(rootSerialized, "image/svg+xml").documentElement;
+  const holder = document.createElement("div");
+  holder.setAttribute("aria-hidden", "true");
+  holder.setAttribute("style", "position:absolute;left:-99999px;top:0;width:1px;height:1px;overflow:hidden;opacity:0");
+  holder.appendChild(root);
+  document.body.appendChild(holder);
+  try {
+    for (const element of elements) {
+      try {
+        const paths = element.localName === "path"
+          ? [element]
+          : element.querySelector("path")
+            ? Array.from(element.querySelectorAll("path"))
+            : [];
+        if (!paths.length || paths.length > MAX_DRAW_PATHS) continue;
+        // Semua bentuk non-path (rect/circle/text/…) membuat layer tidak layak draw.
+        const nonPath = Array.from(element.querySelectorAll("*")).some(
+          (child) => !["path", "g", "title", "desc", "metadata"].includes(child.localName),
+        );
+        if (nonPath) continue;
+        let dTotal = 0;
+        const items: DrawSpec["paths"] = [];
+        let layak = true;
+        for (const path of paths) {
+          const svgPath = path as SVGPathElement;
+          const d = svgPath.getAttribute("d") ?? "";
+          const stroke = warnaInherited(svgPath, "stroke");
+          if (!d || d.length > 20_000 || !stroke) { layak = false; break; }
+          dTotal += d.length;
+          if (dTotal > MAX_DRAW_D_CHARS) { layak = false; break; }
+          const widthRaw = svgPath.getAttribute("stroke-width")
+            ?? svgPath.closest("[stroke-width]")?.getAttribute("stroke-width")
+            ?? "1";
+          const width = parseFloat(widthRaw);
+          if (!Number.isFinite(width) || width <= 0) { layak = false; break; }
+          items.push({ d, len: svgPath.getTotalLength(), stroke, width });
+        }
+        if (!layak || !items.length) continue;
+        const fill = warnaInherited(paths[0], "fill");
+        specs.set(element, {
+          fill: fill ?? null,
+          vb: { x: 0, y: 0, w: 0, h: 0 }, // diisi setelah bbox diketahui
+          paths: items,
+        });
+      } catch { /* pengukuran gagal — layer tetap normal */ }
+    }
+  } finally {
+    holder.remove();
+  }
+  return specs;
+}
+
 /** Convert a local SVG into safe, independently animatable image layers. */
 export function svgToMotionDefinition(fileName: string, source: string): MotionDefinition {
   const { doc, viewBox, width, height } = cleanSvgDocument(source);
@@ -130,6 +208,7 @@ export function svgToMotionDefinition(fileName: string, source: string): MotionD
   const vx0 = parts[0] || 0;
   const vy0 = parts[1] || 0;
   const boxes = measureTopLevelBBoxes(new XMLSerializer().serializeToString(root), selected);
+  const draws = measureDrawSpecs(new XMLSerializer().serializeToString(root), selected);
   const layers: LayerSpec[] = selected.map((element, index) => {
     // Pivot per objek: asset dipotong ke bbox elemen (dibatasi artboard) dan
     // geometry center mengikuti bbox — rotasi/scale berputar di pusat objek.
@@ -152,6 +231,23 @@ export function svgToMotionDefinition(fileName: string, source: string): MotionD
         geoY = 0.5 + ((y0 + y1) / 2 - (vy0 + height / 2)) * scale / canvasHeight;
       }
     }
+    // Draw reveal: layer baru otomatis memakai gerak masuk "draw" (garis
+    // digambar 1.2 dtk); layer lain tetap fadeIn.
+    const draw = draws.get(element) ?? undefined;
+    let drawSpec: DrawSpec | undefined;
+    let inMotion: { type: InOutType; dur: number; at: number; easing: EaseName } = {
+      type: "fadeIn",
+      dur: 0.55,
+      at: Math.min(index * 0.12, 1.5),
+      easing: "easeOut",
+    };
+    if (draw && draw.paths.length) {
+      const vbParts = assetViewBox.split(/[\s,]+/).map(Number);
+      if (Number.isFinite(vbParts[2]) && vbParts[2] > 0 && Number.isFinite(vbParts[3]) && vbParts[3] > 0) {
+        drawSpec = { ...draw, vb: { x: vbParts[0] || 0, y: vbParts[1] || 0, w: vbParts[2], h: vbParts[3] } };
+        inMotion = { type: "draw", dur: 1.2, at: Math.min(index * 0.12, 1.5), easing: "easeInOut" };
+      }
+    }
     return {
       id: `svg-${index + 1}`,
       name: element.getAttribute("id") || `${element.localName} ${index + 1}`,
@@ -161,13 +257,23 @@ export function svgToMotionDefinition(fileName: string, source: string): MotionD
       geometry: { x: geoX, y: geoY, w: geoW, h: geoH },
       asset: svgDataUrl(wrapElement(root, element, assetViewBox)),
       assetAwal: svgDataUrl(wrapElement(root, element, assetViewBox)),
+      draw: drawSpec,
       motion: {
-        in: { type: "fadeIn", dur: 0.55, at: Math.min(index * 0.12, 1.5), easing: "easeOut" },
+        in: inMotion,
         loop: { type: "float", dur: 3, amount: 0.008, phase: index / Math.max(1, selected.length) },
       },
     };
   });
-  if (layers.reduce((size, layer) => size + (layer.asset?.length ?? 0) + (layer.assetAwal?.length ?? 0), 0) > 8_000_000) {
+  if (
+    layers.reduce(
+      (size, layer) =>
+        size +
+        (layer.asset?.length ?? 0) +
+        (layer.assetAwal?.length ?? 0) +
+        (layer.draw?.paths.reduce((s, item) => s + item.d.length + 64, 0) ?? 0),
+      0,
+    ) > 8_000_000
+  ) {
     fail("Total asset SVG terlalu besar setelah pemisahan layer. Sederhanakan SVG atau kelompokkan elemen.");
   }
 
@@ -221,8 +327,52 @@ export function recolorLayerAsset(asset: string, mode: ModeWarna, warna: string)
   return svgDataUrl(new XMLSerializer().serializeToString(doc.documentElement));
 }
 
+/**
+ * Recolor satu layer penuh: asset gambar + spec draw (garis/fill) diganti
+ * bersamaan supaya reveal dan versi statis tidak tidak sinkron. Perubahan
+ * warna yang gagal (tak ada hex) dilempar sesudah pengecekan curam.
+ */
+export function terapkanRecolorLayer(layer: LayerSpec, mode: ModeWarna, warna: string): LayerSpec {
+  if (layer.kind !== "image" || !layer.asset) return layer;
+  const asset = recolorLayerAsset(layer.asset, mode, warna);
+  let draw = layer.draw;
+  if (draw) {
+    const gantiStroke = mode === "garis" || mode === "semua";
+    const gantiFill = mode === "isi" || mode === "semua";
+    draw = {
+      ...draw,
+      paths: gantiStroke ? draw.paths.map((item) => ({ ...item, stroke: warna as Color })) : draw.paths,
+      fill: gantiFill ? (warna as Color) : draw.fill,
+    };
+  }
+  return { ...layer, asset, draw };
+}
+
+/**
+ * Pulihkan warna draw reveal dari asset asli (assetAwal): warna stroke/fill
+ * setiap path dibaca ulang dari SVG asli supaya tombol "Asli" mengembalikan
+ * reveal dan versi statis ke kondisi impor yang sama.
+ */
+export function pulihkanWarnaAsli(layer: LayerSpec): LayerSpec {
+  if (layer.kind !== "image" || !layer.assetAwal || !layer.draw) return layer;
+  try {
+    const raw = layer.assetAwal.replace(/^data:image\/svg\+xml;charset=utf-8,/, "");
+    const root = new DOMParser().parseFromString(decodeURIComponent(raw), "image/svg+xml").documentElement;
+    const paths = Array.from(root.querySelectorAll("path"));
+    const items = layer.draw.paths.map((item, index) => {
+      const source = paths[index];
+      if (!source) return item;
+      const stroke = warnaInherited(source, "stroke") ?? item.stroke;
+      return { ...item, stroke };
+    });
+    const fill = paths.length ? warnaInherited(paths[0], "fill") : null;
+    return { ...layer, asset: layer.assetAwal, draw: { ...layer.draw, paths: items, fill } };
+  } catch {
+    return { ...layer, asset: layer.assetAwal };
+  }
+}
+
 export function loadImageAsset(source: string): Promise<HTMLImageElement> {
-  // Imported JSON must not turn asset loading into arbitrary network requests.
   if (!source.startsWith("data:image/svg+xml;charset=utf-8,")) {
     return Promise.reject(new Error("Hanya asset SVG lokal dari import SVG Motion yang didukung."));
   }

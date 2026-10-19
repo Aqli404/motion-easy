@@ -253,6 +253,9 @@ export function validateDefinition(json: unknown): ValidationResult {
               if (mi.type === "fadeOut") {
                 E(`${path}.motion.in.type`, '"fadeOut" hanya untuk motion.out (untuk masuk pakai "fadeIn").');
               }
+              if (mi.type === "draw" && (String(l.kind) !== "image" || (l as Record<string, unknown>).draw === undefined)) {
+                W(`${path}.motion.in.type`, '"draw" hanya berlaku untuk layer image berisi <path> ber-outline; layer lain fallback ke fadeIn.');
+              }
               if (mi.dur !== undefined && (!isNum(mi.dur) || mi.dur <= 0 || mi.dur > 3)) {
                 W(`${path}.motion.in.dur`, "dur gerakan biasanya 0.2..1.5 dtk.");
               }

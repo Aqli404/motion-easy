@@ -182,6 +182,7 @@ function drawShapeBody(
   l: LayerSpec,
   W: number,
   H: number,
+  t: number,
 ) {
   switch (l.kind) {
     case "rect":
@@ -208,6 +209,10 @@ function drawShapeBody(
       break;
     }
     case "image":
+      if (l.draw && (l.motion?.in?.type ?? "") === "draw") {
+        drawRevealBody(ctx, l, W, H, t);
+        break;
+      }
       if (l.asset) {
         const image = getImageAsset(l.asset);
         if (image) {
@@ -224,6 +229,52 @@ function drawShapeBody(
 }
 
 /** Teks: anchor sesuai align — left = sudut kiri, right = sudut kanan, center = pusat. */
+/**
+ * Draw reveal: garis digambar progresif memakai stroke-dasharray pada
+ * Path2D per frame (tanpa raster). Koordinat path memakai satuan viewBox
+ * asset (`draw.vb`); fill muncul diam-diam setelah 75% garis tersambung.
+ */
+function drawRevealBody(
+  ctx: CanvasRenderingContext2D,
+  l: LayerSpec,
+  W: number,
+  H: number,
+  t: number,
+) {
+  const d = l.draw!;
+  const mo = l.motion?.in;
+  const start = l.time.from + (mo?.at ?? 0);
+  const dur = Math.max(0.001, mo?.dur ?? 1.2);
+  const p = clamp(getEase(mo?.easing ?? "easeInOut")(clamp((t - start) / dur)));
+  if (p <= 0) return;
+  const wPx = (l.geometry.w ?? 1) * W;
+  const hPx = (l.geometry.h ?? 1) * H;
+  const k = wPx / Math.max(1e-6, d.vb.w);
+  ctx.save();
+  ctx.translate(-wPx / 2 - d.vb.x * k, -hPx / 2 - d.vb.y * k);
+  ctx.scale(k, k); // koordinat & dash memakai satuan viewBox asset
+  ctx.lineCap = "round";
+  ctx.lineJoin = "round";
+  for (const item of d.paths) {
+    const path = new Path2D(item.d);
+    const len = Math.max(1, item.len);
+    ctx.setLineDash([len * p, len + 8]);
+    ctx.lineDashOffset = 0;
+    ctx.lineWidth = Math.max(0.1, item.width); // piksel = width × k via ctx.scale
+    ctx.strokeStyle = item.stroke;
+    ctx.stroke(path);
+    if (d.fill && p > 0.75) {
+      const alpha = clamp((p - 0.75) / 0.25);
+      ctx.save();
+      ctx.globalAlpha *= alpha;
+      ctx.fillStyle = d.fill;
+      ctx.fill(path);
+      ctx.restore();
+    }
+  }
+  ctx.restore();
+}
+
 function drawTextBody(
   ctx: CanvasRenderingContext2D,
   l: LayerSpec,
@@ -295,7 +346,7 @@ function drawLayer(
   ctx.translate(g.x * W + st.dx * W, g.y * H + st.dy * H);
   ctx.rotate((st.rot * Math.PI) / 180);
   ctx.scale(st.scale, st.scale);
-  drawShapeBody(ctx, l, W, H);
+  drawShapeBody(ctx, l, W, H, t);
   ctx.restore();
 }
 

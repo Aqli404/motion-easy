@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import type { InOutType, LayerSpec, LoopType, MotionDefinition } from "../engine/schema";
 import { duplicateLayer, moveLayer } from "../engine/project";
-import { recolorLayerAsset, type ModeWarna } from "../engine/svg";
+import { pulihkanWarnaAsli, terapkanRecolorLayer, type ModeWarna } from "../engine/svg";
 
 const BOX_THUMB = "overflow-hidden rounded border border-edge";
 
@@ -68,7 +68,7 @@ export default function SvgControls({ def, onChange }: { def: MotionDefinition; 
       if (!targets.includes(item.id) || item.kind !== "image" || !item.asset) return item;
       try {
         perubahan++;
-        return { ...item, asset: recolorLayerAsset(item.asset, recMode, recWarna) };
+        return terapkanRecolorLayer(item, recMode, recWarna);
       } catch (error) {
         gagal.push(`${item.name}: ${(error as Error).message}`);
         return item;
@@ -79,7 +79,7 @@ export default function SvgControls({ def, onChange }: { def: MotionDefinition; 
   };
   const warnaAsli = () => {
     setRecPesan("");
-    onChange({ ...def, layers: def.layers.map((item) => targets.includes(item.id) && item.assetAwal ? { ...item, asset: item.assetAwal } : item) });
+    onChange({ ...def, layers: def.layers.map((item) => targets.includes(item.id) && item.assetAwal ? pulihkanWarnaAsli(item) : item) });
   };
   const field = "w-full rounded border border-edge bg-panel px-2 py-1.5 text-xs";
   const numeric = (label: string, value: number, min: number, max: number, change: (n: number) => void) => (
@@ -112,7 +112,7 @@ export default function SvgControls({ def, onChange }: { def: MotionDefinition; 
     </div>
     <div className="grid grid-cols-2 gap-3 md:grid-cols-4 xl:grid-cols-6">
       <label className="text-xs">Layer<select aria-label="Layer SVG" className={field} value={layer.id} onChange={(e) => pilih(e.target.value, false)}>{layers.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}</select></label>
-      <label className="text-xs">Gerak masuk<select aria-label="Gerak masuk SVG" className={field} value={layer.motion?.in?.type ?? "none"} onChange={(e) => updateTargets((item) => ({ motion: { ...item.motion, in: { type: e.target.value as InOutType, dur: 0.6 } } }))}>{["none", "fadeIn", "slideUp", "slideDown", "slideLeft", "slideRight", "pop"].map((type) => <option key={type}>{type}</option>)}</select></label>
+      <label className="text-xs">Gerak masuk<select aria-label="Gerak masuk SVG" className={field} value={layer.motion?.in?.type ?? "none"} onChange={(e) => updateTargets((item) => ({ motion: { ...item.motion, in: { type: e.target.value as InOutType, dur: e.target.value === "draw" ? 1.2 : 0.6 } } }))}>{["none", "fadeIn", "slideUp", "slideDown", "slideLeft", "slideRight", "pop", "draw"].map((type) => <option key={type} value={type}>{type}{type === "draw" ? " (garis digambar)" : ""}</option>)}</select></label>
       <label className="text-xs">Loop<select aria-label="Loop SVG" className={field} value={layer.motion?.loop?.type ?? "none"} onChange={(e) => updateTargets((item) => ({ motion: { ...item.motion, loop: { type: e.target.value as LoopType, dur: 3, amount: e.target.value === "spin" ? 1 : 0.03 } } }))}>{["none", "float", "pulse", "spin", "sway"].map((type) => <option key={type}>{type}</option>)}</select></label>
       {numeric("Posisi X (%)", layer.geometry.x * 100, 0, 100, (n) => update({ geometry: { ...layer.geometry, x: n / 100 } }))}
       {numeric("Posisi Y (%)", layer.geometry.y * 100, 0, 100, (n) => update({ geometry: { ...layer.geometry, y: n / 100 } }))}
@@ -133,6 +133,6 @@ export default function SvgControls({ def, onChange }: { def: MotionDefinition; 
       </label>
       {recPesan && <p role="status" className="col-span-2 text-[10px] text-muted md:col-span-4 xl:col-span-6">{recPesan}</p>}
     </div>
-    <p className="mt-3 text-xs text-muted">MP4 tidak mendukung alpha (area transparan menjadi hitam). Cover PNG mempertahankan transparansi. Rotasi/scale memakai pivot pusat tiap objek.</p>
+    <p className="mt-3 text-xs text-muted">MP4 tidak mendukung alpha (area transparan menjadi hitam). Cover PNG mempertahankan transparansi. Rotasi/scale memakai pivot pusat tiap objek. Gerak "draw" hanya berlaku untuk layer berisi &lt;path&gt; ber-outline; layer lain memakai fadeIn.</p>
   </section>;
 }

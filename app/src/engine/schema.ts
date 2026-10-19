@@ -46,6 +46,7 @@ export const IN_OUT_TYPES = [
   "slideLeft",
   "slideRight",
   "pop",
+  "draw",
 ] as const;
 export type InOutType = (typeof IN_OUT_TYPES)[number];
 
@@ -107,6 +108,18 @@ export interface LineSpec {
 }
 
 /**
+ * Spesifikasi "draw reveal" untuk kind === "image" (path stroke SVG).
+ * Dimuat oleh svgToMotionDefinition: satu layer yang berisi kumpulan
+ * <path> ber-outline digambar progresif per frame memakai dash. `width`
+ * dan koordinat path memakai satuan viewBox asset (`vb`).
+ */
+export interface DrawSpec {
+  fill?: Color | null; // muncul memudar setelah garis selesai digambar
+  vb: { x: number; y: number; w: number; h: number };
+  paths: { d: string; len: number; stroke: Color; width: number }[]; // >= 1
+}
+
+/**
  * Spesifikasi "kanvas bebas" untuk kind === "canvas" (v1.1, tambahan atas v1).
  * `source` = string berisi SATU function expression:
  *   function draw(ctx, time, w, h, fx) { ... }
@@ -131,6 +144,7 @@ export interface LayerSpec {
   kanvas?: CanvasSpec; // wajib untuk kind "canvas"
   asset?: string; // SVG lokal tersanitasi sebagai data URL untuk kind "image"
   assetAwal?: string; // asset asli sebelum recolor — untuk tombol "warna asli"
+  draw?: DrawSpec; // kind image + path stroke; digambar progresif saat motion.in.type "draw"
   motion?: MotionSpec;
 }
 
