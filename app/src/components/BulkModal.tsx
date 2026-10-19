@@ -17,7 +17,7 @@ import { TARGET_MB_OPTIONS, padMp4Blob } from "../export/pad";
 import { buatZip, type ArsipFile } from "../export/zip";
 import { parsingBatch, type BatchItem } from "../export/batch";
 import { useLicense } from "../license/useLicense";
-import { premiumEfektif, MODE_DEV } from "../license/license";
+import { premiumEfektif, MODE_DEV, izinPreset } from "../license/license";
 import type { MotionDefinition } from "../engine/schema";
 import type { ProjectZipResult } from "../export/projectZip";
 
@@ -76,7 +76,8 @@ export default function BulkModal({ def, open, onClose }: Props) {
   }, [zipInput, hasilParse, sertakanAktif, def]);
 
   const preset = EXPORT_PRESETS.find((p) => p.id === presetId) as ExportPreset;
-  const terkunci = preset.premium && !premium;
+  const izin = izinPreset(preset.id, lic);
+  const terkunci = !izin.diizinkan;
 
   const totalDurasi = items.reduce((n, it) => n + it.def.canvas.durationSec, 0);
   const perkiraanTotal = estimasiMb(totalDurasi, preset.bitrate);
@@ -87,8 +88,8 @@ export default function BulkModal({ def, open, onClose }: Props) {
       setStatus({ state: "error", message: "Bulk ZIP khusus Premium — aktivasi lisensi di menu Harga." });
       return;
     }
-    if (terkunci) {
-      setStatus({ state: "error", message: "Preset ini butuh lisensi premium — aktivasi di menu Lisensi." });
+    if (!izin.diizinkan) {
+      setStatus({ state: "error", message: izin.alasan || "Preset ini tidak diizinkan untuk paket Anda." });
       return;
     }
     if (items.length === 0 || readingZip) return;
@@ -226,12 +227,14 @@ export default function BulkModal({ def, open, onClose }: Props) {
       <div className="flex flex-wrap gap-1.5">
         {EXPORT_PRESETS.map((p) => {
           const aktif = presetId === p.id;
-          const kunci = p.premium && !premium;
+          const pIzin = izinPreset(p.id, lic);
+          const kunci = !pIzin.diizinkan;
           return (
             <button
               key={p.id}
               disabled={kunci || berjalan}
               onClick={() => setPresetId(p.id)}
+              title={kunci ? pIzin.alasan : undefined}
               className={`flex items-center gap-1 rounded-lg border px-2.5 py-1.5 font-mono text-[10px] transition-colors ${
                 aktif && !kunci
                   ? "border-accent bg-panel-high font-semibold text-primary"

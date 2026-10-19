@@ -6,7 +6,7 @@ import { EXPORT_PRESETS, resolveExportSize, estimasiMb, slugify, type ExportPres
 import { exportMp4, unduhBlob, webCodecsSupported, probeDukunganPreset, type ExportProgress } from "../export/encoder";
 import { TARGET_MB_OPTIONS, padMp4Blob } from "../export/pad";
 import { useLicense } from "../license/useLicense";
-import { premiumAktif, premiumEfektif, MODE_DEV, labelTier, expiryLabel } from "../license/license";
+import { premiumAktif, premiumEfektif, MODE_DEV, labelTier, expiryLabel, izinPreset } from "../license/license";
 import { useKuota, recordDailyExport } from "../license/kuota";
 import type { MotionDefinition } from "../engine/schema";
 
@@ -36,7 +36,7 @@ export default function ExportModal({ def, open, onClose }: Props) {
   const [infoTersalin, setInfoTersalin] = useState(false);
 
   // Setelah modal terbuka, cek sekali: preset mana yang benar-benar didukung
-  // mesin ini. Preset aktif yang ternyata gak sanggup otomatis diganti.
+  // mesin ini dan diizinkan lisensi. Preset aktif yang ternyata gak sanggup/terkunci otomatis diganti.
   useEffect(() => {
     if (!open || dukungan) return;
     let batal = false;
@@ -44,10 +44,10 @@ export default function ExportModal({ def, open, onClose }: Props) {
       if (batal) return;
       setDukungan(hasil);
       setPresetId((id) => {
-        if (hasil[id] !== false) return id;
+        if (hasil[id] !== false && izinPreset(id, lic).diizinkan) return id;
         const penerus = [...EXPORT_PRESETS]
           .reverse()
-          .find((p) => (!p.premium || premium) && hasil[p.id] !== false);
+          .find((p) => izinPreset(p.id, lic).diizinkan && hasil[p.id] !== false);
         return penerus ? penerus.id : id;
       });
     });
@@ -55,7 +55,7 @@ export default function ExportModal({ def, open, onClose }: Props) {
       batal = true;
     };
     // dependensi disengaja: probe hanya dijalankan sekali per def terbuka
-  }, [open, def]);
+  }, [open, def, lic]);
 
   const reset = () => {
     setStatus({ state: "idle" });
@@ -65,9 +65,9 @@ export default function ExportModal({ def, open, onClose }: Props) {
 
   const mulai = async () => {
     const preset = EXPORT_PRESETS.find((p) => p.id === presetId)!;
-    // penjaga tegas: preset premium hanya boleh diekspor bila premium efektif
-    if (preset.premium && !premiumEfektif(lic)) {
-      setStatus({ state: "error", message: "Preset ini butuh lisensi premium — aktivasi di menu Lisensi." });
+    const izin = izinPreset(preset.id, lic);
+    if (!izin.diizinkan) {
+      setStatus({ state: "error", message: izin.alasan || "Preset ini tidak diizinkan untuk paket Anda." });
       return;
     }
     // penjaga kuota harian paket gratis
@@ -186,21 +186,17 @@ export default function ExportModal({ def, open, onClose }: Props) {
         {EXPORT_PRESETS.map((p) => {
           const s = resolveExportSize(def, p);
           const aktif = presetId === p.id;
-          const terkunci = p.premium && !premium;
+          const izin = izinPreset(p.id, lic);
+          const terkunci = !izin.diizinkan;
           const tidakDukung = dukungan ? dukungan[p.id] === false : false;
           const mati = terkunci || tidakDukung;
-          const badge = tidakDukung
-            ? "mesin tak sanggup"
-            : p.premium
-              ? premium
-                ? "aktif ✓"
-                : "butuh lisensi"
-              : "gratis";
+          const badge = tidakDukung ? "mesin tak sanggup" : izin.badge;
           return (
             <li key={p.id}>
               <button
                 onClick={() => !mati && !berjalan && setPresetId(p.id)}
                 disabled={mati || berjalan}
+                title={terkunci ? izin.alasan : undefined}
                 className={`flex w-full items-center justify-between rounded-lg border px-3 py-2.5 text-xs transition-colors ${
                   aktif && !mati
                     ? "border-accent bg-panel-high"
@@ -218,7 +214,17 @@ export default function ExportModal({ def, open, onClose }: Props) {
                   </span>
                 </span>
                 <span className="flex items-center gap-2">
-                  <span className={`font-mono text-[9px] ${mati ? "text-error" : premium && p.premium ? "text-tertiary" : "text-muted"}`}>
+                  <span
+                    className={`font-mono text-[9px] ${
+                      tidakDukung
+                        ? "text-error"
+                        : terkunci
+                          ? "text-muted"
+                          : izin.badge.startsWith("aktif")
+                            ? "text-tertiary"
+                            : "text-muted"
+                    }`}
+                  >
                     {badge}
                   </span>
                   {p.premium ? (

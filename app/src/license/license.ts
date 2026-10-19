@@ -132,7 +132,7 @@ export function muatLisensi(): ActiveLicense | null {
  * `false` lalu menghapus cabang ini dari bundle — jadi TIDAK ada pembuka gratis
  * di situs online.
  */
-export const MODE_DEV = !!import.meta.env.DEV;
+export const MODE_DEV = !!(import.meta as any).env?.DEV;
 
 /** Premium yang efektif dipakai UI: lisensi sah ATAU mode pengembangan lokal. */
 export function premiumEfektif(lic: ActiveLicense | null): boolean {
@@ -179,4 +179,54 @@ export function labelTier(t: Tier): string {
 export function expiryLabel(payload: LicensePayload): string {
   if (payload.exp === null) return "selamanya";
   return new Intl.DateTimeFormat("id-ID", { dateStyle: "long" }).format(new Date(payload.exp * 1000));
+}
+
+export interface IzinPresetResult {
+  diizinkan: boolean;
+  alasan?: string;
+  badge: string;
+}
+
+/**
+ * Penegakan gating resolusi sesuai janji paket:
+ * - 720p & 1080p: gratis untuk semua.
+ * - 1440p (2K): butuh paket Bulanan atau Lifetime (atau MODE_DEV).
+ * - 2160p (4K): khusus paket Lifetime (atau MODE_DEV).
+ */
+export function izinPreset(presetId: string, lic: ActiveLicense | null, abaikanDev = false): IzinPresetResult {
+  if (MODE_DEV && !abaikanDev) return { diizinkan: true, badge: "aktif ✓ (dev)" };
+  const aktif = premiumAktif(lic);
+  const tier = lic?.payload.tier;
+
+  if (presetId === "2160") {
+    if (aktif && tier === "lifetime") {
+      return { diizinkan: true, badge: "aktif ✓" };
+    }
+    if (aktif && tier === "bulanan") {
+      return {
+        diizinkan: false,
+        alasan: "Resolusi 4K khusus paket Lifetime. Paket Bulanan mendukung hingga 2K (1440p).",
+        badge: "khusus Lifetime",
+      };
+    }
+    return {
+      diizinkan: false,
+      alasan: "Resolusi 4K membutuhkan lisensi Lifetime — aktivasi di menu Lisensi.",
+      badge: "butuh Lifetime",
+    };
+  }
+
+  if (presetId === "1440") {
+    if (aktif) {
+      return { diizinkan: true, badge: "aktif ✓" };
+    }
+    return {
+      diizinkan: false,
+      alasan: "Resolusi 2K membutuhkan lisensi Premium (Bulanan / Lifetime) — aktivasi di menu Lisensi.",
+      badge: "butuh lisensi",
+    };
+  }
+
+  // 720 & 1080
+  return { diizinkan: true, badge: "gratis" };
 }
