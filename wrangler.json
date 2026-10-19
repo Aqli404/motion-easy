@@ -9,5 +9,12 @@
   },
   "observability": {
     "enabled": true
-  }
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "motion-easy",
+      "database_id": "0b165859-0905-4f18-b45a-cecd8bd82ae5"
+    }
+  ]
 }
