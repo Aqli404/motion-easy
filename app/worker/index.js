@@ -264,52 +264,20 @@ async function initDb(env) {
 			);
 		`);
 
-		// Seed paket default jika belum ada
-		const countRow = await env.DB.prepare("SELECT count(*) as c FROM paket").first();
-		if (countRow && countRow.c === 0) {
-			const now = Date.now();
-			await env.DB.batch([
-				env.DB.prepare(
-					`INSERT INTO paket (id, nama, tier, durasi_hari, max_res, bulk, enlarge, harga, bawaan, aktif, urut, catatan, dibuat_ts)
-					 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
-				).bind(
-					"paket-bulanan-30",
-					"Paket Bulanan (30 Hari)",
-					"bulanan",
-					30,
-					1440,
-					1,
-					1,
-					15000,
-					1,
-					1,
-					1,
-					"Standar 30 hari resolusi hingga 2K (1440p)",
-					now
-				),
-				env.DB.prepare(
-					`INSERT INTO paket (id, nama, tier, durasi_hari, max_res, bulk, enlarge, harga, bawaan, aktif, urut, catatan, dibuat_ts)
-					 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
-				).bind(
-					"paket-lifetime",
-					"Lifetime Pass (Akses Selamanya)",
-					"lifetime",
-					null,
-					2160,
-					1,
-					1,
-					55000,
-					1,
-					1,
-					2,
-					"Akses seumur hidup 4K (2160p) tanpa batas waktu",
-					now
-				),
-				env.DB.prepare(
-					`INSERT OR IGNORE INTO pengaturan (kunci, nilai) VALUES ('sesi_epoch', '1')`
-				),
-			]);
-		}
+		// Seed bawaan idempoten: jangan bergantung pada tabel paket yang kosong,
+		// dan jangan menimpa perubahan admin ketika Worker isolate mulai ulang.
+		const now = Date.now();
+		await env.DB.batch([
+			env.DB.prepare(
+				`INSERT OR IGNORE INTO paket (id, nama, tier, durasi_hari, max_res, bulk, enlarge, harga, bawaan, aktif, urut, catatan, dibuat_ts)
+				 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+			).bind("paket-bulanan-30", "Paket Bulanan (30 Hari)", "bulanan", 30, 1440, 1, 1, 15000, 1, 1, 1, "Maksimal 2K (1440p), berlaku 30 hari.", now),
+			env.DB.prepare(
+				`INSERT OR IGNORE INTO paket (id, nama, tier, durasi_hari, max_res, bulk, enlarge, harga, bawaan, aktif, urut, catatan, dibuat_ts)
+				 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+			).bind("paket-lifetime", "Lifetime Pass", "lifetime", null, 2160, 1, 1, 55000, 1, 1, 2, "Maksimal 4K (2160p), berlaku selamanya.", now),
+			env.DB.prepare("INSERT OR IGNORE INTO pengaturan (kunci, nilai) VALUES ('sesi_epoch', '1')"),
+		]);
 		dbInitialized = true;
 	} catch (e) {
 		console.error("Gagal inisialisasi D1:", e);
@@ -507,6 +475,9 @@ export default {
 
 		// 4. POST /api/admin/logout
 		if (method === "POST" && pathname === "/api/admin/logout") {
+			const origin = request.headers.get("Origin");
+			if (origin && origin !== url.origin) return json({ ok: false, error: "Origin tidak diizinkan." }, 403);
+			if (!request.headers.get("X-ME-Admin")) return json({ ok: false, error: "Header keamanan X-ME-Admin wajib ada." }, 403);
 			const isLocal = url.hostname === "localhost" || url.hostname === "127.0.0.1";
 			return json(
 				{ ok: true },
@@ -593,8 +564,16 @@ export default {
 					const fields = [];
 					const values = [];
 
-					if (b.nama !== undefined) { fields.push("nama = ?"); values.push(String(b.nama).trim()); }
-					if (b.harga !== undefined) { fields.push("harga = ?"); values.push(Math.max(0, Number(b.harga))); }
+					if (b.nama !== undefined) {
+						const nama = String(b.nama).trim();
+						if (!nama) return badRequest("Nama paket tidak boleh kosong.");
+						fields.push("nama = ?"); values.push(nama);
+					}
+					if (b.harga !== undefined) {
+						const harga = Number(b.harga);
+						if (!Number.isSafeInteger(harga) || harga < 0) return badRequest("Harga harus bilangan bulat non-negatif.");
+						fields.push("harga = ?"); values.push(harga);
+					}
 					if (b.aktif !== undefined) { fields.push("aktif = ?"); values.push(b.aktif ? 1 : 0); }
 					if (b.durasi_hari !== undefined) { fields.push("durasi_hari = ?"); values.push(b.durasi_hari === null ? null : Number(b.durasi_hari)); }
 					if (b.catatan !== undefined) { fields.push("catatan = ?"); values.push(String(b.catatan).trim()); }
@@ -706,8 +685,9 @@ export default {
 				const params = [];
 
 				if (q) {
-					conditions.push("(LOWER(nama) LIKE ? OR wa LIKE ? OR id LIKE ? OR LOWER(kode) LIKE ?)");
-					const like = `%${q}%`;
+					conditions.push("(LOWER(nama) LIKE ? ESCAPE '\\' OR wa LIKE ? ESCAPE '\\' OR id LIKE ? ESCAPE '\\' OR LOWER(kode) LIKE ? ESCAPE '\\')");
+					const escapedQ = q.replace(/[\\%_]/g, "\\$&");
+					const like = `%${escapedQ}%`;
 					params.push(like, like, like, like);
 				}
 				if (tier && tier !== "all") {

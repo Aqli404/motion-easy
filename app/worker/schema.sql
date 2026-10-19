@@ -59,3 +59,14 @@ CREATE INDEX IF NOT EXISTS idx_pesanan_ts ON pesanan(ts DESC);
 CREATE INDEX IF NOT EXISTS idx_pesanan_status ON pesanan(status);
 CREATE INDEX IF NOT EXISTS idx_audit_ts ON audit(ts DESC);
 CREATE INDEX IF NOT EXISTS idx_login_ip ON login_cobaan(ip, ts);
+
+-- Paket resmi awal. INSERT OR IGNORE menjaga data admin yang sudah ada.
+INSERT OR IGNORE INTO paket
+  (id, nama, tier, durasi_hari, max_res, bulk, enlarge, harga, bawaan, aktif, urut, catatan, dibuat_ts)
+VALUES
+  ('paket-bulanan-30', 'Paket Bulanan (30 Hari)', 'bulanan', 30, 1440, 1, 1, 15000, 1, 1, 1,
+   'Maksimal 2K (1440p), berlaku 30 hari.', CAST(strftime('%s','now') AS INTEGER) * 1000),
+  ('paket-lifetime', 'Lifetime Pass', 'lifetime', NULL, 2160, 1, 1, 55000, 1, 1, 2,
+   'Maksimal 4K (2160p), berlaku selamanya.', CAST(strftime('%s','now') AS INTEGER) * 1000);
+
+INSERT OR IGNORE INTO pengaturan (kunci, nilai) VALUES ('sesi_epoch', '1');

@@ -346,7 +346,8 @@ export default function AdminPortal() {
   // Logout Sesi Saat Ini
   const handleLogout = async () => {
     try {
-      await fetch("/api/admin/logout", { method: "POST", headers: API_HEADERS });
+      const response = await fetch("/api/admin/logout", { method: "POST", headers: API_HEADERS });
+      if (!response.ok) throw new Error("Logout ditolak oleh server.");
       showToast("Anda telah keluar.");
       await muatConfig();
     } catch (e) {
@@ -419,6 +420,8 @@ export default function AdminPortal() {
           prev.map((p) => (p.id === pkg.id ? { ...p, aktif: nextAktif } : p))
         );
         showToast(`Status paket diubah menjadi: ${nextAktif ? "Aktif" : "Nonaktif"}`);
+      } else {
+        showToast(data.error || "Status paket gagal diperbarui.");
       }
     } catch (e) {
       console.error("Gagal toggle status paket:", e);
@@ -448,6 +451,8 @@ export default function AdminPortal() {
           showToast("Paket berhasil diperbarui!");
           setPkgModalOpen(false);
           muatDataDashboard();
+        } else {
+          showToast(data.error || "Paket gagal diperbarui.");
         }
       } else {
         // Buat paket baru
@@ -467,6 +472,8 @@ export default function AdminPortal() {
           showToast("Paket baru berhasil dibuat!");
           setPkgModalOpen(false);
           muatDataDashboard();
+        } else {
+          showToast(data.error || "Paket gagal dibuat.");
         }
       }
     } catch (e) {
