@@ -17,9 +17,12 @@ export interface ExportPreset {
 
 export const EXPORT_PRESETS: ExportPreset[] = [
   { id: "720", label: "720p", short: 720, bitrate: 8_000_000, premium: false, caption: "Web & preview cepat" },
-  { id: "1080", label: "1080p", short: 1080, bitrate: 25_000_000, premium: false, caption: "Standar microstock" },
-  { id: "1440", label: "2K", short: 1440, bitrate: 45_000_000, premium: true, caption: "High-res microstock" },
-  { id: "2160", label: "4K", short: 2160, bitrate: 80_000_000, premium: true, caption: "Master ultra (butuh mesin kuat)" },
+  { id: "1080", label: "1080p", short: 1080, bitrate: 25_000_000, premium: false, caption: "Full HD — gratis, tanpa watermark" },
+  { id: "1440", label: "2K", short: 1440, bitrate: 45_000_000, premium: true, caption: "High-res microstock — butuh Premium (Bulanan/Lifetime)" },
+  { id: "2160", label: "4K", short: 2160, bitrate: 80_000_000, premium: true, caption: "Master 4K 80 Mbps — butuh Premium" },
+  { id: "2160-100", label: "4K · 100 Mbps", short: 2160, bitrate: 100_000_000, premium: true, caption: "4K 100 Mbps — butuh Premium (sampai 100 Mbps)" },
+  { id: "2160-160", label: "4K · 160 Mbps", short: 2160, bitrate: 160_000_000, premium: true, caption: "~100 MB / 5 dtk — standar upload microstock — khusus Lifetime" },
+  { id: "2160-200", label: "4K · 200 Mbps", short: 2160, bitrate: 200_000_000, premium: true, caption: "Master bersih 200 Mbps — khusus Lifetime" },
 ];
 
 export interface ExportSize {

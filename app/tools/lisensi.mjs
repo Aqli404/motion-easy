@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * CLI lisensi Motion Easy (Fase 5) — jalankan dengan Node.js 20+.
+ * CLI lisensi Motion Easy — jalankan dengan Node.js 20+.
  *
  * Perintah:
  *   node tools/lisensi.mjs generate --out ../.rahasia
@@ -8,7 +8,11 @@
  *
  *   node tools/lisensi.mjs sign --tier lifetime --note "Pembeli #7" --key ../.rahasia/lisensi-master-private.json
  *   node tools/lisensi.mjs sign --tier bulanan --bulan 1 --note "Trial WA" --key ../.rahasia/lisensi-master-private.json
- *       -> menghasilkan kode lisensi siap kirim ke pembeli
+ *   node tools/lisensi.mjs sign --tier lifetime --nama "Budi" --wa 0812... --harga 55000 --key ... [--out ../.rahasia/lisensi-terbit.jsonl]
+ *       -> menghasilkan kode + mencatat ke ledger .rahasia/lisensi-terbit.jsonl (gitignored)
+ *          untuk diimpor ke Admin via Pesanan → Impor dari CLI
+ *
+ *   Ledger: satu JSON per baris (JSONL). Aman dipaste/impor lewat admin — idempoten via hash kode.
  */
 
 import fs from "node:fs";
@@ -112,6 +116,39 @@ async function sign(args) {
       ? `aktif ${exp - now} hari dari sekarang`
       : "lifetime — tanpa batas waktu"
   );
+
+  // Catat ke ledger JSONL supaya bisa diimpor di Admin → Pesanan → Impor dari CLI
+  // Flag: --out <path> | --no-ledger (matikan pencatatan) | --nama --wa --harga --paket-id
+  if (args["no-ledger"]) {
+    console.log("(ledger dimatikan via --no-ledger)");
+    return;
+  }
+  const defaultOut = path.resolve(path.dirname(args.key), "lisensi-terbit.jsonl");
+  const outPath = args.out ? path.resolve(String(args.out)) : defaultOut;
+  const hargaRaw = args.harga !== undefined ? Number(args.harga) : (tier === "lifetime" ? 55000 : 15000);
+  const paketIdDefault = tier === "lifetime" ? "paket-lifetime" : "paket-bulanan-30";
+  const paketNamaDefault = tier === "lifetime" ? "Lifetime Pass" : "Paket Bulanan (30 Hari)";
+  const entry = {
+    ts: Date.now(),
+    tier,
+    exp: exp ?? null,
+    harga: Number.isFinite(hargaRaw) ? hargaRaw : (tier === "lifetime" ? 55000 : 15000),
+    nama: String(args.nama ?? args.note ?? "Pembeli CLI").trim() || "Pembeli CLI",
+    wa: String(args.wa ?? "").trim(),
+    note: String(args.note ?? "").trim(),
+    paket_id: String(args["paket-id"] ?? paketIdDefault),
+    paket_nama: String(args["paket-nama"] ?? paketNamaDefault),
+    kode: code,
+  };
+  try {
+    fs.mkdirSync(path.dirname(outPath), { recursive: true });
+    fs.appendFileSync(outPath, JSON.stringify(entry) + "\n", "utf8");
+    // batasi hak akses di POSIX (0600-style), di Windows diabaikan
+    try { fs.chmodSync(outPath, 0o600); } catch {}
+    console.log(`\ndicatat → ${outPath}  (paste/impor di Admin → Pesanan → Impor dari CLI; file ini gitignored)`);
+  } catch (e) {
+    console.warn(`peringatan: gagal tulis ledger ${outPath}:`, e?.message ?? e);
+  }
 }
 
 const { cmd, args } = parseArgs();
@@ -119,6 +156,6 @@ if (cmd === "generate") await generate(args.out);
 else if (cmd === "sign") await sign(args);
 else {
   console.log(
-    "Pakai:\n  node tools/lisensi.mjs generate --out <folder>\n  node tools/lisensi.mjs sign --tier lifetime|bulanan --key <private.json> [--bulan N] [--note '...']"
+    "Pakai:\n  node tools/lisensi.mjs generate --out <folder>\n  node tools/lisensi.mjs sign --tier lifetime|bulanan --key <private.json> [--bulan N] [--note '...'] [--nama 'Budi'] [--wa 08123] [--harga 55000] [--paket-id paket-lifetime] [--out <ledger.jsonl>] [--no-ledger]"
   );
 }

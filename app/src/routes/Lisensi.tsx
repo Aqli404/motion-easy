@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   KeyRound,
   ShieldCheck,
@@ -11,6 +11,8 @@ import {
   Sparkles,
   Clapperboard,
 } from "lucide-react";
+import { useHarga } from "../config/HargaContext";
+import { hargaRp } from "../config/paketData";
 import {
   verifikasiKode,
   simpanLisensi,
@@ -23,6 +25,8 @@ import type { LicensePayload } from "../license/license";
 import { useLicense } from "../license/useLicense";
 
 export default function Lisensi() {
+  const navigate = useNavigate();
+  const { bulanan, lifetime } = useHarga();
   const lic = useLicense();
   const [kode, setKode] = useState("");
   const [cek, setCek] = useState<null | "loading" | { ok: boolean; msg: string }>(null);
@@ -67,12 +71,12 @@ export default function Lisensi() {
               )}
             </div>
             <div className="mt-4 flex flex-wrap gap-2">
-              <Link
-                to="/studio"
-                className="flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-amber-400 via-orange-500 to-rose-500 px-4 py-2 text-sm font-semibold text-deep shadow"
+              <button
+                onClick={() => navigate("/studio")}
+                className="flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-amber-400 via-orange-500 to-rose-500 px-4 py-2 text-sm font-semibold text-deep shadow hover:brightness-105 active:scale-95 transition-all"
               >
                 <Clapperboard className="h-4 w-4" /> Export 2K/4K di Studio
-              </Link>
+              </button>
               <button
                 onClick={() => {
                   hapusLisensi();
@@ -113,9 +117,12 @@ export default function Lisensi() {
               value={kode}
               onChange={(e) => setKode(e.target.value)}
               rows={4}
-              placeholder="Tempel kode lisensi di sini… (bisa dilipat berapa baris pun)"
+              placeholder="Tempel kode lisensi (dua bagian dipisah titik: xxxxx.yyyyy)"
               className="w-full resize-y rounded-lg border border-edge bg-well px-3 py-2.5 font-mono text-[11px] leading-relaxed text-ink placeholder:text-muted/60 focus:border-accent focus:outline-none"
             />
+            {kode.trim() && !kode.trim().includes(".") && (
+              <p className="font-mono text-[10px] text-error">Format kode: dua bagian dipisah titik (payload.signature)</p>
+            )}
             <button
               onClick={aktivasi}
               disabled={cek === "loading" || !kode.trim()}
@@ -140,8 +147,7 @@ export default function Lisensi() {
           <div className="mt-4 flex items-start gap-2 rounded-lg bg-panel p-3 font-mono text-[10px] leading-relaxed text-muted">
             <Sparkles className="mt-0.5 h-3.5 w-3.5 shrink-0 text-secondary" />
             <span>
-              Premium membuka export 2K &amp; 4K di Studio. Paket Bulanan aktif 30×24 jam dari
-              saat kode diterbitkan; Lifetime selamanya, terikat perangkat.
+              Instal Studio lokal — <strong>Rendering tetap di GPU-mu (WebCodecs)</strong> — tidak meninggalkan browser. 2K &amp; 4K terbuka setelah aktivasi.
             </span>
           </div>
         </div>
@@ -153,14 +159,13 @@ export default function Lisensi() {
           >
             <Sparkles className="h-4 w-4 text-primary" />
             <h3 className="mt-2 text-xs font-semibold">Belum beli? Lihat Harga</h3>
-            <p className="mt-1 font-mono text-[10px] text-muted">Rp 15rb/bulan atau Rp 55rb lifetime</p>
+            <p className="mt-1 font-mono text-[10px] text-muted">{hargaRp(bulanan)}/bulan atau {hargaRp(lifetime)} lifetime</p>
           </Link>
           <div className="rounded-xl border border-edge bg-panel-low p-4">
             <CircleCheckBig className="h-4 w-4 text-muted" />
             <h3 className="mt-2 text-xs font-semibold">Tanpa lisensi tetap bisa</h3>
             <p className="mt-1 font-mono text-[10px] text-muted">
-              720p &amp; 1080p gratis (5 ekspor/hari) — Premium membuka ekspor tanpa batas,
-              2K/4K, Bulk ZIP, dan Enlarge-MB
+              1080p gratis, 3 ekspor/hari — Premium membuka 2K, 4K, Bulk ZIP, dan Enlarge-MB
             </p>
           </div>
         </div>

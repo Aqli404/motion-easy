@@ -1,7 +1,8 @@
 /**
  * Kuota ekspor harian untuk paket Gratis.
  *
- * - Pengguna gratis: 5 ekspor MP4 per hari (tanggal lokal YYYY-MM-DD).
+ * - Pengguna gratis: 3 ekspor MP4 per hari (khusus 720p–1080p, tanggal lokal YYYY-MM-DD).
+ *   2K ke atas butuh lisensi Premium.
  * - Pengguna Premium (Bulanan aktif / Lifetime): tanpa batas.
  *
  * Catatan jujur: kuota ini disimpan di localStorage dan memang bisa diakali
@@ -13,7 +14,7 @@
 import { useEffect, useState } from "react";
 
 const STORAGE_KEY = "me.quota.v1";
-export const FREE_DAILY_EXPORT_LIMIT = 5;
+export const FREE_DAILY_EXPORT_LIMIT = 3;
 export const QUOTA_EVENT = "me-quota-changed";
 
 interface QuotaData {

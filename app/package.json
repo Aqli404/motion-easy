@@ -6,12 +6,13 @@
   "description": "Motion Easy — AI Motion Graphics Video Studio (fully client-side)",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "tsc --noEmit && vite build",
     "preview": "vite preview"
   },
   "dependencies": {
     "fflate": "^0.8.3",
     "lucide-react": "^0.546.0",
+    "mediabunny": "^1.62.0",
     "mp4-muxer": "^5.2.2",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",

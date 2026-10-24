@@ -3,50 +3,56 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Panduan Pengguna Motion Easy</title>
+  <title>Panduan Pengguna Motion Easy — E-Book Resmi v2.0</title>
   <style>
     @page { size: A4; margin: 0; }
-    :root { --ink:#172033; --muted:#58657c; --navy:#090b18; --cyan:#4cd7f6; --orange:#f97316; --line:#d9e1ec; --soft:#f4f7fb; }
+    :root { --ink:#172033; --muted:#58657c; --navy:#090b18; --cyan:#4cd7f6; --orange:#f97316; --green:#10b981; --line:#d9e1ec; --soft:#f4f7fb; }
     * { box-sizing:border-box; }
     body { margin:0; color:var(--ink); background:#dfe6ef; font-family:Arial,Helvetica,sans-serif; line-height:1.52; }
-    .page { width:210mm; min-height:297mm; margin:0 auto 12px; padding:19mm 20mm 18mm; background:white; position:relative; page-break-after:always; }
+    .page { width:210mm; min-height:297mm; margin:0 auto 12px; padding:18mm 20mm 18mm; background:white; position:relative; page-break-after:always; }
     .page:last-child { page-break-after:auto; }
     .cover { color:white; background:linear-gradient(145deg,#080a17 0%,#101a35 56%,#092d43 100%); overflow:hidden; display:flex; flex-direction:column; justify-content:space-between; }
-    .cover:after { content:""; position:absolute; width:170mm; height:170mm; right:-70mm; top:35mm; border-radius:50%; background:radial-gradient(circle,#4cd7f633,transparent 68%); }
-    .brand { letter-spacing:5px; font-weight:900; font-size:19px; position:relative; z-index:1; }
+    .cover:after { content:""; position:absolute; width:180mm; height:180mm; right:-70mm; top:35mm; border-radius:50%; background:radial-gradient(circle,#4cd7f633,transparent 68%); }
+    .brand { letter-spacing:5px; font-weight:900; font-size:20px; position:relative; z-index:1; }
     .brand span { color:var(--orange); }
-    .cover h1 { font-size:43px; line-height:1.06; letter-spacing:-1px; max-width:145mm; position:relative; z-index:1; }
+    .cover h1 { font-size:42px; line-height:1.08; letter-spacing:-1px; max-width:150mm; position:relative; z-index:1; }
     .cover h1 em { color:var(--cyan); font-style:normal; }
-    .cover .lead { color:#c7d1e2; font-size:18px; max-width:125mm; position:relative; z-index:1; }
-    .cover-card { position:relative; z-index:1; width:115mm; padding:8mm; border:1px solid #4cd7f677; border-radius:6mm; background:#ffffff0d; }
+    .cover .lead { color:#c7d1e2; font-size:16px; max-width:130mm; position:relative; z-index:1; }
+    .cover-card { position:relative; z-index:1; width:125mm; padding:7mm 8mm; border:1px solid #4cd7f677; border-radius:5mm; background:#ffffff0d; }
     .cover-card strong { display:block; color:var(--cyan); font-size:11px; letter-spacing:2px; text-transform:uppercase; }
-    .cover-card p { margin:4px 0 0; color:#eaf3ff; }
+    .cover-card p { margin:4px 0 0; color:#eaf3ff; font-size:12px; }
     .cover-foot { color:#aebbd0; font-size:11px; position:relative; z-index:1; }
-    h2 { color:var(--navy); font-size:25px; line-height:1.15; margin:0 0 7px; border-left:5px solid var(--orange); padding-left:10px; }
-    h3 { color:#1d3559; font-size:16px; margin:18px 0 5px; }
-    p { margin:6px 0 10px; }
-    .sub { color:var(--muted); font-size:11px; text-transform:uppercase; letter-spacing:1.5px; }
-    .callout { border-left:4px solid var(--cyan); background:#eefaff; padding:10px 13px; margin:12px 0; font-size:13px; }
+    h2 { color:var(--navy); font-size:24px; line-height:1.15; margin:0 0 7px; border-left:5px solid var(--orange); padding-left:10px; }
+    h3 { color:#1d3559; font-size:15px; margin:14px 0 5px; }
+    p { margin:5px 0 9px; font-size:12px; }
+    .sub { color:var(--muted); font-size:10px; text-transform:uppercase; letter-spacing:1.5px; font-weight:bold; }
+    .callout { border-left:4px solid var(--cyan); background:#eefaff; padding:9px 12px; margin:10px 0; font-size:12px; border-radius:0 6px 6px 0; }
     .warn { border-left-color:var(--orange); background:#fff5ed; }
+    .success { border-left-color:var(--green); background:#ecfdf5; }
     .grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
-    .card { background:var(--soft); border:1px solid var(--line); border-radius:10px; padding:12px; }
-    .card h3 { margin-top:0; font-size:14px; }
+    .grid-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; }
+    .card { background:var(--soft); border:1px solid var(--line); border-radius:8px; padding:10px 12px; }
+    .card h3 { margin-top:0; font-size:13px; }
     .card p,.card li { font-size:11px; }
-    ul,ol { padding-left:21px; margin:6px 0 12px; }
-    li { margin:3px 0; font-size:12px; }
-    .step { display:flex; gap:12px; margin:10px 0; align-items:flex-start; }
-    .num { flex:0 0 27px; height:27px; border-radius:50%; background:var(--navy); color:var(--cyan); display:grid; place-items:center; font-weight:800; font-size:12px; }
-    .step strong { color:#18385c; }
-    .shot { width:100%; border:1px solid #c8d2df; border-radius:8px; margin:10px 0 5px; display:block; }
-    .caption { font-size:10px; color:var(--muted); text-align:center; margin-bottom:12px; }
-    table { width:100%; border-collapse:collapse; font-size:10px; margin:10px 0; }
-    th { background:var(--navy); color:white; text-align:left; padding:8px; }
-    td { border:1px solid var(--line); padding:7px; vertical-align:top; }
+    ul,ol { padding-left:20px; margin:5px 0 10px; }
+    li { margin:3px 0; font-size:11px; }
+    .step { display:flex; gap:12px; margin:8px 0; align-items:flex-start; }
+    .num { flex:0 0 26px; height:26px; border-radius:50%; background:var(--navy); color:var(--cyan); display:grid; place-items:center; font-weight:800; font-size:11px; }
+    .step strong { color:#18385c; font-size:12px; }
+    .step p { margin:2px 0 0; }
+    .shot { width:100%; border:1px solid #c8d2df; border-radius:8px; margin:8px 0 4px; display:block; max-height:140px; object-fit:cover; background:#e2e8f0; }
+    .caption { font-size:10px; color:var(--muted); text-align:center; margin-bottom:10px; }
+    table { width:100%; border-collapse:collapse; font-size:10px; margin:8px 0; }
+    th { background:var(--navy); color:white; text-align:left; padding:7px; }
+    td { border:1px solid var(--line); padding:6px; vertical-align:top; }
     tr:nth-child(even) td { background:#f7f9fc; }
     code,pre { font-family:Consolas,monospace; }
-    pre { background:#111827; color:#d9f6ff; border-radius:8px; padding:12px; font-size:10px; white-space:pre-wrap; }
-    .toc li { font-size:14px; padding:3px 0; }
-    .footer { position:absolute; bottom:9mm; left:20mm; right:20mm; border-top:1px solid var(--line); padding-top:5px; color:#7a8798; font-size:9px; display:flex; justify-content:space-between; }
+    pre { background:#111827; color:#d9f6ff; border-radius:8px; padding:10px; font-size:10px; white-space:pre-wrap; }
+    .footer { position:absolute; bottom:8mm; left:20mm; right:20mm; border-top:1px solid var(--line); padding-top:4px; color:#7a8798; font-size:9px; display:flex; justify-content:space-between; }
+    .badge { display:inline-block; padding:2px 6px; border-radius:4px; font-size:9px; font-weight:bold; font-family:Consolas,monospace; }
+    .badge-orange { background:#ffedd5; color:#c2410c; }
+    .badge-cyan { background:#e0f2fe; color:#0369a1; }
+    .badge-green { background:#dcfce7; color:#15803d; }
     .dark { background:var(--navy); color:white; }
     .dark h2,.dark h3 { color:white; }
     .dark .sub,.dark p,.dark li { color:#cbd5e1; }
@@ -54,116 +60,249 @@
   </style>
 </head>
 <body>
+  <!-- HALAMAN 1: COVER -->
   <section class="page cover">
     <div class="brand">MOTION <span>EASY</span></div>
     <div>
-      <div class="sub" style="color:#9bdff0">Panduan pengguna lengkap</div>
-      <h1>Dari ide menjadi video <em>motion graphics</em></h1>
-      <p class="lead">Panduan ramah pemula untuk membuat animasi, memakai AI, melakukan preview, dan mengekspor MP4 langsung dari browser.</p>
-      <div class="cover-card"><strong>Alur paling sederhana</strong><p>Pilih tema → tulis brief → gunakan AI → validasi → preview → export</p></div>
+      <div class="sub" style="color:#9bdff0">E-Book Panduan Pengguna &amp; Microstock Masterclass v2.0</div>
+      <h1>Dominasi Video Motion Graphics dengan <em>AI &amp; Browser-Native Studio</em></h1>
+      <p class="lead">Panduan lengkap membuat video motion graphics interaktif, multi-aspek rasio TikTok/Reels, ekspor QuickTime MOV Alpha 100% transparan, hingga trik lolos kurasi Adobe Stock &amp; Shutterstock.</p>
+      <div class="cover-card">
+        <strong>Fitur Baru Versi 2.0</strong>
+        <p>✓ Aspek Rasio Multi-Format (16:9, 9:16, 1:1)<br>✓ QuickTime MOV Alpha 100% Transparan (RGBA 32-bit)<br>✓ Pre-Pad MB (Target 25 MB Lolos Adobe Stock)<br>✓ Web Audio API Sound Effects (Whoosh, Pop, Ding)<br>✓ Autoflow Bulk Queue ZIP Renderer</p>
+      </div>
     </div>
-    <div class="cover-foot">Versi 1.0 · motion-easy.rosifulaqli59.workers.dev · 100% client-side</div>
+    <div class="cover-foot">Versi 2.0 (Edisi Kreator &amp; Microstock) · motion-easy.rosifulaqli59.workers.dev · 100% Zero-Server Client-Side</div>
   </section>
 
+  <!-- HALAMAN 2: SELAMAT DATANG & ARSITEKTUR -->
   <section class="page">
-    <div class="sub">Mulai di sini</div><h2>Selamat datang di Motion Easy</h2>
-    <p>Motion Easy adalah studio motion graphics yang berjalan langsung di browser. Anda dapat membuat intro, judul, lower third, logo reveal, infografik, background, dan efek partikel tanpa menginstal software editing yang berat.</p>
-    <div class="callout"><strong>Tujuan panduan ini:</strong> membantu pengguna baru mencapai hasil pertama—satu video MP4 yang berhasil dipreview dan diunduh.</div>
-    <h3>Yang perlu disiapkan</h3><ul><li>Komputer atau laptop.</li><li>Chrome atau Edge desktop terbaru.</li><li>Koneksi internet saat membuka aplikasi dan layanan AI.</li><li>Ruang penyimpanan untuk file video.</li></ul>
-    <h3>Alur kerja Motion Easy</h3><div class="grid"><div class="card"><h3>1 · Brief</h3><p>Jelaskan ide, teks, gaya, warna, durasi, dan tujuan video.</p></div><div class="card"><h3>2 · Prompt</h3><p>Salin prompt otomatis ke AI pilihan Anda.</p></div><div class="card"><h3>3 · JSON</h3><p>Tempel jawaban AI ke area input MotionDefinition.</p></div><div class="card"><h3>4 · Hasil</h3><p>Validasi, preview, lalu ekspor ke MP4.</p></div></div>
-    <h3>Privasi</h3><p>Animasi dan render diproses di perangkat Anda. Data karya tidak perlu diunggah ke server Motion Easy.</p>
-    <div class="footer"><span>Panduan Pengguna Motion Easy</span><span>01</span></div>
+    <div class="sub">Bab 1 · Pengenalan Sistem</div>
+    <h2>Selamat Datang di Motion Easy 2.0</h2>
+    <p>Motion Easy adalah platform video motion graphics berbasis AI yang beroperasi 100% di browser tanpa bergantung pada server rendering eksternal. Dengan memanfaatkan teknologi WebCodecs dan GPU hardware acceleration modern, Anda dapat membuat animasi visual beresolusi tinggi (Full HD, 2K, hingga 4K Ultra HD) secara instan, aman, dan tanpa biaya server berlangganan yang mahal.</p>
+
+    <div class="callout success">
+      <strong>Kunci Keunggulan Zero-Server:</strong> Seluruh kode brief, aset SVG, koordinat animasi, dan rendering video tidak pernah diunggah ke cloud. Privasi proyek Anda terjamin aman 100% di laptop/komputer Anda sendiri.
+    </div>
+
+    <h3>Spesifikasi &amp; Kebutuhan Sistem</h3>
+    <ul>
+      <li><strong>Browser Rekomendasi:</strong> Google Chrome atau Microsoft Edge Desktop terbaru (mendukung WebCodecs &amp; OffscreenCanvas).</li>
+      <li><strong>Sistem Operasi:</strong> Windows 10/11, macOS, atau Linux modern.</li>
+      <li><strong>Akselerasi GPU:</strong> Otomatis mendeteksi kartu grafis (NVIDIA, AMD, Intel Iris/UHD, Apple Silicon M-Series).</li>
+    </ul>
+
+    <img class="shot" src="01-landing.png" alt="Landing Page">
+    <div class="caption">Gambar 1. Antarmuka Halaman Utama Motion Easy.</div>
+
+    <h3>5 Rukun Utama Alur Kerja Kreator</h3>
+    <div class="grid">
+      <div class="card">
+        <h3>1. Pilih Aspek Rasio</h3>
+        <p>Pilih rasio kanvas: 16:9 (YouTube), 9:16 (TikTok/Reels), atau 1:1 (Square Feed) di toolbar atas Studio.</p>
+      </div>
+      <div class="card">
+        <h3>2. Tulis Brief AI</h3>
+        <p>Pilih kategori desain, gaya visual, warna, dan klik tombol generator ChatGPT/Gemini/Claude.</p>
+      </div>
+      <div class="card">
+        <h3>3. Tempel MotionDefinition</h3>
+        <p>Salin JSON respon AI ke Studio. Validator instan akan memeriksa sintaks dalam hitungan milidetik.</p>
+      </div>
+      <div class="card">
+        <h3>4. Pratinjau &amp; Audio SFX</h3>
+        <p>Putar animasi di viewport real-time, atur durasi, dan nikmati sinkronisasi sound effect transisi.</p>
+      </div>
+    </div>
+
+    <div class="footer"><span>Panduan Pengguna Motion Easy 2.0</span><span>01</span></div>
   </section>
 
+  <!-- HALAMAN 3: MULTI-ASPEK RASIO & KREATIF TIKTOK -->
   <section class="page">
-    <div class="sub">Orientasi aplikasi</div><h2>Mengenal halaman utama</h2>
-    <p>Halaman utama menjelaskan manfaat Motion Easy dan mengarahkan Anda ke Studio atau Harga &amp; Paket.</p>
-    <img class="shot" src="01-landing.png"><div class="caption">Gambar 1. Halaman utama Motion Easy.</div>
-    <h3>Menu penting</h3><table><tr><th>Menu</th><th>Fungsi</th></tr><tr><td>Studio</td><td>Membuat, memvalidasi, melihat preview, dan mengekspor animasi.</td></tr><tr><td>Kamus Animasi</td><td>Melihat contoh dan struktur MotionDefinition.</td></tr><tr><td>Panduan</td><td>Ringkasan alur penggunaan lima langkah.</td></tr><tr><td>Proyek Saya</td><td>Fitur simpan/muat proyek masih disiapkan.</td></tr><tr><td>Harga &amp; Paket</td><td>Perbandingan fitur dan pembelian lisensi.</td></tr><tr><td>Aktivasi Lisensi</td><td>Memasukkan kode lisensi Premium.</td></tr></table>
-    <div class="callout warn"><strong>Catatan:</strong> Proyek Saya masih bertanda “Segera Hadir”. Untuk sementara, simpan JSON karya secara manual jika ingin menggunakannya kembali.</div>
-    <div class="footer"><span>Panduan Pengguna Motion Easy</span><span>02</span></div>
+    <div class="sub">Bab 2 · Aspek Rasio &amp; Konten Vertikal</div>
+    <h2>Dukungan Aspek Rasio Multi-Format (16:9, 9:16, 1:1)</h2>
+    <p>Di era video pendek saat ini, konten tidak lagi terpaku pada format horizontal 16:9. Motion Easy 2.0 menghadirkan tombol pemilih rasio instan langsung di toolbar Studio.</p>
+
+    <div class="grid-3">
+      <div class="card">
+        <span class="badge badge-orange">16:9 Landscape</span>
+        <h3>YouTube &amp; Presentasi</h3>
+        <p>1920×1080 (FHD) &amp; 3840×2160 (4K). Standar emas video landscape, TV monitor, dan video corporate.</p>
+      </div>
+      <div class="card">
+        <span class="badge badge-cyan">9:16 Vertical</span>
+        <h3>TikTok, Reels &amp; Shorts</h3>
+        <p>1080×1920 (FHD) &amp; 2160×3840 (4K). Format wajib bagi kreator konten mobile dan affiliate marketing.</p>
+      </div>
+      <div class="card">
+        <span class="badge badge-green">1:1 Square</span>
+        <h3>Instagram Feed &amp; Stock</h3>
+        <p>1080×1080 (FHD) &amp; 2160×2160 (4K). Format serbaguna untuk carousel ads dan thumbnail microstock.</p>
+      </div>
+    </div>
+
+    <img class="shot" src="02-studio.png" alt="Studio Editor">
+    <div class="caption">Gambar 2. Studio Editor lengkap dengan Toolbar Aspek Rasio dan Timeline Editor.</div>
+
+    <h3>Mengapa Tata Letak Tidak Rusak Saat Rasio Berganti?</h3>
+    <p>Arsitektur skema <code>MotionDefinition</code> Motion Easy menggunakan koordinat normalisasi fraksi <code>0.0 .. 1.0</code> relatif terhadap lebar dan tinggi kanvas. Ketika Anda beralih dari 16:9 ke 9:16 atau 1:1, viewport kanvas langsung beradaptasi secara matematis tanpa merusak hierarki layer!</p>
+
+    <div class="callout warn">
+      <strong>Tips Kreator TikTok &amp; Reels:</strong> Saat menggunakan format 9:16, pastikan teks penting tidak berada terlalu dekat dengan tepi bawah (area caption aplikasi TikTok) atau tepi kanan. Gunakan koordinat <code>y: 0.35</code> hingga <code>y: 0.65</code> sebagai safe zone visual utama.
+    </div>
+
+    <div class="footer"><span>Panduan Pengguna Motion Easy 2.0</span><span>02</span></div>
   </section>
 
+  <!-- HALAMAN 4: MOV ALPHA 100% TRANSPARAN -->
   <section class="page">
-    <div class="sub">Tutorial pertama</div><h2>Membuat video pertama</h2>
-    <div class="step"><div class="num">1</div><div><strong>Buka Studio</strong><p>Buka website dan klik <b>Buka Studio</b>.</p></div></div>
-    <div class="step"><div class="num">2</div><div><strong>Pilih tema</strong><p>Untuk percobaan pertama, pilih <b>Judul Reveal</b> atau tema siap pakai lainnya.</p></div></div>
-    <div class="step"><div class="num">3</div><div><strong>Atur tampilan</strong><p>Pilih kategori, gaya visual, durasi, FPS, dan warna.</p></div></div>
-    <div class="step"><div class="num">4</div><div><strong>Validasi dan preview</strong><p>Klik <b>Validasi &amp; Preview</b>, lalu putar animasi dari awal sampai akhir.</p></div></div>
-    <div class="step"><div class="num">5</div><div><strong>Ekspor MP4</strong><p>Pilih 1080p, klik ekspor, dan cari file di folder Downloads.</p></div></div>
-    <img class="shot" src="02-studio.png"><div class="caption">Gambar 2. Studio Editor dan alur AI.</div>
-    <div class="callout">Untuk hasil pertama, gunakan durasi 5–8 detik dan 30 fps. Setelah alurnya berhasil, Anda dapat mencoba brief yang lebih kompleks.</div>
-    <div class="footer"><span>Panduan Pengguna Motion Easy</span><span>03</span></div>
+    <div class="sub">Bab 3 · Output Video Transparan</div>
+    <h2>Ekspor QuickTime MOV Alpha 100% Transparan</h2>
+    <p>Salah satu fitur yang paling banyak diminta oleh editor video profesional dan kontributor microstock adalah kemampuan menghasilkan video <strong>transparan tanpa latar belakang hitam</strong>.</p>
+
+    <div class="callout success">
+      <strong>Standar Industri RGBA 32-Bit:</strong> Format MOV Alpha di Motion Easy 2.0 merender frame kanvas menggunakan mekanisme <code>clearRect</code> murni, menyisakan saluran alpha channel pada piksel kosong. Hasilnya 100% tembus pandang tanpa perlu chroma key (green screen)!
+    </div>
+
+    <h3>Kompatibilitas Software Editing Populer</h3>
+    <table>
+      <tr><th>Software Video Editor</th><th>Dukungan MOV Alpha</th><th>Cara Pakai</th></tr>
+      <tr><td>Adobe Premiere Pro</td><td>Native 100% Tembus Pandang</td><td>Tarik file .mov ke track video atas (V2/V3). Otomatis overlay.</td></tr>
+      <tr><td>After Effects</td><td>Native RGBA Straight/Premultiplied</td><td>Import footage, letakkan di komposisi di atas background video.</td></tr>
+      <tr><td>DaVinci Resolve</td><td>Native Alpha Channel</td><td>Di tab Edit, tempatkan di layer video atas. Transparansi langsung aktif.</td></tr>
+      <tr><td>CapCut PC / Desktop</td><td>Native QuickTime Alpha</td><td>Import ke media pool, drag ke timeline utama. Tembus pandang seketika.</td></tr>
+    </table>
+
+    <div class="step"><div class="num">1</div><div><strong>Buka Modal Ekspor</strong><p>Klik tombol unduh/ekspor di pojok kanan atas toolbar Studio.</p></div></div>
+    <div class="step"><div class="num">2</div><div><strong>Pilih Tab "MOV (Alpha Transparan 100%)"</strong><p>Sistem beralih dari MP4 encoder ke QuickTime RGBA 32-bit generator.</p></div></div>
+    <div class="step"><div class="num">3</div><div><strong>Klik Ekspor</strong><p>File .mov transparan akan otomatis diunduh ke folder Download Anda.</p></div></div>
+
+    <div class="footer"><span>Panduan Pengguna Motion Easy 2.0</span><span>03</span></div>
   </section>
 
+  <!-- HALAMAN 5: PRE-PAD MB (ADOBE STOCK READY) -->
   <section class="page">
-    <div class="sub">Alur AI</div><h2>Menulis brief dan memakai AI</h2>
-    <h3>Brief yang baik menjawab enam pertanyaan</h3><ol><li>Video apa yang ingin dibuat?</li><li>Teks apa yang harus muncul?</li><li>Siapa penontonnya?</li><li>Gaya visual apa yang dipakai?</li><li>Warna apa yang digunakan?</li><li>Berapa durasi dan rasio videonya?</li></ol>
-    <div class="card"><h3>Contoh brief</h3><p>Buat video pembuka untuk channel YouTube bernama “Ruang Kreatif”. Tampilkan judul “Ruang Kreatif” dan subjudul “Ide sederhana, dampak luar biasa”. Gunakan gaya neon gelap, aksen cyan, durasi 8 detik. Judul masuk dari bawah dan keluar dengan fade out halus.</p></div>
-    <h3>Langkah BYO-AI</h3><ol><li>Isi brief atau pilih tema.</li><li>Pilih tombol <b>Gemini</b>, <b>ChatGPT</b>, atau <b>Claude</b>. Motion Easy otomatis menyalin prompt dan membuka layanan pilihan di tab baru.</li><li>Tempel prompt ke layanan AI tersebut, lalu kirim.</li><li>Salin seluruh JSON hasil AI.</li><li>Kembali ke Motion Easy dan tempel ke area <b>tempel (sample)</b>.</li><li>Klik <b>Validasi &amp; Preview</b>.</li></ol>
-    <div class="callout"><strong>AI Handoff:</strong> tombol Gemini, ChatGPT, dan Claude membuat alur lebih mudah tanpa API key. Anda tetap menggunakan akun/subscription AI sendiri. Motion Easy hanya menyalin prompt, membuka layanan AI, lalu menerima kembali JSON yang Anda tempel.</div>
-    <div class="card"><h3>Jika clipboard tidak tersedia</h3><p>Gunakan tombol <b>Salin Prompt</b> lalu salin manual dengan <code>Ctrl+C</code>. Setelah layanan AI terbuka, tempel prompt dengan <code>Ctrl+V</code>.</p></div>
-    <div class="callout warn"><strong>Jika tidak valid:</strong> minta AI mengembalikan hanya satu JSON MotionDefinition valid tanpa sapaan atau penjelasan tambahan. Gunakan juga tombol <b>Salin Prompt Perbaikan</b> setelah validator menampilkan error.</div>
-    <div class="footer"><span>Panduan Pengguna Motion Easy</span><span>04</span></div>
+    <div class="sub">Bab 4 · Rahasia Kurasi Microstock</div>
+    <h2>Fitur Pre-Pad MB: Lolos Kurasi Adobe Stock &amp; Shutterstock</h2>
+    <p>Bagi kontributor Adobe Stock, Shutterstock, Pond5, atau Envato Elements, salah satu masalah paling menjengkelkan adalah penolakan otomatis oleh robot kurator dengan alasan:</p>
+    <div class="callout warn" style="font-weight:bold;color:#b91c1c">
+      "File Size Too Small / Bitrate Under Threshold" (Ukuran File Terlalu Kecil)
+    </div>
+    <p>Video motion graphics 2D vektor sering kali memiliki bitrate yang sangat efisien sehingga file MP4 hanya berukuran 2 MB sampai 8 MB. Robot kurasi microstock kerap mengira file sekecil itu adalah video korup atau berkualitas rendah!</p>
+
+    <img class="shot" src="03-harga.png" alt="Harga dan Lisensi">
+    <div class="caption">Gambar 3. Halaman Harga dan Fitur Premium untuk Kontributor Microstock.</div>
+
+    <h3>Solusi Resmi Motion Easy: Pre-Pad MB (ISO-BMFF Free Box)</h3>
+    <p>Motion Easy mengatasi masalah ini secara legal sesuai standar spesifikasi ISO/IEC 14496-12 (standar resmi MPEG-4):</p>
+    <ul>
+      <li>Kotak bertipe <code>'free'</code> atau <code>'skip'</code> diabaikan secara mutlak oleh pemutar video, sehingga <strong>kualitas video, bitrate, frame rate, dan durasi tidak berubah 1% pun</strong>.</li>
+      <li>Namun, ukuran byte file di level sistem operasi dan server kurasi Adobe Stock akan terbaca mencapai target minimal (misal: tepat 25 MB).</li>
+    </ul>
+
+    <div class="footer"><span>Panduan Pengguna Motion Easy 2.0</span><span>04</span></div>
   </section>
 
+  <!-- HALAMAN 6: AUTOFLOW BULK ZIP RENDERER -->
   <section class="page">
-    <div class="sub">Teknis, tetapi sederhana</div><h2>Memahami MotionDefinition</h2>
-    <p>MotionDefinition adalah format JSON yang menjelaskan ukuran kanvas, durasi, layer, teks, warna, dan gerakan animasi.</p>
-    <img class="shot" src="05-skema.png"><div class="caption">Gambar 3. Kamus Animasi menampilkan contoh JSON yang valid.</div>
-    <h3>Aturan utama</h3><ul><li><code>version</code> harus bernilai 1.</li><li>Koordinat dan ukuran memakai fraksi 0 sampai 1.</li><li>Waktu ditulis dalam detik.</li><li>Warna memakai hex enam digit, misalnya <code>#4cd7f6</code>.</li><li>Jenis layer: rect, ellipse, triangle, text, line, atau canvas.</li><li>Maksimal 60 layer menurut validator aplikasi.</li><li>Durasi yang didukung: 1 sampai 60 detik.</li><li>Partikel dan efek canvas harus deterministik agar preview dan ekspor konsisten.</li></ul>
-    <pre>{
-  "version": 1,
-  "name": "Judul Reveal",
-  "canvas": { "w": 1920, "h": 1080, "fps": 30, "durationSec": 6 },
-  "layers": []
-}</pre>
-    <div class="footer"><span>Panduan Pengguna Motion Easy</span><span>05</span></div>
+    <div class="sub">Bab 5 · Produksi Massal</div>
+    <h2>Autoflow Bulk Queue ZIP Renderer</h2>
+    <p>Jika Anda mengelola channel YouTube bernomor episode banyak, kampanye iklan dengan variasi promo, atau memproduksi stok video ratusan aset untuk dijual di agensi, mengekspor video satu per satu tentu memakan waktu.</p>
+
+    <div class="callout success">
+      <strong>Fitur Autoflow Bulk Queue:</strong> Memungkinkan Anda merender puluhan karya sekaligus dalam satu antrean sekuensial otomatis dan mengunduh seluruh hasilnya dalam <strong>SATU file arsip ZIP</strong>.
+    </div>
+
+    <h3>Mekanisme Antrean Sekuensial Cerdas</h3>
+    <ul>
+      <li><strong>Looping WebCodecs Lokal:</strong> Sistem memproses antrean satu per satu di memori GPU komputer Anda tanpa membuat browser hang atau kehabisan RAM.</li>
+      <li><strong>Toleransi Kegagalan:</strong> Jika ada salah satu JSON proyek yang memiliki kesalahan waktu atau layer berlebih, sistem akan menandainya "Gagal" dan langsung melanjutkan render proyek berikutnya.</li>
+      <li><strong>Progress Bar Real-Time:</strong> Menampilkan indikator kemajuan global (misal: "Memproses Video 4 dari 20...") serta persentase frame aktif.</li>
+      <li><strong>Otomatisasi ZIP Akhir:</strong> Begitu seluruh antrean selesai, pustaka JSZip internal otomatis mengemas seluruh video MP4/MOV ke dalam file unduhan <code>motion-easy-bulk-20-karya.zip</code>.</li>
+    </ul>
+
+    <div class="footer"><span>Panduan Pengguna Motion Easy 2.0</span><span>05</span></div>
   </section>
 
+  <!-- HALAMAN 7: WEB AUDIO SFX & TIMELINE AUDIO -->
   <section class="page">
-    <div class="sub">Preview dan output</div><h2>Validasi, preview, dan ekspor</h2>
-    <p>Preview adalah pemeriksaan sebelum file final dibuat. Putar animasi dari awal sampai akhir dan pastikan semua elemen berada di dalam frame.</p>
-    <img class="shot" src="03-harga.png"><div class="caption">Gambar 4. Pilihan paket dan batas ekspor.</div>
-    <h3>Pilih resolusi</h3><table><tr><th>Resolusi</th><th>Cocok untuk</th><th>Ketersediaan</th></tr><tr><td>720p</td><td>Uji cepat dan file kecil</td><td>Gratis</td></tr><tr><td>1080p</td><td>TikTok, Reels, YouTube, presentasi</td><td>Gratis</td></tr><tr><td>2K</td><td>Output lebih tajam</td><td>Bulanan/Lifetime</td></tr><tr><td>4K</td><td>Master kualitas tinggi</td><td>Lifetime</td></tr></table>
-    <h3>Prosedur ekspor</h3><ol><li>Pastikan preview sudah benar.</li><li>Pilih preset resolusi.</li><li>Klik <b>Ekspor MP4</b>.</li><li>Jangan menutup tab saat proses berjalan.</li><li>Tunggu pesan selesai.</li><li>Periksa folder Downloads/Unduhan.</li></ol>
-    <div class="callout"><strong>Kuota Gratis:</strong> 5 ekspor MP4 per hari. Hanya ekspor yang berhasil yang mengurangi kuota. Paket Premium mendapat ekspor tanpa batas.</div>
-    <div class="footer"><span>Panduan Pengguna Motion Easy</span><span>06</span></div>
+    <div class="sub">Bab 6 · Desain Suara Otomatis</div>
+    <h2>Layer Audio &amp; Sound Effects (SFX) Transisi</h2>
+    <p>Video motion graphics tanpa efek suara akan terasa hampa. Biasanya, kreator harus membuang waktu 15–30 menit di aplikasi editing hanya untuk mencari dan menempelkan efek suara <em>whoosh</em> atau <em>pop</em> satu per satu.</p>
+
+    <div class="callout">
+      <strong>Sintesis Web Audio API Murni (0 KB Download):</strong> Motion Easy 2.0 dilengkapi dengan generator audio sintetis internal yang memanfaatkan osilator frekuensi dan noise buffer bawaan peramban Web Audio API. Tanpa mengunduh file WAV/MP3 eksternal sama sekali!
+    </div>
+
+    <h3>Daftar Efek Suara Bawaan &amp; Pemicunya</h3>
+    <table>
+      <tr><th>Nama SFX</th><th>Karakter Suara</th><th>Pemicu Gerakan (Motion Type)</th></tr>
+      <tr><td><strong>Whoosh</strong></td><td>Sapuan angin dinamis (Bandpass Noise Sweep 150Hz–3000Hz)</td><td>Transisi geser: <code>slideUp</code>, <code>slideDown</code>, <code>slideLeft</code>, <code>slideRight</code></td></tr>
+      <tr><td><strong>Pop / Bubble</strong></td><td>Nada melenting elastis (Sine Pitch Sweep 300Hz–850Hz)</td><td>Transisi pegas: <code>pop</code>, <code>easeOutBack</code>, <code>easeOutBounce</code></td></tr>
+      <tr><td><strong>Digital Ding</strong></td><td>Harmonik ganda modern tech (Sine E6 1318Hz + E7 2637Hz)</td><td>Kemunculan elemen: <code>fadeIn</code>, <code>draw reveal</code></td></tr>
+    </table>
+
+    <div class="footer"><span>Panduan Pengguna Motion Easy 2.0</span><span>06</span></div>
   </section>
 
+  <!-- HALAMAN 8: SISTEM LISENSI OFFLINE ECDSA -->
   <section class="page">
-    <div class="sub">Premium</div><h2>Aktivasi lisensi</h2>
-    <img class="shot" src="04-lisensi.png"><div class="caption">Gambar 5. Halaman Aktivasi Lisensi.</div>
-    <div class="step"><div class="num">1</div><div><strong>Buka Harga &amp; Paket</strong><p>Pilih Bulanan Rp15.000 atau Lifetime Pass Rp55.000.</p></div></div>
-    <div class="step"><div class="num">2</div><div><strong>Pesan melalui WhatsApp</strong><p>Ikuti instruksi pembayaran melalui QRIS, e-wallet, atau transfer bank.</p></div></div>
-    <div class="step"><div class="num">3</div><div><strong>Terima kode</strong><p>Admin mengirim kode lisensi setelah pembayaran dikonfirmasi.</p></div></div>
-    <div class="step"><div class="num">4</div><div><strong>Aktifkan</strong><p>Tempel kode di menu Aktivasi Lisensi, lalu klik <b>Aktivasi</b>.</p></div></div>
-    <div class="callout warn"><strong>Catatan lisensi:</strong> Bulanan aktif 30 hari. Lifetime aktif selamanya pada perangkat/browser yang diaktivasi. Simpan kode dengan aman; menghapus data situs dapat membuat Anda perlu mengaktifkannya lagi.</div>
-    <div class="footer"><span>Panduan Pengguna Motion Easy</span><span>07</span></div>
+    <div class="sub">Bab 7 · Keamanan &amp; Aktivasi</div>
+    <h2>Sistem Lisensi Offline ECDSA P-256</h2>
+    <p>Motion Easy menghargai kemandirian pengguna. Tidak seperti software SaaS lain yang memaksa login akun dan mengunci akses saat koneksi internet terputus, Motion Easy menggunakan kriptografi kunci asimetris <strong>ECDSA P-256</strong> berstandar militer.</p>
+
+    <img class="shot" src="04-lisensi.png" alt="Aktivasi Lisensi">
+    <div class="caption">Gambar 4. Halaman Aktivasi Lisensi ECDSA P-256 Offline.</div>
+
+    <h3>Cara Aktivasi Kode Lisensi:</h3>
+    <div class="step"><div class="num">1</div><div><strong>Dapatkan Kode Lisensi</strong><p>Pesan melalui admin via WhatsApp dan lakukan pembayaran via QRIS atau Transfer Bank.</p></div></div>
+    <div class="step"><div class="num">2</div><div><strong>Buka Menu 'Aktivasi Lisensi'</strong><p>Klik tab Aktivasi Lisensi di bilah navigasi atas Motion Easy.</p></div></div>
+    <div class="step"><div class="num">3</div><div><strong>Tempel Kode &amp; Klik Aktivasi</strong><p>Aplikasi langsung memverifikasi tanda tangan digital ECDSA secara lokal dan membuka seluruh fitur Premium!</p></div></div>
+
+    <div class="footer"><span>Panduan Pengguna Motion Easy 2.0</span><span>07</span></div>
   </section>
 
+  <!-- HALAMAN 9: TROUBLESHOOTING & FAQ -->
   <section class="page">
-    <div class="sub">Fitur premium</div><h2>Bulk ZIP dan Enlarge-MB</h2>
-    <div class="grid"><div class="card"><h3>Bulk ZIP</h3><p>Render banyak karya sekaligus dan unduh sebagai satu file ZIP. Cocok untuk variasi judul, seri media sosial, banyak produk, atau beberapa versi bahasa.</p><p><b>Tersedia:</b> Bulanan dan Lifetime.</p></div><div class="card"><h3>Enlarge-MB</h3><p>Pilih ukuran 10, 25, atau 50 MB untuk memenuhi syarat ukuran minimum platform atau agensi.</p><p><b>Tersedia:</b> Bulanan dan Lifetime.</p></div></div>
-    <h3>Workflow untuk konten vertikal</h3><ol><li>Pilih atau tulis brief untuk TikTok/Reels.</li><li>Gunakan hook besar pada 1–2 detik pertama.</li><li>Batasi teks agar mudah dibaca.</li><li>Sisakan safe area dari tepi layar.</li><li>Ekspor 1080p untuk penggunaan umum.</li></ol>
-    <h3>Workflow microstock</h3><p>Gunakan desain bersih dan mudah dipakai ulang. Periksa hak penggunaan font, aset, musik, dan merek pihak ketiga sebelum menjual atau menerbitkan hasil.</p>
-    <div class="footer"><span>Panduan Pengguna Motion Easy</span><span>08</span></div>
+    <div class="sub">Bab 8 · Pusat Bantuan &amp; Solusi</div>
+    <h2>Panduan Troubleshooting Cepat</h2>
+    <table>
+      <tr><th>Kendala</th><th>Penyebab Umum</th><th>Solusi Langkah Cepat</th></tr>
+      <tr><td><strong>Resolusi 4K Tidak Muncul</strong></td><td>Mesin GPU mendeteksi limitasi hardware atau memakai paket Gratis/Bulanan.</td><td>Gunakan Chrome/Edge desktop terbaru dengan akselerasi GPU aktif, dan pastikan lisensi Anda adalah Lifetime Pass.</td></tr>
+      <tr><td><strong>MOV Alpha Layar Hitam di Media Player</strong></td><td>Media player default Windows (Movies &amp; TV) tidak memiliki renderer alpha.</td><td>Buka file di software video editor (Premiere, AE, DaVinci, CapCut) atau VLC Media Player. Transparansi langsung terlihat.</td></tr>
+      <tr><td><strong>Render Berhenti di Tengah Jalan</strong></td><td>Tab browser terminimalkan atau memori laptop penuh.</td><td>Biarkan tab Motion Easy tetap berada di layar depan saat rendering berjalan, dan tutup software berat lain di latar belakang.</td></tr>
+      <tr><td><strong>Kode Lisensi Tidak Valid</strong></td><td>Ada spasi tambahan atau karakter terpotong saat menyalin.</td><td>Salin seluruh string kode lisensi dari awal hingga akhir tanpa ada spasi ekstra di depan atau belakang.</td></tr>
+      <tr><td><strong>Ukuran File Tetap di Bawah 25 MB</strong></td><td>Toggle Target 25 MB belum dicentang di modal ekspor.</td><td>Centang toggle "Target Minimal Size: 25 MB" sebelum menekan tombol Ekspor video.</td></tr>
+    </table>
+
+    <div class="footer"><span>Panduan Pengguna Motion Easy 2.0</span><span>08</span></div>
   </section>
 
-  <section class="page">
-    <div class="sub">Bantuan</div><h2>Troubleshooting cepat</h2>
-    <table><tr><th>Masalah</th><th>Yang harus dilakukan</th></tr><tr><td>JSON tidak valid</td><td>Hapus teks di luar JSON, periksa koma dan kutip, lalu gunakan prompt perbaikan.</td></tr><tr><td>Preview glitch</td><td>Kurangi layer/partikel, kurangi efek canvas, muat ulang, dan tutup aplikasi berat.</td></tr><tr><td>Teks terpotong</td><td>Pendekkan teks, kecilkan font, atau pindahkan elemen menjauh dari tepi.</td></tr><tr><td>Export gagal</td><td>Gunakan Chrome/Edge desktop, coba 720p/1080p, kurangi layer, lalu ulangi.</td></tr><tr><td>Export lambat</td><td>Sambungkan charger, tutup aplikasi lain, turunkan resolusi, dan kurangi partikel.</td></tr><tr><td>File tidak ditemukan</td><td>Periksa Downloads, daftar download browser, izin download, dan ekstensi .mp4.</td></tr><tr><td>Premium terkunci</td><td>Periksa aktivasi lisensi, muat ulang Studio, dan pastikan kode sesuai paket.</td></tr><tr><td>Kuota habis</td><td>Tunggu reset harian atau upgrade ke Premium.</td></tr></table>
-    <h3>Informasi saat menghubungi admin</h3><ul><li>Screenshot masalah.</li><li>Pesan error lengkap.</li><li>Browser dan sistem operasi.</li><li>Resolusi yang dipilih.</li><li>Paket yang digunakan.</li><li>Langkah terakhir sebelum masalah.</li></ul>
-    <div class="callout warn"><strong>Keamanan:</strong> jangan mengirim kode lisensi ke grup atau ruang publik. Gunakan kanal admin resmi.</div>
-    <div class="footer"><span>Panduan Pengguna Motion Easy</span><span>09</span></div>
-  </section>
-
+  <!-- HALAMAN 10: CHECKLIST KELUARAN & PENUTUP -->
   <section class="page dark">
-    <div class="sub" style="color:#9bdff0">Ringkasan</div><h2>Checklist sebelum ekspor</h2>
-    <ul><li>☐ Teks benar dan tidak typo.</li><li>☐ Semua teks terlihat utuh.</li><li>☐ Warna cukup kontras.</li><li>☐ Gerakan mudah diikuti.</li><li>☐ Durasi sesuai kebutuhan.</li><li>☐ Preview diputar dari awal sampai akhir.</li><li>☐ Resolusi sudah benar.</li><li>☐ Kuota masih tersedia jika memakai Gratis.</li><li>☐ Folder Downloads memiliki ruang yang cukup.</li></ul>
-    <h3>Mulai sekarang</h3><p>Mulailah dengan satu video pendek. Pilih tema, tulis brief, gunakan AI, validasi JSON, periksa preview, lalu ekspor MP4.</p>
-    <div class="cover-card" style="margin-top:24px"><strong>Website Motion Easy</strong><p>motion-easy.rosifulaqli59.workers.dev</p></div>
-    <div class="footer" style="border-color:#334155;color:#94a3b8"><span>Panduan Pengguna Motion Easy</span><span>10</span></div>
+    <div class="sub" style="color:#9bdff0">Penutup · Standar Kualitas Profesional</div>
+    <h2>Checklist Sebelum Unggah ke Microstock / Media Sosial</h2>
+    <p>Sebelum mengunggah video ke Adobe Stock, Shutterstock, TikTok, Instagram, atau YouTube Shorts, pastikan Anda telah memeriksa poin-poin berikut:</p>
+
+    <ul>
+      <li>☐ <strong>Aspek Rasio Sesuai Platform:</strong> 9:16 untuk TikTok/Reels, 16:9 untuk YouTube, 1:1 untuk Microstock Carousel.</li>
+      <li>☐ <strong>Bebas Typo &amp; Tata Bahasa Rapi:</strong> Semua teks layer terbaca jelas dan memiliki kontras warna yang nyaman di mata penonton.</li>
+      <li>☐ <strong>Safe Zone Vertikal:</strong> Pada rasio 9:16, elemen visual utama berada di antara 35% sampai 65% tinggi kanvas agar tidak tertutup tombol UI aplikasi.</li>
+      <li>☐ <strong>Format File Tepat:</strong> Gunakan MP4 untuk konsumsi langsung penonton, atau MOV Alpha jika Anda menjual aset animasi transparan (overlay grafis).</li>
+      <li>☐ <strong>Bobot File Microstock:</strong> Target minimal 25 MB telah aktif untuk mencegah penolakan sistem agensi.</li>
+      <li>☐ <strong>Durasi Animasi Efektif:</strong> Durasi ideal motion graphics adalah 5 hingga 15 detik agar ritme animasi tetap dinamis dan tidak membosankan.</li>
+    </ul>
+
+    <div class="cover-card" style="margin-top:35px;width:100%">
+      <strong>Mulai Berkarya Sekarang</strong>
+      <p>Buka <b>https://motion-easy.rosifulaqli59.workers.dev</b> di Google Chrome atau Microsoft Edge laptop Anda, rancang animasi spektakuler berikutnya, dan menangkan pasar konten kreator!</p>
+    </div>
+
+    <div class="footer" style="border-color:#334155;color:#94a3b8">
+      <span>Panduan Pengguna Motion Easy 2.0 · Hak Cipta Dilindungi</span>
+      <span>10</span>
+    </div>
   </section>
 </body>
 </html>

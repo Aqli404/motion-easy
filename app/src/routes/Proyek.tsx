@@ -1,7 +1,8 @@
-import { Link } from "react-router-dom";
-import { FolderOpen, CheckCircle2 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { FolderOpen, CheckCircle2, Clapperboard } from "lucide-react";
 
 export default function Proyek() {
+  const navigate = useNavigate();
   return (
     <div className="grid h-full place-items-center p-8">
       <div className="text-center">
@@ -28,12 +29,12 @@ export default function Proyek() {
             <span>Simpan proyek &amp; aset menyusul di pembaruan berikutnya</span>
           </li>
         </ul>
-        <Link
-          to="/studio"
-          className="mt-5 inline-flex rounded-lg bg-gradient-to-r from-amber-400 via-orange-500 to-rose-500 px-4 py-2 text-sm font-semibold text-deep shadow"
+        <button
+          onClick={() => navigate("/studio")}
+          className="mt-5 inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-amber-400 via-orange-500 to-rose-500 px-4 py-2 text-sm font-semibold text-deep shadow hover:brightness-105 active:scale-95 transition-all"
         >
-          Buka Studio
-        </Link>
+          <Clapperboard className="h-4 w-4" /> Buka Studio
+        </button>
       </div>
     </div>
   );

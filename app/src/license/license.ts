@@ -26,8 +26,55 @@ export interface ActiveLicense {
 const STORE_KEY = "me.license.v1";
 export const LICENSE_EVENT = "me-license-changed";
 
+/** [SEC-01] Anti jam-mundur: monotonic clock. Nilai = epoch ms terbesar yang pernah terlihat. */
+const CLOCK_KEY = "me.license.clock.v1";
+const CLOCK_KEY2 = "me.clock.v1"; // backup — hapus 1 key saja tidak cukup bypass
+const TOLERANSI_JAM_MS = 5 * 60 * 1000; // 5 menit — toleransi geser jam / NTP drift
+
 function emit() {
   window.dispatchEvent(new Event(LICENSE_EVENT));
+}
+
+function bacaLastSeen(): number {
+  try {
+    const vals: number[] = [];
+    for (const k of [CLOCK_KEY, CLOCK_KEY2]) {
+      const raw = localStorage.getItem(k);
+      if (!raw) continue;
+      const n = Number(raw);
+      if (Number.isFinite(n)) vals.push(n);
+    }
+    return vals.length ? Math.max(...vals) : 0;
+  } catch {
+    return 0;
+  }
+}
+
+function tulisLastSeen(now: number): void {
+  try {
+    const last = bacaLastSeen();
+    if (now > last) {
+      localStorage.setItem(CLOCK_KEY, String(now));
+      localStorage.setItem(CLOCK_KEY2, String(now));
+    }
+  } catch {
+    // storage penuh/diblokir — abaikan, jangan gagalkan verifikasi
+  }
+}
+
+/** True bila jam OS terdeteksi mundur > toleransi dibanding lastSeen. */
+export function isJamMundur(): boolean {
+  try {
+    const now = Date.now();
+    const last = bacaLastSeen();
+    return last > 0 && now < last - TOLERANSI_JAM_MS;
+  } catch {
+    return false;
+  }
+}
+
+export function pesanJamMundur(): string {
+  return "Jam perangkat terdeteksi mundur — sinkronkan waktu otomatis (Settings \u2192 Date & time \u2192 Automatic) lalu muat ulang halaman.";
 }
 
 function b64uToBytes(s: string): Uint8Array<ArrayBuffer> {
@@ -88,9 +135,19 @@ export async function verifikasiKode(raw: string): Promise<VerifyResult> {
     return { ok: false, error: "Gagal memverifikasi tanda tangan di perangkat ini." };
   }
 
+  // [SEC-02] iat di masa depan = jam maju / belum sinkron
+  if (payload.iat * 1000 > Date.now() + TOLERANSI_JAM_MS) {
+    return { ok: false, error: "Jam perangkat belum sinkron — aktifkan waktu otomatis lalu coba lagi." };
+  }
+  // [SEC-01] jam mundur: hanya blokir bulanan (lifetime exp=null tidak diuntungkan dari mundur)
+  if (payload.tier === "bulanan" && isJamMundur()) {
+    return { ok: false, error: pesanJamMundur() };
+  }
   if (payload.exp !== null && payload.exp * 1000 <= Date.now()) {
     return { ok: false, error: "Kode sudah kedaluwarsa. Perpanjang di menu Harga." };
   }
+  // sukses → majukan monotonic clock
+  tulisLastSeen(Date.now());
   return { ok: true, payload, code };
 }
 
@@ -115,11 +172,12 @@ export function muatLisensi(): ActiveLicense | null {
     const raw = localStorage.getItem(STORE_KEY);
     if (!raw) return null;
     const data = JSON.parse(raw) as ActiveLicense;
-    // bentuk yang wajar saja (perbaikan uji publik: jangan percaya bentuk aneh)
-    if (!data?.payload?.tier || typeof data.code !== "string" || typeof data.payload.iat !== "number") {
-      return null;
-    }
+    if (!data?.payload?.tier || typeof data.code !== "string" || typeof data.payload.iat !== "number") return null;
+    // [SEC-01] jam mundur → blokir hanya bulanan (lifetime tidak diuntungkan)
+    if (data.payload.tier === "bulanan" && isJamMundur()) return null;
     if (data.payload.exp !== null && data.payload.exp * 1000 <= Date.now()) return null;
+    if (data.payload.iat * 1000 > Date.now() + TOLERANSI_JAM_MS) return null;
+    tulisLastSeen(Date.now());
     return data;
   } catch {
     return null;
@@ -167,6 +225,7 @@ export async function validasiUlangTersimpan(): Promise<boolean> {
 export function premiumAktif(lic: ActiveLicense | null): boolean {
   if (!lic) return false;
   if (lic.payload.tier === "lifetime") return true;
+  if (lic.payload.tier === "bulanan" && isJamMundur()) return false;
   return lic.payload.exp === null || lic.payload.exp * 1000 > Date.now();
 }
 
@@ -187,46 +246,57 @@ export interface IzinPresetResult {
   badge: string;
 }
 
+type Tingkat = "gratis" | "bulanan" | "lifetime";
+
 /**
- * Penegakan gating resolusi sesuai janji paket:
- * - 720p & 1080p: gratis untuk semua.
- * - 1440p (2K): butuh paket Bulanan atau Lifetime (atau MODE_DEV).
- * - 2160p (4K): khusus paket Lifetime (atau MODE_DEV).
+ * Peta preset → tingkat minimum. Preset yang TIDAK terdaftar otomatis DITOLAK
+ * (fail closed) — jadi preset baru default-nya terkunci, bukan gratis.
+ *
+ * Tangga: gratis (720/1080) → bulanan (2K + 4K ≤100 Mbps) → lifetime (4K 160/200 Mbps).
+ * Bedakan bitrate sengaja: gratis sudah 1080p, tapi 4K master 160–200 Mbps
+ * (≥100 MB/5 detik, standar microstock) tetap eksklusif Lifetime.
  */
+const MIN_TINGKAT: Record<string, Tingkat> = {
+  "720": "gratis",
+  "1080": "gratis",
+  "1440": "bulanan",
+  "2160": "bulanan",
+  "2160-100": "bulanan",
+  "2160-160": "lifetime",
+  "2160-200": "lifetime",
+};
+
+const URUTAN: Record<Tingkat, number> = { gratis: 0, bulanan: 1, lifetime: 2 };
+
 export function izinPreset(presetId: string, lic: ActiveLicense | null, abaikanDev = false): IzinPresetResult {
   if (MODE_DEV && !abaikanDev) return { diizinkan: true, badge: "aktif ✓ (dev)" };
-  const aktif = premiumAktif(lic);
-  const tier = lic?.payload.tier;
 
-  if (presetId === "2160") {
-    if (aktif && tier === "lifetime") {
-      return { diizinkan: true, badge: "aktif ✓" };
-    }
-    if (aktif && tier === "bulanan") {
+  const butuh = MIN_TINGKAT[presetId];
+  if (!butuh) {
+    return { diizinkan: false, badge: "tak dikenal", alasan: "Preset ekspor tidak dikenali." };
+  }
+  if (butuh === "gratis") return { diizinkan: true, badge: "gratis" };
+
+  const milik: Tingkat = premiumAktif(lic) ? (lic!.payload.tier ?? "gratis") : "gratis";
+  if (URUTAN[milik] >= URUTAN[butuh]) return { diizinkan: true, badge: "aktif ✓" };
+
+  if (butuh === "lifetime") {
+    if (milik === "bulanan") {
       return {
         diizinkan: false,
-        alasan: "Resolusi 4K khusus paket Lifetime. Paket Bulanan mendukung hingga 2K (1440p).",
         badge: "khusus Lifetime",
+        alasan: "Bitrate 4K 160–200 Mbps khusus paket Lifetime. Paket Bulanan mendukung 4K hingga 100 Mbps.",
       };
     }
     return {
       diizinkan: false,
-      alasan: "Resolusi 4K membutuhkan lisensi Lifetime — aktivasi di menu Lisensi.",
       badge: "butuh Lifetime",
+      alasan: "Butuh lisensi Lifetime untuk ekspor 4K 160–200 Mbps — aktivasi di menu Lisensi.",
     };
   }
-
-  if (presetId === "1440") {
-    if (aktif) {
-      return { diizinkan: true, badge: "aktif ✓" };
-    }
-    return {
-      diizinkan: false,
-      alasan: "Resolusi 2K membutuhkan lisensi Premium (Bulanan / Lifetime) — aktivasi di menu Lisensi.",
-      badge: "butuh lisensi",
-    };
-  }
-
-  // 720 & 1080
-  return { diizinkan: true, badge: "gratis" };
+  return {
+    diizinkan: false,
+    badge: "butuh lisensi",
+    alasan: "Resolusi 2K/4K butuh lisensi Premium (Bulanan / Lifetime) — aktivasi di menu Lisensi.",
+  };
 }

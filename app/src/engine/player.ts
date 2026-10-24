@@ -6,7 +6,11 @@ import { useCallback, useEffect, useRef, useState } from "react";
  *   tanpa re-render komponen per frame.
  * - Preview di-loop kembali ke 0 saat mencapai akhir durasi.
  */
-export function usePlayer(draw: (t: number) => void, duration: number) {
+export function usePlayer(
+  draw: (t: number) => void,
+  duration: number,
+  opts?: { speed?: number },
+) {
   const [playing, setPlaying] = useState(false);
   const playingRef = useRef(false);
   const rafRef = useRef<number | null>(null);
@@ -16,10 +20,13 @@ export function usePlayer(draw: (t: number) => void, duration: number) {
   drawRef.current = draw;
   const durRef = useRef(duration);
   durRef.current = duration;
+  const [speed, setSpeedState] = useState(opts?.speed ?? 1);
+  const speedRef = useRef(opts?.speed ?? 1);
+  speedRef.current = speed;
 
   const stepRef = useRef<(now: number) => void>(() => {});
   stepRef.current = (now: number) => {
-    const dt = Math.min(0.15, (now - lastRef.current) / 1000);
+    const dt = Math.min(0.15, (now - lastRef.current) / 1000) * speedRef.current;
     lastRef.current = now;
     let t = timeRef.current + dt;
     if (t >= durRef.current) t = 0; // loop preview
@@ -68,5 +75,5 @@ export function usePlayer(draw: (t: number) => void, duration: number) {
     };
   }, []);
 
-  return { playing, play, pause, toggle, seek, reset, getTime: () => timeRef.current };
+  return { playing, play, pause, toggle, seek, reset, speed, setSpeed: setSpeedState, getTime: () => timeRef.current };
 }

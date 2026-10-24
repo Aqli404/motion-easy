@@ -11,6 +11,7 @@ import type { MotionDefinition } from "../engine/schema";
 import { EXPORT_PRESETS, resolveExportSize } from "./presets";
 import type { ExportPreset, ExportSize } from "./presets";
 import { prepareImageAssets } from "../engine/svg";
+import { synthesizeOfflineAudio } from "../engine/audio";
 
 export interface ExportProgress {
   phase: "preparing" | "encoding" | "muxing";
@@ -29,6 +30,8 @@ export interface KonfigurasiEncoder {
   codec: string;
   bitrate: number;
   hardwareAcceleration?: "prefer-software";
+  /** true = encoder dikunci CBR (ukuran file ≈ bitrate × durasi) */
+  cbr?: boolean;
 }
 
 /**
@@ -89,6 +92,12 @@ export function pesanEncoderTidakAda(): string {
  * mesin (terverifikasi lewat isConfigSupported), dari kualitas tertinggi
  * ke paling hemat. Kombinasi terpilih langsung dipakai saat configure —
  * jadi tidak ada celah "tervalidasi tapi gagal saat eksekusi".
+ *
+ * Prioritas: CBR (bitrateMode 'constant' + latencyMode 'quality') supaya
+ * ukuran file benar-benar mengejar bitrate target — nyata untuk standar
+ * microstock (file besar, kualitas bersih). Bila mesin menolak CBR atau
+ * bitrate tinggi, langkah jatuh ke mode variable/variable tanpa kunci,
+ * dan sisa ukuran ditutup padding di ExportModal.
  */
 export async function pilihKonfigurasiEncoder(
   width: number,
@@ -96,25 +105,29 @@ export async function pilihKonfigurasiEncoder(
   fps: number,
   targetBitrate: number,
 ): Promise<KonfigurasiEncoder> {
-  for (const soft of [false, true]) {
-    for (const codec of kandidatCodec(width, height, fps)) {
-      for (const faktor of LANGKAH_BITRATE) {
-        const bitrate = Math.max(500_000, Math.round((targetBitrate * faktor) / 1000) * 1000);
-        const softnya = soft ? ({ hardwareAcceleration: "prefer-software" } as const) : {};
-        try {
-          const support = await VideoEncoder.isConfigSupported({
-            codec,
-            width,
-            height,
-            bitrate,
-            framerate: fps,
-            ...softnya,
-          });
-          if (support.supported) {
-            return { codec, bitrate, ...softnya };
+  const cbrExtra = { bitrateMode: "constant" as const, latencyMode: "quality" as const };
+  for (const cbr of [true, false]) {
+    for (const soft of [false, true]) {
+      for (const codec of kandidatCodec(width, height, fps)) {
+        for (const faktor of LANGKAH_BITRATE) {
+          const bitrate = Math.max(500_000, Math.round((targetBitrate * faktor) / 1000) * 1000);
+          const softnya = soft ? ({ hardwareAcceleration: "prefer-software" } as const) : {};
+          try {
+            const support = await VideoEncoder.isConfigSupported({
+              codec,
+              width,
+              height,
+              bitrate,
+              framerate: fps,
+              ...(cbr ? cbrExtra : {}),
+              ...softnya,
+            });
+            if (support.supported) {
+              return { codec, bitrate, ...(cbr ? cbrExtra : {}), ...softnya, cbr };
+            }
+          } catch {
+            // lanjut ke kandidat berikutnya
           }
-        } catch {
-          // lanjut ke kandidat berikutnya
         }
       }
     }
@@ -133,6 +146,7 @@ export async function exportMp4(
   preset: ExportPreset,
   onProgress: (p: ExportProgress) => void,
   cancel: CancelFlag,
+  sfxAktif: boolean = true,
 ): Promise<ExportResult> {
   if (!webCodecsSupported()) {
     throw new Error(
@@ -149,9 +163,32 @@ export async function exportMp4(
   // negosiasi otomatis: codec yang pas + bitrate yang bisa ditanggung mesin
   const konfig = await pilihKonfigurasiEncoder(width, height, fps, preset.bitrate);
 
+  // Sintesis audio offline jika toggle SFX aktif
+  let audioBuffer: AudioBuffer | null = null;
+  const audioSampleRate = 44100;
+  const hasAudioEncoder = typeof AudioEncoder !== "undefined";
+  const encodeAudio = sfxAktif && hasAudioEncoder;
+
+  if (encodeAudio) {
+    try {
+      audioBuffer = await synthesizeOfflineAudio(def);
+    } catch (e) {
+      console.warn("Gagal sintesis audio:", e);
+    }
+  }
+
   const muxer = new Muxer({
     target: new ArrayBufferTarget(),
     video: { codec: "avc", width, height },
+    ...(audioBuffer
+      ? {
+          audio: {
+            codec: "aac",
+            numberOfChannels: 2,
+            sampleRate: audioSampleRate,
+          },
+        }
+      : {}),
     fastStart: "in-memory",
   });
 
@@ -175,6 +212,7 @@ export async function exportMp4(
     height,
     bitrate: konfig.bitrate,
     framerate: fps,
+    ...(konfig.cbr ? { bitrateMode: "constant" as const, latencyMode: "quality" as const } : {}),
     ...(konfig.hardwareAcceleration
       ? { hardwareAcceleration: konfig.hardwareAcceleration }
       : {}),
@@ -219,6 +257,59 @@ export async function exportMp4(
           totalFrames,
           pct: ((i + 1) / totalFrames) * 95,
         });
+      }
+    }
+
+    // Encode trek audio AAC jika tersedia
+    if (audioBuffer && hasAudioEncoder) {
+      try {
+        const audioEncoder = new AudioEncoder({
+          output: (chunk, meta) => {
+            try {
+              muxer.addAudioChunk(chunk, meta);
+            } catch (err) {
+              console.warn("Gagal menambahkan audio chunk:", err);
+            }
+          },
+          error: (err) => console.warn("AudioEncoder error:", err),
+        });
+
+        audioEncoder.configure({
+          codec: "mp4a.40.2",
+          sampleRate: audioSampleRate,
+          numberOfChannels: 2,
+          bitrate: 128_000,
+        });
+
+        const totalAudioSamples = audioBuffer.length;
+        const chunkSize = 1024;
+        const leftChannel = audioBuffer.getChannelData(0);
+        const rightChannel = audioBuffer.getChannelData(1);
+
+        for (let offset = 0; offset < totalAudioSamples; offset += chunkSize) {
+          const currentChunk = Math.min(chunkSize, totalAudioSamples - offset);
+          const planarData = new Float32Array(currentChunk * 2);
+          planarData.set(leftChannel.subarray(offset, offset + currentChunk), 0);
+          planarData.set(rightChannel.subarray(offset, offset + currentChunk), currentChunk);
+
+          const timestampUs = Math.round((offset / audioSampleRate) * 1_000_000);
+          const audioData = new AudioData({
+            format: "f32-planar",
+            sampleRate: audioSampleRate,
+            numberOfFrames: currentChunk,
+            numberOfChannels: 2,
+            timestamp: timestampUs,
+            data: planarData,
+          });
+
+          audioEncoder.encode(audioData);
+          audioData.close();
+        }
+
+        await audioEncoder.flush();
+        audioEncoder.close();
+      } catch (err) {
+        console.warn("Proses encode audio dilewati:", err);
       }
     }
 
@@ -268,8 +359,8 @@ export async function probeDukunganPreset(
   return hasil;
 }
 
-/** Unduh blob dengan nama file yang rapi. */
-export function unduhBlob(blob: Blob, filename: string) {
+/** Unduh blob dengan nama file yang rapi — tahan URL 120 dtk untuk file besar (105–200 MB). */
+export function unduhBlob(blob: Blob, filename: string): string {
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
@@ -277,5 +368,31 @@ export function unduhBlob(blob: Blob, filename: string) {
   document.body.appendChild(a);
   a.click();
   a.remove();
-  setTimeout(() => URL.revokeObjectURL(url), 5_000);
+  // 120 dtk: file 200 MB butuh waktu flush ke disk; revoke terlalu cepat = download terpotong
+  setTimeout(() => URL.revokeObjectURL(url), 120_000);
+  return url;
+}
+
+/** Coba simpan via File System Access API (dialog simpan asli). Gagal → fallback ke unduhBlob. */
+export async function simpanBlobPremium(blob: Blob, filename: string): Promise<{ ok: boolean; dibatalkan?: boolean }> {
+  const picker = (window as unknown as { showSaveFilePicker?: (opts: unknown) => Promise<{ createWritable: () => Promise<{ write: (b: Blob) => Promise<void>; close: () => Promise<void> }> }> }).showSaveFilePicker;
+  if (picker && window.isSecureContext) {
+    try {
+      const ext = filename.split(".").pop() || "mp4";
+      const handle = await picker({
+        suggestedName: filename,
+        types: [{ description: "Video", accept: { "video/mp4": [`.${ext}`] } }],
+      });
+      const w = await handle.createWritable();
+      await w.write(blob);
+      await w.close();
+      return { ok: true };
+    } catch (e: unknown) {
+      const name = (e as { name?: string })?.name;
+      if (name === "AbortError") return { ok: false, dibatalkan: true };
+      // NotAllowedError (gesture habis) atau lainnya → fallback anchor
+    }
+  }
+  unduhBlob(blob, filename);
+  return { ok: true };
 }

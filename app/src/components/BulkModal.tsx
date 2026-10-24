@@ -11,6 +11,8 @@ import {
   Lock,
 } from "lucide-react";
 import Modal from "./Modal";
+import { useHarga } from "../config/HargaContext";
+import { hargaRp } from "../config/paketData";
 import { EXPORT_PRESETS, slugify, estimasiMb, type ExportPreset } from "../export/presets";
 import { exportMp4, unduhBlob, webCodecsSupported } from "../export/encoder";
 import { TARGET_MB_OPTIONS, padMp4Blob } from "../export/pad";
@@ -20,6 +22,8 @@ import { useLicense } from "../license/useLicense";
 import { premiumEfektif, MODE_DEV, izinPreset } from "../license/license";
 import type { MotionDefinition } from "../engine/schema";
 import type { ProjectZipResult } from "../export/projectZip";
+import { getBatchCsv, batchToCsv } from "../engine/microstock";
+import { drawCodeToDefinition, type RasioKanvas } from "../engine/drawcode";
 
 interface Props {
   /** definisi aktif di Studio — bisa ditambahkan ke batch sekali klik */
@@ -43,6 +47,7 @@ type finishing =
 
 export default function BulkModal({ def, open, onClose }: Props) {
   const lic = useLicense();
+  const { bulanan, lifetime } = useHarga();
   const premium = premiumEfektif(lic);
   const supported = webCodecsSupported();
   const [teks, setTeks] = useState("");
@@ -150,12 +155,19 @@ export default function BulkModal({ def, open, onClose }: Props) {
     }
 
     try {
+      // Sertakan metadata.csv batch microstock (jika ada) ke dalam ZIP
+      const batch = getBatchCsv();
+      if (batch.length > 0) {
+        const csvBytes = new TextEncoder().encode(batchToCsv(batch));
+        arsip.push({ nama: "metadata.csv", data: csvBytes });
+      }
       const zip = buatZip(arsip);
       zipRef.current = zip;
-      const filename = `motion-easy-bulk-${arsip.length}-karya-${preset.id}p.zip`;
+      const jumlahKarya = arsip.filter((f) => f.nama.endsWith(".mp4")).length;
+      const filename = `motion-easy-bulk-${jumlahKarya}-karya-${preset.id}p.zip`;
       unduhBlob(zip, filename);
       setBerjalan(false);
-      setStatus({ state: "done", zipMb: zip.size / 1_000_000, filename, jumlah: arsip.length });
+      setStatus({ state: "done", zipMb: zip.size / 1_000_000, filename, jumlah: jumlahKarya });
     } catch (e) {
       setBerjalan(false);
       setStatus({ state: "error", message: `gagal membungkus ZIP: ${(e as Error).message}` });
@@ -200,17 +212,60 @@ export default function BulkModal({ def, open, onClose }: Props) {
             <Crown className="h-4 w-4" /> Lihat Paket Premium
           </Link>
           <p className="mt-2 text-center font-mono text-[9px] text-muted">
-            mulai Rp 15.000/bulan · atau Rp 55.000 sekali bayar
+            mulai {hargaRp(bulanan)}/bulan · atau {hargaRp(lifetime)} sekali bayar
           </p>
         </div>
       )}
 
       <div className={premium ? "space-y-3" : "pointer-events-none select-none space-y-3 opacity-40"}>
       <div className="space-y-2 rounded border border-edge p-3 text-xs">
-        <label className="block">Impor ZIP proyek (.motion.json)
-          <input aria-label="ZIP proyek" type="file" accept=".zip,application/zip" disabled={!premium || berjalan || readingZip} onChange={(event) => { const file = event.target.files?.[0]; if (file) void importZip(file); event.target.value = ""; }} className="mt-2 block w-full" />
+        <label className="block">Impor .TXT / .ZIP proyek (.motion.json)
+          <input aria-label="TXT atau ZIP proyek" type="file" accept=".txt,.zip,text/plain,application/zip" disabled={!premium || berjalan || readingZip} onChange={(event) => { const file = event.target.files?.[0]; if (file) {
+            if (/\.txt$/i.test(file.name) || file.type === "text/plain") {
+              if (file.size > 2_000_000) setZipError("TXT maksimal 2 MB.");
+              else void file.text().then((text) => {
+                const parsed = parsingBatch(text);
+                if (parsed.ok.length > 0) {
+                  setZipInput(parsed);
+                  setZipError("");
+                } else {
+                  const blocks = text.includes("```")
+                    ? [...text.matchAll(/```(?:javascript|js|typescript|ts)?\s*([\s\S]*?)```/gi)].map((m) => m[1].trim()).filter(Boolean)
+                    : text.split(/^\s*---+\s*$/m).map((part) => part.trim()).filter(Boolean);
+                  const sources = blocks.length > 0 ? blocks : [text.trim()];
+                  const rasio = (def.canvas.aspectRatio ?? "9:16") as RasioKanvas;
+                  const imported = sources.map((source, index) => {
+                    const result = drawCodeToDefinition(source, {
+                      rasio,
+                      durasi: def.canvas.durationSec,
+                      fps: def.canvas.fps,
+                      transparan: def.canvas.background === null,
+                      nama: sources.length === 1 ? file.name.replace(/\.txt$/i, "") : `${file.name.replace(/\.txt$/i, "")} ${index + 1}`,
+                    });
+                    return result instanceof Error
+                      ? { label: `Blok ${index + 1}`, pesan: result.message }
+                      : null;
+                  });
+                  const ok = sources.flatMap((source, index) => {
+                    const error = imported[index];
+                    if (error) return [];
+                    const result = drawCodeToDefinition(source, {
+                      rasio,
+                      durasi: def.canvas.durationSec,
+                      fps: def.canvas.fps,
+                      transparan: def.canvas.background === null,
+                      nama: sources.length === 1 ? file.name.replace(/\.txt$/i, "") : `${file.name.replace(/\.txt$/i, "")} ${index + 1}`,
+                    });
+                    return result instanceof Error ? [] : [{ nama: result.name, def: result }];
+                  });
+                  setZipInput({ ok, gagal: imported.filter((item): item is { label: string; pesan: string } => item !== null) });
+                  setZipError(ok.length ? "" : "TXT tidak berisi kode draw(ctx,time,width,height) yang valid.");
+                }
+              }).catch(() => setZipError("Gagal membaca file TXT."));
+            } else void importZip(file);
+          } event.target.value = ""; }} className="mt-2 block w-full" />
         </label>
-        <p className="text-muted">Maksimal 20 proyek · ZIP 12 MB · ekstraksi total 24 MB. Asset SVG harus embedded. Kode Canvas/JavaScript bebas tidak diterima.</p>
+        <p className="text-muted">TXT menerima JSON MotionDefinition atau function draw() mentah. Pisahkan beberapa kode dengan blok ```js atau garis ---; metadata rasio/durasi/FPS mengikuti setting Motion Generator. ZIP proyek maksimal 20 proyek · 12 MB.</p>
         {readingZip && <p role="status">Membaca dan memvalidasi ZIP…</p>}
         {zipError && <p role="alert" className="text-error">{zipError}</p>}
         {zipInput.ok.length > 0 && <><p>{zipInput.ok.length} proyek ZIP siap render.</p><ul className="max-h-20 overflow-y-auto">{zipInput.ok.map((item, index) => <li key={index}>{item.nama}</li>)}</ul><button disabled={berjalan || readingZip} onClick={() => { setZipInput({ ok: [], gagal: [] }); reset(); }}>Hapus input ZIP</button></>}
@@ -304,6 +359,11 @@ export default function BulkModal({ def, open, onClose }: Props) {
               <span className="text-muted"> · total {totalDurasi.toFixed(0)} dtk · ± {perkiraanTotal.toLocaleString("id-ID")} MB</span>
             )}
           </p>
+          {getBatchCsv().length > 0 && (
+            <p className="mt-1 font-mono text-[9px] text-secondary">
+              📄 metadata.csv ({getBatchCsv().length} baris) akan ikut terbundkus di ZIP.
+            </p>
+          )}
           {beringat && (
             <p className="mt-1 flex items-start gap-1.5 text-[10px] text-accent">
               <AlertTriangle className="mt-0.5 h-3 w-3 shrink-0" />

@@ -43,3 +43,115 @@
     @apply bg-transparent;
   }
 }
+
+/* ===== Animasi UI (Bulk Generator & seluruh suite) ===== */
+@keyframes me-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes me-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+@keyframes me-glow-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 18px -6px rgba(76, 215, 246, 0.45);
+  }
+  50% {
+    box-shadow: 0 0 30px -4px rgba(76, 215, 246, 0.75);
+  }
+}
+@keyframes me-spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes me-toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-fade-up {
+  animation: me-fade-up 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.animate-shimmer {
+  background: linear-gradient(90deg, #191b25 25%, #272934 50%, #191b25 75%);
+  background-size: 200% 100%;
+  animation: me-shimmer 1.6s ease-in-out infinite;
+}
+.animate-glow-pulse {
+  animation: me-glow-pulse 2.4s ease-in-out infinite;
+}
+.animate-spin-slow {
+  animation: me-spin-slow 1s linear infinite;
+}
+.animate-toast-in {
+  animation: me-toast-in 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-up,
+  .animate-shimmer,
+  .animate-glow-pulse,
+  .animate-spin-slow,
+  .animate-toast-in {
+    animation: none;
+  }
+  .js-reveal [data-reveal] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* ===== Landing ambient glass & scroll reveal — hanya halaman Landing ===== */
+.landing-grid {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-size: 64px 64px;
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 68%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 0%, #000 68%, transparent 100%);
+}
+
+.landing-glass {
+  border-color: rgba(255, 255, 255, 0.1);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.018));
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.landing-glass:hover {
+  border-color: rgba(255, 166, 130, 0.18);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.32);
+}
+
+.js-reveal [data-reveal] {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.55s ease, transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.js-reveal [data-reveal].is-in {
+  opacity: 1;
+  transform: none;
+}

@@ -14,43 +14,61 @@
 
 export const TARGET_MB_OPTIONS = [
   { label: "Normal (Tanpa Padding)", mb: 0 },
-  { label: "10 MB (Standar Agensi)", mb: 10 },
-  { label: "25 MB (Mikrostok Umum)", mb: 25 },
+  { label: "10 MB", mb: 10 },
+  { label: "20 MB", mb: 20 },
+  { label: "25 MB (Adobe Stock / Shutterstock)", mb: 25 },
   { label: "50 MB (Master HD)", mb: 50 },
+  { label: "75 MB", mb: 75 },
+  { label: "100 MB (High Bitrate 4K)", mb: 100 },
+  { label: "105 MB (garansi di atas 100)", mb: 105 },
+  { label: "150 MB", mb: 150 },
+  { label: "200 MB (Master 4K Heavyweight)", mb: 200 },
 ] as const;
 
 /**
- * Tambahkan kotak 'free' di ujung buffer MP4 supaya ukurannya pas
- * dengan target MB yang diinginkan pengguna.
+ * Tambahkan kotak 'free' di ujung file supaya ukurannya pas dengan target MB
+ * yang diinginkan pengguna. Berlaku untuk MP4 dan QuickTime MOV — keduanya
+ * berbasis box ISO-BMFF/ftyp QuickTime yang mengakui atom 'free'.
+ * WebM/Alpha BUKAN struktur box → tidak boleh dipad (dijaga di pemanggil).
  */
+/** Target overall bitrate 84 Mbps — terbukti lolos Adobe (105 MB / 10 detik). */
+export const OVERALL_BITRATE_84_MBPS = 84_000_000;
+
+/** Hitung target MB supaya overall bitrate ≈ 84 Mbps; lantai 105 MB. */
+export function targetMicrostockUntukDurasi(durasiSec: number): number {
+  const dariBitrate = Math.ceil(((OVERALL_BITRATE_84_MBPS * Math.max(1, durasiSec)) / 8) / 1_048_576);
+  // 10s → 105 MB terbukti; klip lebih pendek tetap 105 sebagai lantai aman
+  return Math.max(105, dariBitrate);
+}
+
 export function padMp4Blob(originalBlob: Blob, targetMb: number): Promise<Blob> {
   if (targetMb <= 0) return Promise.resolve(originalBlob);
-  const targetBytes = targetMb * 1_000_000;
+  if (!Number.isFinite(targetMb) || targetMb < 0 || targetMb > 2000) {
+    return Promise.reject(new Error("Target ukuran harus antara 0 dan 2000 MB."));
+  }
+  // Target dihitung basis MiB (1 048 576) supaya file ≥ target baik di
+  // Windows Explorer (MB desimal) maupun Finder macOS (MiB biner).
+  // 105 MB → 105 MiB = 110 100 480 byte → tampil ≥105 di Finder & ≥110 di Explorer.
+  // Margin 0,5% menghindari pembulatan viewer ke bawah.
+  const targetBytes = Math.ceil(targetMb * 1_048_576 * 1.005);
+  if (originalBlob.size >= targetBytes) return Promise.resolve(originalBlob);
 
-  return originalBlob.arrayBuffer().then((origBuf) => {
-    const curSize = origBuf.byteLength;
-    if (curSize >= targetBytes) return originalBlob; // sudah lebih besar dari target
-
-    const needed = targetBytes - curSize;
-    // Ukuran minimal kotak MP4 adalah 8 byte (4 byte ukuran + 4 byte 'free').
-    // Kalau selisih kurang dari 8, sesuaikan pas 8 byte.
-    const padLen = Math.max(8, needed);
-
-    const padBuf = new ArrayBuffer(padLen);
-    const v = new DataView(padBuf);
-    v.setUint32(0, padLen, true); // ukuran kotak (big-endian di spec, tapi mp4-muxer kita pakai little? Ah MP4 wajib BIG-ENDIAN untuk kotak teratas!)
-    // PERHATIAN: Spesifikasi MP4 (ISO/IEC 14496-12) mewajibkan SEMUA ukuran box
-    // menggunakan BIG-ENDIAN (network byte order).
-    v.setUint32(0, padLen, false); // big-endian!
-    // Tipe box: 'free' (0x66726565) atau 'skip' (0x736b6970)
-    v.setUint32(4, 0x66726565, false); // 'free'
-    // Sisa byte dibiarkan bernilai 0 (null padding)
-
-    const finalBuf = new ArrayBuffer(curSize + padLen);
-    const finalView = new Uint8Array(finalBuf);
-    finalView.set(new Uint8Array(origBuf), 0);
-    finalView.set(new Uint8Array(padBuf), curSize);
-
-    return new Blob([finalBuf], { type: "application/mp4" });
-  });
+  // Free box uses a 32-bit size field; limit keeps it representable and avoids
+  // allocating a second full-sized copy of the already-rendered movie.
+  const padLen = Math.max(8, Math.ceil(targetBytes - originalBlob.size));
+  if (padLen > 0xffffffff) return Promise.reject(new Error("Padding terlalu besar untuk format ISO-BMFF."));
+  const header = new Uint8Array(8);
+  const view = new DataView(header.buffer);
+  view.setUint32(0, padLen, false);
+  view.setUint32(4, 0x66726565, false); // 'free'
+  const parts: BlobPart[] = [originalBlob, header];
+  // Keep peak allocation bounded even for large custom targets.
+  const zeroChunkSize = 8 * 1024 * 1024;
+  let remaining = padLen - 8;
+  while (remaining > 0) {
+    const size = Math.min(remaining, zeroChunkSize);
+    parts.push(new Uint8Array(size));
+    remaining -= size;
+  }
+  return Promise.resolve(new Blob(parts, { type: originalBlob.type || "video/mp4" }));
 }

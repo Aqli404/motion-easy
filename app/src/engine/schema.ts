@@ -158,6 +158,7 @@ export interface MotionDefinition {
     fps: 24 | 30 | 60;
     durationSec: number; // > 0
     background: Color | null; // null = transparan
+    aspectRatio?: "16:9" | "9:16" | "1:1" | "4:5";
   };
   layers: LayerSpec[]; // <= 80 layer seluruh durasi
 }
